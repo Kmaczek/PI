@@ -1,0 +1,50 @@
+﻿<div>
+    <h6>Prywatne</h6>
+    <table>
+        <tr class="row-header">
+            <th>Kategoria</th>
+            <th>Ilość</th>
+            <th>Śr. Cena</th>
+            <th>Śr. Cena za metr</th>
+            <th>Największe</th>
+            <th>Najmniejsze</th>
+            <th>Najtańsze</th>
+            <th>Najdroższe</th>
+        </tr>
+        <tr data-repeater="private_flats">
+            <td class="table-data-text">[[FlatSize]]</td>
+            <td class="table-data-numeric">[[Amount]]</td>
+            <td class="table-data-numeric">[[AvgPrice]]</td>
+            <td class="table-data-numeric">[[AvgPricePerMeter]]</td>
+            <td class="table-data-numeric"><a href="[[BigestLink]]">[[Bigest]]</a></td>
+            <td class="table-data-numeric"><a href="[[SmallestLink]]">[[Smallest]]</a></td>
+            <td class="table-data-numeric"><a href="[[CheapestLink]]">[[Cheapest]]</a></td>
+            <td class="table-data-numeric"><a href="[[MostExpensiveLink]]">[[MostExpensive]]</a></td>
+        </tr>
+    </table>
+
+    <h6>Wszystkie</h6>
+    <table>
+        <tr class="row-header">
+            <th>Kategoria</th>
+            <th>Ilość</th>
+            <th>Śr. Cena</th>
+            <th>Śr. Cena za metr</th>
+            <th>Największe</th>
+            <th>Najmniejsze</th>
+            <th>Najtańsze</th>
+            <th>Najdroższe</th>
+        </tr>
+        <tr data-repeater="all_flats">
+            <td class="table-data-text">[[FlatSize]]</td>
+            <td class="table-data-numeric">[[Amount]]</td>
+            <td class="table-data-numeric">[[AvgPrice]]</td>
+            <td class="table-data-numeric">[[AvgPricePerMeter]]</td>
+            <td class="table-data-numeric"><a href="[[BigestLink]]">[[Bigest]]</a></td>
+            <td class="table-data-numeric"><a href="[[SmallestLink]]">[[Smallest]]</a></td>
+            <td class="table-data-numeric"><a href="[[CheapestLink]]">[[Cheapest]]</a></td>
+            <td class="table-data-numeric"><a href="[[MostExpensiveLink]]">[[MostExpensive]]</a></td>
+        </tr>
+    </table>
+
+</div>

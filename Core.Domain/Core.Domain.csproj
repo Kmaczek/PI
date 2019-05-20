@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Logic\EmailGeneration\BinanceTemplate.html" />
+    <None Remove="Logic\EmailGeneration\EmailTemplate.html" />
+    <None Remove="Logic\EmailGeneration\OtodomTemplate.html" />
+    <None Remove="Logic\EmailGeneration\XtbTemplate.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Logic\EmailGeneration\BinanceTemplate.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logic\EmailGeneration\EmailTemplate.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logic\EmailGeneration\OtodomTemplate.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logic\EmailGeneration\XtbTemplate.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.5.1" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Binance.Api\Binance.Api.csproj" />
+    <ProjectReference Include="..\Common\Core.Common.csproj" />
+    <ProjectReference Include="..\Core.Model\Core.Model.csproj" />
+  </ItemGroup>
+
+</Project>

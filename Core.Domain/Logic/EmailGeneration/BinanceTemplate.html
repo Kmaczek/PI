@@ -1,0 +1,19 @@
+﻿<div>
+    <table>
+        <tr class="row-header">
+            <th>Waluta</th>
+            <th>Wartość w USD</th>
+            <th>Śr. Cena w USD</th>
+            <th>Ilość</th>
+        </tr>
+        <tr data-repeater="symbol_value">
+            <td class="table-data-text">[[Symbol]]</td>
+            <td class="table-data-numeric">[[ConvertedPrice]]</td>
+            <td class="table-data-numeric">[[AvgUsdPrice]]</td>
+            <td class="table-data-numeric">[[Amount]]</td>
+        </tr>
+    </table>
+    <p>
+        <label>Suma:</label> [[total_value]]
+    </p>
+</div>

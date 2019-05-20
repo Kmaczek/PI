@@ -1,0 +1,10 @@
+Public apis:
+https://github.com/toddmotto/public-apis
+
+Use gmail api to read Mintos information
+https://developers.google.com/gmail/api/
+
+Advice slips
+https://api.adviceslip.com/
+
+Weather
