@@ -5,7 +5,7 @@ namespace dkapp
 {
     internal class EmailAssembler
     {
-        private System.Collections.Generic.List<IHtmlGenerator> list;
+        private readonly System.Collections.Generic.List<IHtmlGenerator> list;
 
         public EmailAssembler(System.Collections.Generic.List<IHtmlGenerator> list)
         {

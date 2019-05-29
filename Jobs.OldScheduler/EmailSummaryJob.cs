@@ -9,27 +9,28 @@ using Core.Model.FlatsModels;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Xtb.Core;
 
 namespace Jobs.OldScheduler
 {
-    public class EmailSummaryJob : JobInterface
+    public class EmailSummaryJob : IJob
     {
-        public static Timer RunningTimer = null;
+        private static Timer RunningTimer = null;
         private IConfigurationRoot _configuration;
         private XtbInterface _xtbService;
-        private readonly BinanceServiceInterface _binanceService;
-        private readonly EmailServiceInterface _emailService;
-        private readonly LoggerInterface Log;
+        private readonly IBinanceService _binanceService;
+        private readonly IEmailService _emailService;
+        private readonly ILogger Log;
 
         public EmailSummaryJob(
             IConfigurationRoot configuration, 
-            LoggerInterface log,
+            ILogger log,
             XtbInterface xtbService,
-            BinanceServiceInterface binanceService,
-            EmailServiceInterface emailService)
+            IBinanceService binanceService,
+            IEmailService emailService)
         {
             this._configuration = configuration;
             this.Log = log;
@@ -40,8 +41,8 @@ namespace Jobs.OldScheduler
 
         public void Run()
         {
-            var hour = Convert.ToInt32(_configuration.GetSection("emailJobHour").Value);
-            var minute = Convert.ToInt32(_configuration.GetSection("emailJobMinute").Value);
+            var hour = Convert.ToInt32(_configuration.GetSection("emailJobHour").Value, CultureInfo.InvariantCulture);
+            var minute = Convert.ToInt32(_configuration.GetSection("emailJobMinute").Value, CultureInfo.InvariantCulture);
             
             var configDate = DateTime.Now.Date + new TimeSpan(
                 hour,
@@ -126,11 +127,7 @@ namespace Jobs.OldScheduler
             LogFlatScrappingErrors(allScrapeResult);
             var allFlatAggregate = new FlatAggregateVM(allScrapeResult);
 
-            var flatsOutput = new FlatOutput()
-            {
-                PrivateFlatsByCategory = privateFlatAggregate.FlatCalculations,
-                AllFlatsByCategory = allFlatAggregate.FlatCalculations
-            };
+            var flatsOutput = new FlatOutput(privateFlatAggregate.FlatCalculations, allFlatAggregate.FlatCalculations);
             var otodomHtmlGenerator = new OtodomHtmlGenerator(flatsOutput);
             return otodomHtmlGenerator;
         }

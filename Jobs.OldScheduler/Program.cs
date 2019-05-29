@@ -24,7 +24,7 @@ namespace Jobs.OldScheduler
         public static event CommandDelegate OnCommandReceived;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        static void Main(string[] args)
+        static void Main()
         {
             SetupLogger();
 
@@ -37,9 +37,9 @@ namespace Jobs.OldScheduler
             SetupConfig();
             BuildInjectionContainer();
 
-            var emailJob = InjectionContainer.ResolveNamed<JobInterface>(nameof(EmailSummaryJob));
+            var emailJob = InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob));
             emailJob.Run();
-            var auditJob = InjectionContainer.ResolveNamed<JobInterface>(nameof(PerformanceAuditJob));
+            var auditJob = InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
             auditJob.Run();
 
             while (true)
@@ -71,11 +71,11 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterModule<LoggingModule>();
             diBuilder.RegisterType<XtbService>().As<XtbInterface>();
             diBuilder.RegisterType<BinanceClient>().As<BinanceClientInterface>();
-            diBuilder.RegisterType<BinanceService>().As<BinanceServiceInterface>();
-            diBuilder.RegisterType<PerformanceAudit>().As<PerformanceAuditInterface>();
-            diBuilder.RegisterType<EmailSummaryJob>().Named<JobInterface>(nameof(EmailSummaryJob));
-            diBuilder.RegisterType<PerformanceAuditJob>().Named<JobInterface>(nameof(PerformanceAuditJob));
-            diBuilder.RegisterType<EmailService>().As<EmailServiceInterface>(); 
+            diBuilder.RegisterType<BinanceService>().As<IBinanceService>();
+            diBuilder.RegisterType<PerformanceAudit>().As<IPerformanceAudit>();
+            diBuilder.RegisterType<EmailSummaryJob>().Named<IJob>(nameof(EmailSummaryJob));
+            diBuilder.RegisterType<PerformanceAuditJob>().Named<IJob>(nameof(PerformanceAuditJob));
+            diBuilder.RegisterType<EmailService>().As<IEmailService>(); 
             InjectionContainer = diBuilder.Build();
         }
 

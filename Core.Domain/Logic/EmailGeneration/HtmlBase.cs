@@ -14,7 +14,7 @@ namespace Core.Domain.Logic.EmailGeneration
         protected const string AbstractTemplateName = "None";
         public abstract string HtmlTemplateName { get; }
         public string HtmlTemplate { get; protected set; }
-        public Dictionary<string, dynamic> DataDictionary { get; protected set; } = new Dictionary<string, dynamic>();
+        public Dictionary<string, dynamic> DataDictionary { get; } = new Dictionary<string, dynamic>();
 
         public HtmlBase()
         {
@@ -23,7 +23,7 @@ namespace Core.Domain.Logic.EmailGeneration
 
         public string GetEmailTemplate()
         {
-            if (string.Equals(HtmlTemplateName, AbstractTemplateName))
+            if (HtmlTemplateName == AbstractTemplateName)
                 return String.Empty;
 
             var template = GetEmailTemplate(HtmlTemplateName);
@@ -82,7 +82,7 @@ namespace Core.Domain.Logic.EmailGeneration
                             var props = type.GetProperties();
                             foreach (var property in props)
                             {
-                                var formater = property.GetCustomAttribute<Format>();
+                                var formater = property.GetCustomAttribute<FormatAttribute>();
                                 var objValue = property.GetValue(value);
                                 var valueAsString = string.Empty;
 
@@ -95,7 +95,7 @@ namespace Core.Domain.Logic.EmailGeneration
                                     valueAsString = objValue?.ToString();
                                 }
 
-                                cloned.InnerHtml = cloned.InnerHtml.Replace($"[[{property.Name}]]", valueAsString);
+                                cloned.InnerHtml = cloned.InnerHtml.Replace($"[[{property.Name}]]", valueAsString, StringComparison.InvariantCulture);
                             }
                             parent.InsertBefore(cloned, node);
                         }

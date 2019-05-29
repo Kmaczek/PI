@@ -8,13 +8,12 @@ namespace Core.Model.FlatsModels
     {
         public IEnumerable<FlatDataBM> Flats { get; set; } = new List<FlatDataBM>();
 
-        public Dictionary<string, List<FlatDataBM>> FlatsDictionary = new Dictionary<string, List<FlatDataBM>>();
-
         public List<FlatDataBM> SmallFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Small && PriceAndMetersNotZero(x)).ToList();
         public List<FlatDataBM> MediumFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Medium && PriceAndMetersNotZero(x)).ToList();
         public List<FlatDataBM> BigFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Big && PriceAndMetersNotZero(x)).ToList();
 
-        public List<FlatCalculationsVM> FlatCalculations = new List<FlatCalculationsVM>();
+        public Dictionary<string, List<FlatDataBM>> FlatsDictionary { get; } = new Dictionary<string, List<FlatDataBM>>();
+        public List<FlatCalculationsVM> FlatCalculations { get; } = new List<FlatCalculationsVM>();
 
         public FlatAggregateVM(IEnumerable<FlatDataBM> flats)
         {
@@ -39,15 +38,15 @@ namespace Core.Model.FlatsModels
             if (FlatsDictionary[flatSize] == null || FlatsDictionary[flatSize].Count == 0)
                 return null;
 
-            return new FlatCalculationsVM()
+            return new FlatCalculationsVM(
+                FlatsDictionary[flatSize].MinBy(x => x.SquareMeters).FirstOrDefault(),
+                FlatsDictionary[flatSize].MaxBy(x => x.SquareMeters).FirstOrDefault(),
+                FlatsDictionary[flatSize].MinBy(x => x.TotalPrice).FirstOrDefault(),
+                FlatsDictionary[flatSize].MaxBy(x => x.TotalPrice).FirstOrDefault())
             {
                 FlatSize = flatSize,
                 Amount = FlatsDictionary[flatSize].Count,
                 AvgPrice = FlatsDictionary[flatSize].Average(x => x.TotalPrice),
-                BigestFlat = FlatsDictionary[flatSize].MaxBy(x => x.SquareMeters).FirstOrDefault(),
-                SmallestFlat = FlatsDictionary[flatSize].MinBy(x => x.SquareMeters).FirstOrDefault(),
-                MostExpensiveFlat = FlatsDictionary[flatSize].MaxBy(x => x.TotalPrice).FirstOrDefault(),
-                CheapestFlat = FlatsDictionary[flatSize].MinBy(x => x.TotalPrice).FirstOrDefault(),
                 AvgPricePerMeter = FlatsDictionary[flatSize].Average(x => x.PricePerMeter)
             };
         }

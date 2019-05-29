@@ -2,12 +2,13 @@
 using Core.Model.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Mail;
 
 namespace Common
 {
-    public class EmailService : EmailServiceInterface
+    public class EmailService : IEmailService
     {
         private const string PersonalEmailKey = "PI_PersonalEmail";
         private const string SystemEmailKey = "PI_SystemEmail";
@@ -42,7 +43,7 @@ namespace Common
 
             if (string.IsNullOrEmpty(configuration.GetSection(GmailPortKey).Value))
                 throw new EmailServiceException($"Missing configuration for Email Service [{GmailPortKey}]");
-            GmailPort = Convert.ToInt32(configuration.GetSection(GmailPortKey).Value);
+            GmailPort = Convert.ToInt32(configuration.GetSection(GmailPortKey).Value, CultureInfo.InvariantCulture);
 
             GmailHost = configuration.GetSection(GmailHostKey).Value;
             if (string.IsNullOrEmpty(GmailHost))

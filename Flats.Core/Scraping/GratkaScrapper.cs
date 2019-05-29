@@ -10,7 +10,7 @@ namespace Flats.Core.Scraping
 {
     public class GratkaScrapper : Scraper
     {
-        private string url = "https://gratka.pl/nieruchomosci/mieszkania/wroclaw/sprzedaz";
+        private readonly string url = "https://gratka.pl/nieruchomosci/mieszkania/wroclaw/sprzedaz";
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
         {
             throw new NotImplementedException();

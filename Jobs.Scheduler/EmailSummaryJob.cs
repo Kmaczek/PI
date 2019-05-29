@@ -11,13 +11,8 @@ using System.Linq;
 
 namespace ConsoleTesting
 {
-    public class EmailSummaryJob
+    public static class EmailSummaryJob
     {
-        public EmailSummaryJob()
-        {
-
-        }
-
         public static void EmailJob()
         {
             Console.WriteLine($"Starting Email Summary job at {DateTime.Now.ToLocalTime()}.");
@@ -41,9 +36,9 @@ namespace ConsoleTesting
                     otodomHtmlGenerator
                 });
 
-            var emailSender = new EmailService();
-            emailSender.SendEmail(emailAssembler.GenerateEmail());
-            Console.WriteLine($"Email Summary job finished at {DateTime.Now.ToLocalTime()}.");
+            //var emailSender = new EmailService();
+            //emailSender.SendEmail(emailAssembler.GenerateEmail());
+            //Console.WriteLine($"Email Summary job finished at {DateTime.Now.ToLocalTime()}.");
         }
     }
 }

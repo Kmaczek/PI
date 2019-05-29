@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Binance.Api.BinanceDto;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Configuration;
+using System.Globalization;
 
 namespace Binance.Api
 {
@@ -14,7 +15,7 @@ namespace Binance.Api
         private const string BinanceApiKey = "PI_BinanceApiKey";
         private const string BinanceApiSecret = "PI_BinanceApiSecret";
 
-        private string url;
+        private readonly string url;
         private readonly string secret;
         private readonly string apiKey;
         private RestClient client;
@@ -149,14 +150,14 @@ namespace Binance.Api
             request.AddOrUpdateParameter("signature", HmacSha256Digest(query, secret), ParameterType.QueryString);
         }
 
-        public void Test()
+        public static void Test()
         {
             var query = "symbol=LTCBTC&side=BUY&type=LIMIT&timeInForce=GTC&quantity=1&price=0.1&recvWindow=5000&timestamp=1499827319559";
             var sec = "NhqPtmdSJYdKjVHjA7PZj4Mge3R5YNiP1e3UZjInClVN65XAbvqqM6A7H5fATj0j";
             var outp = "c8db56825ae71d6d79447849e617115f4a920fa2acdcab2b053c4b2838bd6b71";
             var sign = HmacSha256Digest(query, sec);
 
-            var isOk = string.Equals(sign, outp);
+            var isOk = sign == outp;
         }
 
         public static string HmacSha256Digest(string message, string secret)
@@ -168,7 +169,9 @@ namespace Binance.Api
 
             byte[] bytes = cryptographer.ComputeHash(messageBytes);
 
-            return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+            return BitConverter.ToString(bytes)
+                .Replace("-", "", StringComparison.Ordinal)
+                .ToLower(CultureInfo.InvariantCulture);
         }
     }
 }

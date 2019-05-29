@@ -12,7 +12,7 @@ namespace Core.Model.FlatsModels
         public string FlatSize { get; set; }
         public decimal PricePerMeter { get; set; }
 
-        public List<string> Errors { get; set; } = new List<string>();
+        public List<string> Errors { get; } = new List<string>();
 
         public FlatDataBM(
             decimal squareMeters,

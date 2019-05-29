@@ -9,8 +9,8 @@ namespace Tests
 {
     public class BinanceClientTests
     {
-        public static IConfigurationRoot Configuration;
-        public static LoggerInterface Log = new Log4Net(typeof(BinanceClientTests));
+        private static IConfigurationRoot Configuration;
+        private static readonly ILogger Log = new Log4Net(typeof(BinanceClientTests));
 
         [SetUp]
         public void Setup()

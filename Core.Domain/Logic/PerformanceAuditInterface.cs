@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Domain.Logic
 {
-    public interface PerformanceAuditInterface
+    public interface IPerformanceAudit
     {
         float GetCurrentCpuUsage();
         float GetAvailableRAM();

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core.Domain.Logic
 {
-    public interface BinanceServiceInterface
+    public interface IBinanceService
     {
         BinanceVM GetSymbolValuesForAccount();
     }

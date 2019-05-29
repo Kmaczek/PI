@@ -4,24 +4,25 @@ using Core.Model.PerformanceCounterModels;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 
 namespace Jobs.OldScheduler
 {
-    public class PerformanceAuditJob : JobInterface
+    public class PerformanceAuditJob : IJob
     {
-        public static Timer RunningTimer = null;
+        private static Timer RunningTimer = null;
 
         private readonly IConfigurationRoot _configuration;
-        private readonly LoggerInterface _log;
-        private readonly PerformanceAuditInterface _performanceAudit;
+        private readonly ILogger _log;
+        private readonly IPerformanceAudit _performanceAudit;
 
         public PerformanceAuditJob(
             IConfigurationRoot configuration,
-            LoggerInterface log,
-            PerformanceAuditInterface performanceAudit)
+            ILogger log,
+            IPerformanceAudit performanceAudit)
         {
             this._configuration = configuration;
             this._log = log;
@@ -35,7 +36,7 @@ namespace Jobs.OldScheduler
 
         public void Run()
         {
-            var jobInterval = Convert.ToInt32(_configuration.GetSection("performanceAudit:minuteInterval").Value);
+            var jobInterval = Convert.ToInt32(_configuration.GetSection("performanceAudit:minuteInterval").Value, CultureInfo.InvariantCulture);
             _log.Info($"Config for {nameof(PerformanceAuditJob)}. Job will run every: {jobInterval} minute(s).");
 
             var periodTimeSpan = TimeSpan.FromMinutes(jobInterval);
@@ -71,7 +72,10 @@ namespace Jobs.OldScheduler
             sb.AppendLine();
             foreach(var processUsage in topTenUsages.Skip(1))
             {
-                var usage = Math.Round(processUsage.Usage / total.Usage * 100, 0).ToString().PadLeft(2, '0');
+                var usage = Math
+                    .Round(processUsage.Usage / total.Usage * 100, 0, MidpointRounding.AwayFromZero)
+                    .ToString(CultureInfo.InvariantCulture)
+                    .PadLeft(2, '0');
                 sb.AppendLine($"{usage:0}% - {processUsage.ProcessName}");
             }
             _log.Info(sb.ToString());

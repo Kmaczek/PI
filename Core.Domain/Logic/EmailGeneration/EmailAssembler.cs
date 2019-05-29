@@ -8,11 +8,9 @@ namespace Core.Domain.Logic.EmailGeneration
 {
     public class EmailAssembler
     {
-        private string DateTimeTag = "date_time";
-
-        public List<IHtmlGenerator> HtmlGenerators = new List<IHtmlGenerator>();
-
+        private readonly string DateTimeTag = "date_time";
         public string HtmlEmail { get; set; }
+        protected List<IHtmlGenerator> HtmlGenerators { get; } = new List<IHtmlGenerator>();
 
         public EmailAssembler(List<IHtmlGenerator> htmlGenerators)
         {
@@ -35,7 +33,7 @@ namespace Core.Domain.Logic.EmailGeneration
             return sb.ToString();
         }
 
-        protected string GetEmailTemplate()
+        protected static string GetEmailTemplate()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Core.Domain.Logic.EmailGeneration.EmailTemplate.html";

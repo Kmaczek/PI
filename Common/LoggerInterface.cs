@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Core.Common
 {
-    public interface LoggerInterface
+    public interface ILogger
     {
         void Info(string message);
 

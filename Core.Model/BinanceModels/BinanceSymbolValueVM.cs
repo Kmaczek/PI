@@ -8,13 +8,13 @@ namespace Core.Model.BinanceModels
     {
         public string Symbol { get; set; }
 
-        [Format(FormatType.Numeric2)]
+        [FormatAttribute(FormatType.Numeric2)]
         public decimal Amount { get; set; }
 
-        [Format(FormatType.Numeric4)]
+        [FormatAttribute(FormatType.Numeric4)]
         public decimal AvgUsdPrice { get; set; }
 
-        [Format(FormatType.Numeric2)]
+        [FormatAttribute(FormatType.Numeric2)]
         public decimal ConvertedPrice => Amount * AvgUsdPrice;
     }
 }

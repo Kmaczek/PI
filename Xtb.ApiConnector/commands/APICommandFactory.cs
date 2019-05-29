@@ -22,11 +22,13 @@ namespace xAPI.Commands
         #region Command creators
         public static LoginCommand CreateLoginCommand(string userId, string password, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("userId", userId);
-            args.Add("password", password);
-            args.Add("type", "dotNET");
-            args.Add("version", SyncAPIConnector.VERSION);
+            JSONObject args = new JSONObject
+            {
+                { "userId", userId },
+                { "password", password },
+                { "type", "dotNET" },
+                { "version", SyncAPIConnector.VERSION }
+            };
             return new LoginCommand(args, prettyPrint);
         }
 
@@ -77,38 +79,48 @@ namespace xAPI.Commands
 
         public static ChartLastCommand CreateChartLastCommand(string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("info", (new ChartLastInfoRecord(symbol, period, start)).toJSONObject());
+            JSONObject args = new JSONObject
+            {
+                { "info", (new ChartLastInfoRecord(symbol, period, start)).toJSONObject() }
+            };
             return new ChartLastCommand(args, prettyPrint);
         }
 
         public static ChartLastCommand CreateChartLastCommand(ChartLastInfoRecord info, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("info", info.toJSONObject());
+            JSONObject args = new JSONObject
+            {
+                { "info", info.toJSONObject() }
+            };
             return new ChartLastCommand(args, prettyPrint);
         }
 
         public static ChartRangeCommand CreateChartRangeCommand(ChartRangeInfoRecord info, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("info", info.toJSONObject());
+            JSONObject args = new JSONObject
+            {
+                { "info", info.toJSONObject() }
+            };
             return new ChartRangeCommand(args, prettyPrint);
 
         }
 
         public static ChartRangeCommand CreateChartRangeCommand(string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("info", (new ChartRangeInfoRecord(symbol, period, start, end, ticks)).toJSONObject());
+            JSONObject args = new JSONObject
+            {
+                { "info", (new ChartRangeInfoRecord(symbol, period, start, end, ticks)).toJSONObject() }
+            };
             return new ChartRangeCommand(args, prettyPrint);
         }
 
         public static CommissionDefCommand CreateCommissionDefCommand(string symbol, double? volume, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("symbol", symbol);
-            args.Add("volume", volume);
+            JSONObject args = new JSONObject
+            {
+                { "symbol", symbol },
+                { "volume", volume }
+            };
             return new CommissionDefCommand(args, prettyPrint);
         }
 
@@ -124,17 +136,21 @@ namespace xAPI.Commands
 
         public static MarginTradeCommand CreateMarginTradeCommand(string symbol, double? volume, bool prettyPrint)
         {
-            JSONObject args = new JSONObject();
-            args.Add("symbol", symbol);
-            args.Add("volume", volume);
+            JSONObject args = new JSONObject
+            {
+                { "symbol", symbol },
+                { "volume", volume }
+            };
             return new MarginTradeCommand(args, prettyPrint);
         }
 
         public static NewsCommand CreateNewsCommand(long? start, long? end, bool prettyPrint)
         {
-            JSONObject args = new JSONObject();
-            args.Add("start", start);
-            args.Add("end", end);
+            JSONObject args = new JSONObject
+            {
+                { "start", start },
+                { "end", end }
+            };
             return new NewsCommand(args, prettyPrint);
         }
 
@@ -160,9 +176,11 @@ namespace xAPI.Commands
 
         public static IbsHistoryCommand CreateGetIbsHistoryCommand(long start, long end, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("start", start);
-            args.Add("end", end);
+            JSONObject args = new JSONObject
+            {
+                { "start", start },
+                { "end", end }
+            };
             return new IbsHistoryCommand(args, prettyPrint);
         }
 
@@ -173,12 +191,14 @@ namespace xAPI.Commands
 
         public static ProfitCalculationCommand CreateProfitCalculationCommand(string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice ,bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("symbol", symbol);
-            args.Add("volume", volume);
-            args.Add("cmd", cmd.Code);
-            args.Add("openPrice", openPrice);
-            args.Add("closePrice", closePrice);
+            JSONObject args = new JSONObject
+            {
+                { "symbol", symbol },
+                { "volume", volume },
+                { "cmd", cmd.Code },
+                { "openPrice", openPrice },
+                { "closePrice", closePrice }
+            };
             return new ProfitCalculationCommand(args,prettyPrint);
         }
 
@@ -190,8 +210,10 @@ namespace xAPI.Commands
 
         public static SymbolCommand CreateSymbolCommand(string symbol, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("symbol", symbol);
+            JSONObject args = new JSONObject
+            {
+                { "symbol", symbol }
+            };
             return new SymbolCommand(args, prettyPrint);
         }
 
@@ -228,15 +250,19 @@ namespace xAPI.Commands
 
         public static TradeTransactionCommand CreateTradeTransactionCommand(TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("tradeTransInfo", tradeTransInfo.toJSONObject());
+            JSONObject args = new JSONObject
+            {
+                { "tradeTransInfo", tradeTransInfo.toJSONObject() }
+            };
             return new TradeTransactionCommand(args, prettyPrint);
         }
 
         public static TradeTransactionCommand CreateTradeTransactionCommand(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("tradeTransInfo", (new TradeTransInfoRecord(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration)).toJSONObject());
+            JSONObject args = new JSONObject
+            {
+                { "tradeTransInfo", (new TradeTransInfoRecord(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration)).toJSONObject() }
+            };
             return new TradeTransactionCommand(args, prettyPrint);
         }
         
@@ -248,23 +274,29 @@ namespace xAPI.Commands
         
         public static TradeTransactionStatusCommand CreateTradeTransactionStatusCommand(long? order, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("order", order);
+            JSONObject args = new JSONObject
+            {
+                { "order", order }
+            };
             return new TradeTransactionStatusCommand(args, prettyPrint);
         }
         
         public static TradesCommand CreateTradesCommand(bool openedOnly, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("openedOnly", openedOnly);
+            JSONObject args = new JSONObject
+            {
+                { "openedOnly", openedOnly }
+            };
             return new TradesCommand(args, prettyPrint);
         }
         
         public static TradesHistoryCommand CreateTradesHistoryCommand(long? start, long? end, bool prettyPrint = false)
         {
-            JSONObject args = new JSONObject();
-            args.Add("start", start);
-            args.Add("end", end);
+            JSONObject args = new JSONObject
+            {
+                { "start", start },
+                { "end", end }
+            };
             return new TradesHistoryCommand(args, prettyPrint);
         }
         

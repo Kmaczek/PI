@@ -61,12 +61,12 @@ namespace Jobs.OldScheduler
         }
 
 
-        public static Dictionary<string, JobInterface> JobsToRun = new Dictionary<string, JobInterface>()
+        public static Dictionary<string, IJob> JobsToRun = new Dictionary<string, IJob>()
         {
-            {"es", Program.InjectionContainer.ResolveNamed<JobInterface>(nameof(EmailSummaryJob)) },
-            {"EmailSummary", Program.InjectionContainer.ResolveNamed<JobInterface>(nameof(EmailSummaryJob)) },
-            {"pc", Program.InjectionContainer.ResolveNamed<JobInterface>(nameof(PerformanceAuditJob)) },
-            {"PerformanceCounterJob", Program.InjectionContainer.ResolveNamed<JobInterface>(nameof(PerformanceAuditJob)) },
+            {"es", Program.InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob)) },
+            {"EmailSummary", Program.InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob)) },
+            {"pc", Program.InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob)) },
+            {"PerformanceCounterJob", Program.InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob)) },
         };
         public static void RunJob(string[] command)
         {

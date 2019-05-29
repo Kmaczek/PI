@@ -8,7 +8,7 @@ namespace Binance.Api.BinanceDto
     {
         public T ResponseDto { get; set; }
         public OutcomeStatus Status { get; set; }
-        public List<Notification> Notifications = new List<Notification>();
+        public List<Notification> Notifications { get; } = new List<Notification>();
     }
 
     public class Notification

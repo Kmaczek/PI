@@ -1,4 +1,5 @@
 ﻿using Core.Model;
+using System.Globalization;
 
 namespace Core.Domain.Logic.EmailGeneration
 {
@@ -20,8 +21,8 @@ namespace Core.Domain.Logic.EmailGeneration
 
         public string GenerateBody()
         {
-            DataDictionary.Add("balance", xtbOutput.Balance?.ToString());
-            DataDictionary.Add("gain", xtbOutput.Gain?.ToString());
+            DataDictionary.Add("balance", xtbOutput.Balance?.ToString(CultureInfo.InvariantCulture));
+            DataDictionary.Add("gain", xtbOutput.Gain?.ToString(CultureInfo.InvariantCulture));
 
             return CombineHtmlWithData();
         }

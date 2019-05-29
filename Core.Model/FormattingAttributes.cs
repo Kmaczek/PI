@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Core.Model
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class Format : Attribute
+    public class FormatAttribute : Attribute
     {
-        private Dictionary<FormatType, string> formats = new Dictionary<FormatType, string>()
+        private readonly Dictionary<FormatType, string> formats = new Dictionary<FormatType, string>()
         {
             { FormatType.IntegralNumber, "" },
             { FormatType.Numeric0, "N0" },
@@ -19,9 +19,9 @@ namespace Core.Model
         };
         public FormatType FormatType { get; }
 
-        public Format(FormatType _format)
+        public FormatAttribute(FormatType format)
         {
-            FormatType = _format;
+            FormatType = format;
         }
 
         public string GetFormat()

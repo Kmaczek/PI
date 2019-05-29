@@ -1,6 +1,6 @@
 ﻿namespace Jobs.OldScheduler
 {
-    public interface JobInterface
+    public interface IJob
     {
         void Run();
         void ImmediateRun();

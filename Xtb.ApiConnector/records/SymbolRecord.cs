@@ -392,7 +392,7 @@ namespace xAPI.Records
             }
             set
             {
-                this.spreadTable = value;
+                this.spreadRaw = value;
             }
         }
 

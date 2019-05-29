@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace Core.Domain.Logic
 {
-    public class BinanceService : BinanceServiceInterface
+    public class BinanceService : IBinanceService
     {
         private readonly BinanceClientInterface _binanceClient;
-        private readonly LoggerInterface _log;
+        private readonly ILogger _log;
 
-        public BinanceService(BinanceClientInterface binanceClient, LoggerInterface log)
+        public BinanceService(BinanceClientInterface binanceClient, ILogger log)
         {
             this._binanceClient = binanceClient;
             this._log = log;

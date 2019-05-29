@@ -7,7 +7,16 @@ namespace Core.Model.BinanceModels
 {
     public class BinanceVM
     {
-        public List<BinanceSymbolValueVM> SymbolsValues { get; set; } = new List<BinanceSymbolValueVM>();
+        List<BinanceSymbolValueVM> symbolsValues = new List<BinanceSymbolValueVM>();
+        public List<BinanceSymbolValueVM> SymbolsValues
+        {
+            get { return symbolsValues; }
+            set
+            {
+                symbolsValues.Clear();
+                symbolsValues.AddRange(value);
+            }
+        }
 
         public decimal TotalValue => SymbolsValues.Sum(x => x.ConvertedPrice);
         public string Status { get; set; } = BinanceStatus.None;
@@ -20,5 +29,5 @@ namespace Core.Model.BinanceModels
             }
 
         }
-}
+    }
 }

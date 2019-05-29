@@ -9,8 +9,6 @@ namespace SyncAPIConnect.Commands
 {
     public class StopBalance : BaseCommand
     {
-        string streammingId;
-
         public StopBalance(string streammingId, bool? prettyPrint) : base(prettyPrint)
         {
             this.streammingId = streammingId;
@@ -22,9 +20,10 @@ namespace SyncAPIConnect.Commands
 
         public override string ToString()
         {
-            JObject result = new JObject();
-            result.Add("command", "getBalance");
-            //result.Add("streamSessionId", streammingId);
+            JObject result = new JObject
+            {
+                { "command", "getBalance" }
+            };
             return result.ToString();
         }
     }

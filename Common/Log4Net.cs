@@ -3,7 +3,7 @@ using System;
 
 namespace Core.Common
 {
-    public class Log4Net : LoggerInterface
+    public class Log4Net : ILogger
     {
         private readonly ILog _log;
         private readonly Type type;

@@ -11,7 +11,7 @@ namespace Jobs.OldScheduler
             e.Parameters = e.Parameters.Union(new[]
             {
                 new ResolvedParameter(
-                    (p, i) => p.ParameterType == typeof(LoggerInterface),
+                    (p, i) => p.ParameterType == typeof(ILogger),
                     (p, i) => new Log4Net(p.Member.DeclaringType) 
                 ),
             });

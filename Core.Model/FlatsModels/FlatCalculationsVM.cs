@@ -2,35 +2,48 @@
 {
     public class FlatCalculationsVM
     {
-        public FlatDataBM SmallestFlat;
-        public FlatDataBM BigestFlat;
-        public FlatDataBM CheapestFlat;
-        public FlatDataBM MostExpensiveFlat;
+        private readonly FlatDataBM SmallestFlat;
+        private readonly FlatDataBM BigestFlat;
+        private readonly FlatDataBM CheapestFlat;
+        private readonly FlatDataBM MostExpensiveFlat;
+
+        public FlatCalculationsVM(
+            FlatDataBM smallestFlat,
+            FlatDataBM bigestFlat,
+            FlatDataBM cheapestFlat,
+            FlatDataBM mostExpensiveFlat
+            )
+        {
+            SmallestFlat = smallestFlat;
+            BigestFlat = bigestFlat;
+            CheapestFlat = cheapestFlat;
+            MostExpensiveFlat = mostExpensiveFlat;
+        }
 
         public string FlatSize { get; set; }
 
         public decimal Amount { get; set; }
 
-        [Format(FormatType.Numeric2)]
+        [FormatAttribute(FormatType.Numeric2)]
         public decimal AvgPrice { get; set; }
 
-        [Format(FormatType.Numeric2)]
+        [FormatAttribute(FormatType.Numeric2)]
         public decimal AvgPricePerMeter { get; set; }
 
 
-        [Format(FormatType.Numeric0)]
+        [FormatAttribute(FormatType.Numeric0)]
         public decimal? Smallest => SmallestFlat?.SquareMeters;
         public string SmallestLink => SmallestFlat?.Url;
 
-        [Format(FormatType.Numeric0)]
+        [FormatAttribute(FormatType.Numeric0)]
         public decimal? Bigest => BigestFlat?.SquareMeters;
         public string BigestLink => BigestFlat?.Url;
 
-        [Format(FormatType.Numeric0)]
+        [FormatAttribute(FormatType.Numeric0)]
         public decimal? Cheapest => CheapestFlat?.TotalPrice;
         public string CheapestLink => CheapestFlat?.Url;
 
-        [Format(FormatType.Numeric0)]
+        [FormatAttribute(FormatType.Numeric0)]
         public decimal? MostExpensive => MostExpensiveFlat?.TotalPrice;
         public string MostExpensiveLink => MostExpensiveFlat?.Url;
     }

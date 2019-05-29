@@ -7,7 +7,7 @@ namespace Tests
 {
     public class PerformanceAuditTests
     {
-        public static LoggerInterface Log = new Log4Net(typeof(PerformanceAuditTests));
+        public static ILogger Log = new Log4Net(typeof(PerformanceAuditTests));
 
         [SetUp]
         public void Setup()
