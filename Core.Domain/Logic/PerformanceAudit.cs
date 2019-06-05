@@ -1,149 +1,158 @@
 ﻿using Core.Common;
-using Core.Model.PerformanceCounterModels;
+using Core.Model.PerformanceAuditModels;
+using Core.Model.PerformanceAuditModels.Exceptions;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading;
 
 namespace Core.Domain.Logic
 {
-    public class PerformanceAudit : IPerformanceAudit, IDisposable
+    public class PerformanceAudit : IPerformanceAudit
     {
-        private bool disposed = false;
-        private PerformanceCounter cpuCounter;
-        private PerformanceCounter ramCounter;
-        private readonly ILogger log;
+        private const string AuditCounterSleepPeriod = "performanceAudit:counterSleepPeriod";
 
-        public PerformanceAudit(ILogger log)
+        private readonly ILogger log;
+        private readonly IConfigurationRoot configuration;
+
+        public PerformanceAudit(ILogger log, IConfigurationRoot configuration)
         {
             this.log = log;
+            this.configuration = configuration;
+
+            var sleepPeriod = configuration.GetSection(AuditCounterSleepPeriod).Value;
+
+            if (string.IsNullOrEmpty(sleepPeriod))
+                throw new PerformanceAuditException($"Missing configuration for PerformanceAudit service[{AuditCounterSleepPeriod}]");
+            else
+                SleepPeriod = Convert.ToInt32(sleepPeriod.Length, CultureInfo.InvariantCulture);
+
         }
 
-        public PerformanceCounter CpuCounter
-        {
-            get
-            {
-                if (cpuCounter == null)
-                    cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-
-                return cpuCounter;
-            }
-        }
-
-        public PerformanceCounter RamCounter
-        {
-            get
-            {
-                if (cpuCounter == null)
-                    cpuCounter = new PerformanceCounter("Memory", "Available MBytes");
-
-                return cpuCounter;
-            }
-        }
+        public int SleepPeriod { get; }
 
         public float GetCurrentCpuUsage()
         {
-            CpuCounter.NextValue();
-            Thread.Sleep(500);
-            return CpuCounter.NextValue();
+            using(var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
+            {
+                cpuCounter.NextValue();
+                Thread.Sleep(500);
+                return cpuCounter.NextValue();
+            }
         }
 
         public float GetAvailableRAM()
         {
-            return RamCounter.NextValue();
+            using(var ramCounter = new PerformanceCounter("Memory", "Available MBytes"))
+            {
+                return ramCounter.NextValue();
+            }
         }
 
         public List<ProcessUsage> GetProcessesUsages()
         {
-            var counters = new List<PerformanceCounter>();
             var processesUsage = new List<ProcessUsage>();
+            var counterUsagePairs = new List<Tuple<ProcessUsage, PerformanceCounter>>();
 
             try
             {
-                var processes = GetProcessNames();
+                processesUsage.AddRange(GetProcessNames());
 
-                foreach (var process in processes)
+                foreach (var process in processesUsage)
                 {
-                    var processCpu = new PerformanceCounter("Process", "% Processor Time", process, true);
-                    processCpu.NextValue();
-                    counters.Add(processCpu);
+                    var processCpu = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
+                    try
+                    {
+                        processCpu.NextValue();
+                        counterUsagePairs.Add(new Tuple<ProcessUsage, PerformanceCounter>(process, processCpu));
+                    }
+                    catch(InvalidOperationException)
+                    {
+                        //
+                    }
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(SleepPeriod);
 
-                foreach (var counter in counters)
+                foreach (var counterUsagePair in counterUsagePairs)
                 {
                     try
                     {
-                        processesUsage.Add(new ProcessUsage { ProcessName = counter.InstanceName, Usage = counter.NextValue() });
+                        counterUsagePair.Item1.Usage = counterUsagePair.Item2.NextValue();
                     }
                     catch (InvalidOperationException)
                     {
                         // Skip stopped process
                     }
                 }
+
+                SetServiceNames(processesUsage);
             }
             finally
             {
-                counters.ForEach(x => x.Close());
+                counterUsagePairs.ForEach(x => x.Item2.Close());
             }
 
             return processesUsage;
         }
 
-        private List<string> GetProcessNames()
+        public static void SetServiceNames(List<ProcessUsage> usages)
         {
-            var processesNames = new PerformanceCounterCategory("Process").GetInstanceNames().GroupBy(g => g);
-            List<string> pcList = new List<string>();
-            foreach (var pg in processesNames)
+            foreach(var usage in usages.Where(x => x.ProcessName.Contains("svc")))
             {
+                var query = "SELECT * FROM Win32_Service where ProcessId = " + usage.Pid;
+                ManagementObjectSearcher searcher =
+                    new ManagementObjectSearcher(query);
+
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    usage.ServiceName = queryObj["Name"].ToString();
+                }
+            }
+        }
+
+        private List<ProcessUsage> GetProcessNames()
+        {
+            var processesNames = new PerformanceCounterCategory("Process").GetInstanceNames().Distinct();
+            var processes = Process.GetProcesses(".")
+                .Where(x => processesNames.Any(pn => pn == x.ProcessName))
+                .GroupBy(g => g.ProcessName);
+            List<ProcessUsage> pcList = new List<ProcessUsage>()
+            {
+                new ProcessUsage { ProcessName= "_Total" }
+            };
+            foreach (var pg in processes)
+            {
+                var pName = Process.GetProcessesByName(pg.Key);
                 if (pg.Count() == 1)
                 {
-                    pcList.Add(pg.First());
+                    pcList.Add(new ProcessUsage
+                    {
+                        ProcessName = pg.First().ProcessName,
+                        Pid = pg.First().Id
+                    });
                 }
                 else
                 {
                     int id = 1;
                     foreach (var p in pg)
                     {
-                        pcList.Add(p + "#" + id);
+                        pcList.Add(new ProcessUsage
+                        {
+                            ProcessName = p.ProcessName + "#" + id,
+                            Pid = p.Id
+                        });
                         id++;
                     }
                 }
             }
 
             return pcList;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            if (disposing)
-            {
-                if (cpuCounter != null)
-                {
-                    cpuCounter.Dispose();
-                    cpuCounter = null;
-                }
-
-                if (ramCounter != null)
-                {
-                    ramCounter.Dispose();
-                    ramCounter = null;
-                }
-
-                disposed = true;
-            }
         }
     }
 }

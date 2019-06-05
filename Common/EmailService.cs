@@ -24,8 +24,6 @@ namespace Common
         private readonly IConfigurationRoot _configuration;
         private string defaultTitle = "Daily Summary for {0}";
 
-        private SmtpClient MailingClient { get; set; }
-
         public EmailService(IConfigurationRoot configuration)
         {
             this._configuration = configuration;
@@ -48,21 +46,13 @@ namespace Common
             GmailHost = configuration.GetSection(GmailHostKey).Value;
             if (string.IsNullOrEmpty(GmailHost))
                 throw new EmailServiceException($"Missing configuration for Email Service [{GmailHostKey}]");
-
-            MailingClient = new SmtpClient();
-            MailingClient.Port = GmailPort;
-            MailingClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            MailingClient.UseDefaultCredentials = false;
-            MailingClient.Host = GmailHost;
-            MailingClient.EnableSsl = true;
-            MailingClient.Credentials = new NetworkCredential(systemEmail, systemEmailPass);
         }
 
         public void SendEmail(string body, string title = null)
         {
             string subject;
             if (title == null)
-                subject = String.Format(defaultTitle, DateTime.Now.ToString("dd-MM-yyy"));
+                subject = String.Format(CultureInfo.InvariantCulture, defaultTitle, DateTime.Now.ToString("dd-MM-yyy", CultureInfo.InvariantCulture));
             else
                 subject = title;
 
@@ -71,7 +61,23 @@ namespace Common
             mail.Body = body;
             mail.IsBodyHtml = true;
             mail.From = new MailAddress(systemEmail, "DK Automation");
-            MailingClient.Send(mail);
+            SendMessage(mail);
+        }
+
+        private void SendMessage(MailMessage message)
+        {
+            using (var mailingClient = new SmtpClient())
+            using (message)
+            {
+                mailingClient.Port = GmailPort;
+                mailingClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                mailingClient.UseDefaultCredentials = false;
+                mailingClient.Host = GmailHost;
+                mailingClient.EnableSsl = true;
+                mailingClient.Credentials = new NetworkCredential(systemEmail, systemEmailPass);
+
+                mailingClient.Send(message);
+            }
         }
     }
 }

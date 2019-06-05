@@ -1,6 +1,6 @@
 ﻿using Core.Common;
 using Core.Domain.Logic;
-using Core.Model.PerformanceCounterModels;
+using Core.Model.PerformanceAuditModels;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -76,7 +76,7 @@ namespace Jobs.OldScheduler
                     .Round(processUsage.Usage / total.Usage * 100, 0, MidpointRounding.AwayFromZero)
                     .ToString(CultureInfo.InvariantCulture)
                     .PadLeft(2, '0');
-                sb.AppendLine($"{usage:0}% - {processUsage.ProcessName}");
+                sb.AppendLine($"{usage:0}% - {processUsage.ProcessName}{(processUsage.ServiceName != null ? " | " : "")}{processUsage.ServiceName}");
             }
             _log.Info(sb.ToString());
         }
