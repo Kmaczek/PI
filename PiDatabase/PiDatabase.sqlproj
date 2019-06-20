@@ -64,6 +64,7 @@
   <ItemGroup>
     <Build Include="Binance\CryptoSeries.sql" />
     <Build Include="Binance\SeriesParent.sql" />
+    <Build Include="Binance\Binance.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PiDatabase.publish.xml" />
