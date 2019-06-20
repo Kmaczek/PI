@@ -1,4 +1,4 @@
-﻿using CenyMieszkan.Scraping;
+﻿using Flats.Core.Scraping;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;

@@ -6,7 +6,7 @@ using System.Threading;
 using Core.Model.FlatsModels;
 using HtmlAgilityPack;
 
-namespace CenyMieszkan.Scraping
+namespace Flats.Core.Scraping
 {
     public abstract class Scraper
     {

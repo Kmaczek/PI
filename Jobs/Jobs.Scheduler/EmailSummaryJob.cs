@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using CenyMieszkan.Scraping;
 using Common;
 using Core.Domain.Logic.EmailGeneration;
 using Core.Model;
 using Core.Model.FlatsModels;
+using Flats.Core.Scraping;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using CenyMieszkan.Scraping;
-using Common;
 using Core.Common;
 using Core.Domain.Logic;
 using Core.Domain.Logic.EmailGeneration;
 using Core.Model;
 using Core.Model.FlatsModels;
+using Flats.Core.Scraping;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

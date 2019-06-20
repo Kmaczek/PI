@@ -1,6 +1,6 @@
-﻿using CenyMieszkan.Scraping;
-using Core.Domain.Logic;
+﻿using Core.Domain.Logic;
 using Core.Model.FlatsModels;
+using Flats.Core.Scraping;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

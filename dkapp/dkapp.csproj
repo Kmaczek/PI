@@ -32,11 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Core.Common.csproj" />
-    <ProjectReference Include="..\Core.Domain\Core.Domain.csproj" />
-    <ProjectReference Include="..\Core.Model\Core.Model.csproj" />
+    <ProjectReference Include="..\Core\Core.Domain\Core.Domain.csproj" />
     <ProjectReference Include="..\Finance\Xtb.Core\Xtb.Core.csproj" />
-    <ProjectReference Include="..\Flats.Core\Flats.Core.csproj" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

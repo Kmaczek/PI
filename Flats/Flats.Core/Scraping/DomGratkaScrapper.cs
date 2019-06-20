@@ -3,7 +3,7 @@ using CenyMieszkan.Models.FlatData;
 using Core.Model.FlatsModels;
 using HtmlAgilityPack;
 
-namespace CenyMieszkan.Scraping
+namespace Flats.Core.Scraping
 {
     public class DomGratkaScrapper : Scraper
     {

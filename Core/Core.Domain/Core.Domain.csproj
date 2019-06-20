@@ -42,9 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Core.Common.csproj" />
+    <ProjectReference Include="..\..\Finance\Binance.Api\Binance.Api.csproj" />
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\Core.Model\Core.Model.csproj" />
-    <ProjectReference Include="..\Finance\Binance.Api\Binance.Api.csproj" />
   </ItemGroup>
 
 </Project>

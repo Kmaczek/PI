@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Core.Common.csproj" />
-    <ProjectReference Include="..\Core.Domain\Core.Domain.csproj" />
-    <ProjectReference Include="..\Core.Model\Core.Model.csproj" />
-    <ProjectReference Include="..\Flats.Core\Flats.Core.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Domain\Core.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Model\Core.Model.csproj" />
+    <ProjectReference Include="..\..\Flats\Flats.Core\Flats.Core.csproj" />
   </ItemGroup>
 
 </Project>
