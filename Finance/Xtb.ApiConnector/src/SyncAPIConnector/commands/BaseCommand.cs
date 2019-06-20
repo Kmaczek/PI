@@ -10,15 +10,9 @@ namespace xAPI.Commands
         protected internal string commandName;
         protected internal bool? prettyPrint;
         protected internal JSONObject arguments;
-        protected internal string streammingId;
 
         public BaseCommand(bool? prettyPrint) : this(new JSONObject(), prettyPrint)
         {
-        }
-
-        public BaseCommand(bool? prettyPrint, string streammingId) : this(new JSONObject(), prettyPrint)
-        {
-            this.streammingId = streammingId;
         }
 
         public BaseCommand(JSONObject arguments, bool? prettyPrint, string customTag = "")
@@ -59,17 +53,9 @@ namespace xAPI.Commands
         {
             JSONObject obj = new JSONObject();
             obj.Add("command", commandName);
-            if(this.streammingId != null)
-            {
-                obj.Add("streamSessionId", this.streammingId);
-            }
-            else
-            {
-                obj.Add("prettyPrint", prettyPrint);
-                obj.Add("arguments", arguments);
-                obj.Add("customTag", CustomTag);
-            }
-            
+            obj.Add("prettyPrint", prettyPrint);
+            obj.Add("arguments", arguments);
+            obj.Add("customTag", CustomTag);
             return obj.ToString();
         }
 

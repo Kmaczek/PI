@@ -23,12 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Binance.Api\Binance.Api.csproj" />
     <ProjectReference Include="..\Common\Core.Common.csproj" />
     <ProjectReference Include="..\Core.Domain\Core.Domain.csproj" />
     <ProjectReference Include="..\Core.Model\Core.Model.csproj" />
+    <ProjectReference Include="..\Finance\Xtb.Core\Xtb.Core.csproj" />
     <ProjectReference Include="..\Flats.Core\Flats.Core.csproj" />
-    <ProjectReference Include="..\Xtb.Core\Xtb.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -29,8 +29,8 @@ namespace xAPI.Sync
                 {
                     addresses = new List<ApiAddress>();
 
-                    addresses.Add(new ApiAddress("xapia.x-station.eu", "xAPI A"));
-                    addresses.Add(new ApiAddress("xapib.x-station.eu", "xAPI B"));
+                    addresses.Add(new ApiAddress("xapi.xtb.com", "xAPI A"));
+                    addresses.Add(new ApiAddress("xapi.xtb.com", "xAPI B"));
                 }
 
                 return addresses;

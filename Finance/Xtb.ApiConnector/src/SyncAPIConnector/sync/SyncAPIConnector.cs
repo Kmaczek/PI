@@ -1,12 +1,19 @@
 using System;
+using System.Text;
 using System.Threading;
+using System.Runtime.Serialization.Json;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net.Security;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using JSONObject = Newtonsoft.Json.Linq.JObject;
+using xAPI.Streaming;
+using System.Net;
+using System.Runtime.CompilerServices;
 using xAPI.Errors;
 using xAPI.Commands;
+using xAPI.Streaming;
 using xAPI.Utils;
 using SyncAPIConnect.Utils;
 
@@ -18,7 +25,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Wrappers version.
         /// </summary>
-        public const string VERSION = "2.4.7";
+        public const string VERSION = "2.5.0";
 
         /// <summary>
         /// Delay between each command to the server.
@@ -73,7 +80,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Lock object used to synchronize access to read/write socket operations.
         /// </summary>
-        private readonly Object locker = new Object();
+        private Object locker = new Object();
 
         /// <summary>
         /// Creates new SyncAPIConnector instance based on given Server data.
