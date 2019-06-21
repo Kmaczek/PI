@@ -26,6 +26,8 @@
     <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\..\Core\Core.Domain\Core.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Core.Model\Core.Model.csproj" />
+    <ProjectReference Include="..\..\Data\Data.EF\Data.EF.csproj" />
+    <ProjectReference Include="..\..\Data\Data.Repository\Data.Repository.csproj" />
     <ProjectReference Include="..\..\Finance\Binance.Api\Binance.Api.csproj" />
     <ProjectReference Include="..\..\Finance\Xtb.Core\Xtb.Core.csproj" />
     <ProjectReference Include="..\..\Flats\Flats.Core\Flats.Core.csproj" />

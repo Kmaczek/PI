@@ -1,6 +1,7 @@
 using Binance.Api;
 using Core.Common;
 using Core.Domain.Logic;
+using Data.Repository.Interfaces;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using System.IO;
@@ -11,6 +12,7 @@ namespace Tests
     {
         private static IConfigurationRoot Configuration;
         private static readonly ILogger Log = new Log4Net(typeof(BinanceClientTests));
+        private static readonly IBinanceRepository repo = null;
 
         [SetUp]
         public void Setup()
@@ -23,7 +25,7 @@ namespace Tests
         {
             var binanceClient = new BinanceClient(Configuration);
 
-            var bs = new BinanceService(binanceClient, Log);
+            var bs = new BinanceService(binanceClient, Log, repo);
             var accInfo = bs.GetSymbolValuesForAccount();
 
             Assert.Pass();

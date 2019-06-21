@@ -24,6 +24,9 @@ namespace Xtb.Core
 
         public XtbService(IConfigurationRoot configuration)
         {
+            if(configuration == null)
+                throw new XtbException($"Missing configuration provider for XTB service.");
+
             userId = configuration.GetSection(XtbUserId).Value;
             if (string.IsNullOrEmpty(userId))
                 throw new XtbException($"Missing configuration for XTB service[{XtbUserId}]");
@@ -41,41 +44,41 @@ namespace Xtb.Core
 
         public StreamingBalanceRecord GetBalance()
         {
-            StreamingAPIConnector streamingApi = new StreamingAPIConnector(serverData);
-            try
+            using (StreamingAPIConnector streamingApi = new StreamingAPIConnector(serverData))
+            using (SyncAPIConnector connector = new SyncAPIConnector(serverData))
             {
-                SyncAPIConnector connector = new SyncAPIConnector(serverData);
-                Credentials credentials = new Credentials(userId, password, appGuid, appName);
-                LoginResponse loginResponse = APICommandFactory.ExecuteLoginCommand(connector, credentials, true);
-
-                streamingApi.StreamSessionId = loginResponse.StreamSessionId;
-                streamingApi.Connect();
-                streamingApi.SubscribeBalance();
-
-                streamingApi.BalanceRecordReceived += OnBalanceChanged;
-
-                var timestamp = DateTime.Now.Millisecond;
-                var timeout = 5000;
-                //wait for balance
-                while (BalanceRecord == null)
+                try
                 {
-                    Thread.Sleep(50);
-                    if (timestamp + timeout < DateTime.Now.Millisecond)
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            finally
-            {
-                streamingApi.UnsubscribeBalance();
-                streamingApi.Disconnect();
-                streamingApi = null;
-            }
+                    Credentials credentials = new Credentials(userId, password, appGuid, appName);
+                    LoginResponse loginResponse = APICommandFactory.ExecuteLoginCommand(connector, credentials, true);
 
-            return BalanceRecord;
+                    streamingApi.StreamSessionId = loginResponse.StreamSessionId;
+                    streamingApi.Connect();
+                    streamingApi.SubscribeBalance();
+
+                    streamingApi.BalanceRecordReceived += OnBalanceChanged;
+
+                    var timestamp = DateTime.Now.Millisecond;
+                    var timeout = 5000;
+                    //wait for balance
+                    while (BalanceRecord == null)
+                    {
+                        Thread.Sleep(50);
+                        if (timestamp + timeout < DateTime.Now.Millisecond)
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                finally
+                {
+                    streamingApi.UnsubscribeBalance();
+                }
+
+                return BalanceRecord;
+            }
         }
 
         public ServerTimeResponse GetServerTime()

@@ -62,7 +62,7 @@
     <Folder Include="Binance" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Binance\CryptoSeries.sql" />
+    <Build Include="Binance\Series.sql" />
     <Build Include="Binance\SeriesParent.sql" />
     <Build Include="Binance\Binance.sql" />
   </ItemGroup>

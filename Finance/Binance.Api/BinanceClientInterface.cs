@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Binance.Api
 {
-    public interface BinanceClientInterface
+    public interface IBinanceClient
     {
         bool Ping();
         ServerTimeDto ServerTime();

@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace Binance.Api
 {
-    public class BinanceClient : BinanceClientInterface
+    public class BinanceClient : IBinanceClient
     {
         private const string BinanceApiKey = "PI_BinanceApiKey";
         private const string BinanceApiSecret = "PI_BinanceApiSecret";

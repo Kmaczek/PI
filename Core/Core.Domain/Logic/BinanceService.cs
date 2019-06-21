@@ -2,20 +2,25 @@
 using Binance.Api.BinanceDto;
 using Core.Common;
 using Core.Model.BinanceModels;
+using Data.EF.Models;
+using Data.Repository.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Domain.Logic
 {
     public class BinanceService : IBinanceService
     {
-        private readonly BinanceClientInterface _binanceClient;
+        private readonly IBinanceClient _binanceClient;
         private readonly ILogger _log;
+        private readonly IBinanceRepository binanceRepository;
 
-        public BinanceService(BinanceClientInterface binanceClient, ILogger log)
+        public BinanceService(IBinanceClient binanceClient, ILogger log, IBinanceRepository binanceRepository)
         {
             this._binanceClient = binanceClient;
             this._log = log;
+            this.binanceRepository = binanceRepository;
         }
 
         public BinanceVM GetSymbolValuesForAccount()
@@ -48,16 +53,36 @@ namespace Core.Domain.Logic
                     });
                 }
 
+                AddSeries(binanceVM);
+
                 binanceVM.SymbolsValues = binanceVM.SymbolsValues.OrderByDescending(x => x.ConvertedPrice).ToList();
                 binanceVM.Status = BinanceStatus.OK;
 
                 return binanceVM;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _log.Error("Unknown error occured while fetching Binance data", e);
                 return BinanceVM.Empty;
             }
+        }
+
+        private void AddSeries(BinanceVM binanceVM)
+        {
+            var seriesList = new List<BinanceSeries>();
+            seriesList.AddRange(binanceVM.SymbolsValues.Select(x => new BinanceSeries()
+            {
+                Ammount = x.Amount,
+                AvgPrice = x.AvgUsdPrice,
+                Currency = x.Symbol
+            }));
+
+            binanceRepository.SaveSeriesParent(new SeriesParent()
+            {
+                FetchedDate = DateTime.Now,
+                Total = binanceVM.TotalValue,
+                Series = seriesList
+            });
         }
     }
 }

@@ -5,8 +5,12 @@ using Common;
 using Core.Common;
 using Core.Domain.Logic;
 using Core.Model;
+using Data.EF.Models;
+using Data.Repository;
+using Data.Repository.Interfaces;
 using log4net;
 using log4net.Config;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
@@ -69,8 +73,12 @@ namespace Jobs.OldScheduler
             var diBuilder = new ContainerBuilder();
             diBuilder.RegisterInstance(Configuration).SingleInstance();
             diBuilder.RegisterModule<LoggingModule>();
+
+            diBuilder.RegisterType<PiContext>();
+            diBuilder.RegisterType<BinanceRepository>().As<IBinanceRepository>();
+
             diBuilder.RegisterType<XtbService>().As<XtbInterface>();
-            diBuilder.RegisterType<BinanceClient>().As<BinanceClientInterface>();
+            diBuilder.RegisterType<BinanceClient>().As<IBinanceClient>();
             diBuilder.RegisterType<BinanceService>().As<IBinanceService>();
             diBuilder.RegisterType<PerformanceAudit>().As<IPerformanceAudit>();
             diBuilder.RegisterType<EmailSummaryJob>().Named<IJob>(nameof(EmailSummaryJob));
