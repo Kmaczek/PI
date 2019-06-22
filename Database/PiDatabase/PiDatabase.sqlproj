@@ -60,11 +60,24 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Binance" />
+    <Folder Include="OtoDom" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Binance\Series.sql" />
     <Build Include="Binance\SeriesParent.sql" />
     <Build Include="Binance\Binance.sql" />
+    <Build Include="OtoDom\Otodom.sql" />
+    <Build Include="OtoDom\Flat.sql" />
+    <Build Include="OtoDom\FlatSeries.sql" />
+    <Build Include="OtoDom\TypeOfBuilding.sql" />
+    <Build Include="OtoDom\FormOfProperty.sql" />
+    <Build Include="OtoDom\AdditionalInfo.sql" />
+    <Build Include="OtoDom\Location.sql" />
+    <Build Include="OtoDom\Heating.sql" />
+    <Build Include="OtoDom\Market.sql" />
+    <Build Include="OtoDom\FlatAdditionalInfo.sql" />
+    <Build Include="OtoDom\Flat_OtodomId_IDX.sql" />
+    <Build Include="OtoDom\FlatCategoty.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PiDatabase.publish.xml" />

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Data.Repository.Interfaces
 {
-    public interface IBinanceRepository
+    public interface IOtoDomRepository
     {
-        void SaveSeries(Series cryptoSeries);
-        void SaveSeriesParent(SeriesParent seriesParent);
+        Flat GetFlatByExternalId(string otodomId);
+        void SaveFlat(Flat flat);
     }
 }

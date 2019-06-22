@@ -69,8 +69,8 @@ namespace Core.Domain.Logic
 
         private void AddSeries(BinanceVM binanceVM)
         {
-            var seriesList = new List<BinanceSeries>();
-            seriesList.AddRange(binanceVM.SymbolsValues.Select(x => new BinanceSeries()
+            var seriesList = new List<Series>();
+            seriesList.AddRange(binanceVM.SymbolsValues.Select(x => new Series()
             {
                 Ammount = x.Amount,
                 AvgPrice = x.AvgUsdPrice,

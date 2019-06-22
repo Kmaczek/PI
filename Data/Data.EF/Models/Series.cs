@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Data.EF.Models
 {
-    public partial class BinanceSeries
+    public partial class Series
     {
         public int Id { get; set; }
         public int SeriesParentId { get; set; }

@@ -18,9 +18,9 @@ namespace Data.Repository
             PiContext.Dispose();
         }
 
-        public void SaveSeries(BinanceSeries cryptoSeries)
+        public void SaveSeries(Series cryptoSeries)
         {
-            PiContext.BinanceSeries.Add(cryptoSeries);
+            PiContext.Series.Add(cryptoSeries);
             PiContext.SaveChanges();
         }
 
