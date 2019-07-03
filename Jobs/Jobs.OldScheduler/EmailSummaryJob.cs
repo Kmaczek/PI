@@ -86,16 +86,17 @@ namespace Jobs.OldScheduler
         {
             Log.Info($"Processing Email Summary job, time {DateTime.Now.ToLocalTime()}.");
 
-            //XtbHtmlGenerator xtbHtmlGenerator = GetXtbGenerator();
+            // Create service that provides generators
+            XtbHtmlGenerator xtbHtmlGenerator = GetXtbGenerator();
             OtodomHtmlGenerator otodomHtmlGenerator = GetOtodomGenerator();
-            //BinanceHtmlGenerator binanceGenerator = GetBinanceGenerator();
+            BinanceHtmlGenerator binanceGenerator = GetBinanceGenerator();
 
             EmailAssembler emailAssembler = new EmailAssembler(
                 new List<IHtmlGenerator>
                 {
-                    //xtbHtmlGenerator,
+                    xtbHtmlGenerator,
                     otodomHtmlGenerator,
-                    //binanceGenerator
+                    binanceGenerator
                 });
 
             emailService.SendEmail(emailAssembler.GenerateEmail());

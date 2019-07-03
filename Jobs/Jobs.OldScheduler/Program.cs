@@ -41,12 +41,12 @@ namespace Jobs.OldScheduler
             SetupConfig();
             BuildInjectionContainer();
 
-            RunTestMethod();
+            //RunTestMethod();
 
             var emailJob = InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob));
             emailJob.Run();
-            //var auditJob = InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
-            //auditJob.Run();
+            var auditJob = InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
+            auditJob.Run();
 
             while (true)
             {
