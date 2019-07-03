@@ -44,6 +44,7 @@ namespace Xtb.Core
 
         public StreamingBalanceRecord GetBalance()
         {
+            BalanceRecord = null;
             using (StreamingAPIConnector streamingApi = new StreamingAPIConnector(serverData))
             using (SyncAPIConnector connector = new SyncAPIConnector(serverData))
             {

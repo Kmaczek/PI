@@ -7,7 +7,7 @@ namespace CenyMieszkan.Models.FlatData
         public DomGratkaFlatData(decimal squareMeters, decimal totalPrice, string city, string street, int rooms, string url, string location, int year) 
             : base(squareMeters, totalPrice, rooms, url)
         {
-            SquareMeters = squareMeters;
+            Surface = squareMeters;
             TotalPrice = totalPrice;
             Url = url;
             Year = year;

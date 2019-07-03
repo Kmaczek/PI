@@ -4,9 +4,19 @@ namespace Core.Model.FlatsModels
 {
     public class FlatDataBM
     {
-        public decimal SquareMeters { get; set; }
+        public string OtoDomId { get; set; }
+        public decimal Surface { get; set; }
         public decimal TotalPrice { get; set; }
+        public decimal Rent { get; set; }
         public int Rooms { get; set; }
+        public int Floor { get; set; }
+        public int FloorNo { get; set; }
+        public int ConstructionYear { get; set; }
+        public string Market { get; set; }
+        public string Heating { get; set; }
+        public string Location { get; set; }
+        public string TypeOfProperty { get; set; }
+        public string FlatType { get; set; }
         public string Url { get; set; }
 
         public string FlatSize { get; set; }
@@ -14,20 +24,25 @@ namespace Core.Model.FlatsModels
 
         public List<string> Errors { get; } = new List<string>();
 
+        public FlatDataBM()
+        {
+
+        }
+
         public FlatDataBM(
             decimal squareMeters,
             decimal totalPrice,
             int rooms,
             string url)
         {
-            SquareMeters = squareMeters;
+            Surface = squareMeters;
             TotalPrice = totalPrice;
             Rooms = rooms;
             Url = url;
 
-            FlatSize = GetFlatSize(SquareMeters);
-            if (SquareMeters != 0)
-                PricePerMeter = TotalPrice / SquareMeters;
+            FlatSize = GetFlatSize(Surface);
+            if (Surface != 0)
+                PricePerMeter = TotalPrice / Surface;
             else
                 PricePerMeter = 0;
         }

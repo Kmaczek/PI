@@ -18,10 +18,11 @@ namespace Jobs.OldScheduler
     public class EmailSummaryJob : IJob
     {
         private static Timer RunningTimer = null;
-        private IConfigurationRoot _configuration;
-        private XtbInterface _xtbService;
-        private readonly IBinanceService _binanceService;
-        private readonly IEmailService _emailService;
+        private IConfigurationRoot configuration;
+        private XtbInterface xtbService;
+        private readonly IBinanceService binanceService;
+        private readonly IEmailService emailService;
+        private readonly Scraper otoDomScrapper;
         private readonly ILogger Log;
 
         public EmailSummaryJob(
@@ -29,19 +30,21 @@ namespace Jobs.OldScheduler
             ILogger log,
             XtbInterface xtbService,
             IBinanceService binanceService,
-            IEmailService emailService)
+            IEmailService emailService,
+            Scraper otoDomScrapper)
         {
-            this._configuration = configuration;
+            this.configuration = configuration;
             this.Log = log;
-            this._xtbService = xtbService;
-            this._binanceService = binanceService;
-            this._emailService = emailService;
+            this.xtbService = xtbService;
+            this.binanceService = binanceService;
+            this.otoDomScrapper = otoDomScrapper;
+            this.emailService = emailService;
         }
 
         public void Run()
         {
-            var hour = Convert.ToInt32(_configuration.GetSection("emailJobHour").Value, CultureInfo.InvariantCulture);
-            var minute = Convert.ToInt32(_configuration.GetSection("emailJobMinute").Value, CultureInfo.InvariantCulture);
+            var hour = Convert.ToInt32(configuration.GetSection("emailJobHour").Value, CultureInfo.InvariantCulture);
+            var minute = Convert.ToInt32(configuration.GetSection("emailJobMinute").Value, CultureInfo.InvariantCulture);
             
             var configDate = DateTime.Now.Date + new TimeSpan(
                 hour,
@@ -83,32 +86,32 @@ namespace Jobs.OldScheduler
         {
             Log.Info($"Processing Email Summary job, time {DateTime.Now.ToLocalTime()}.");
 
-            XtbHtmlGenerator xtbHtmlGenerator = GetXtbGenerator();
+            //XtbHtmlGenerator xtbHtmlGenerator = GetXtbGenerator();
             OtodomHtmlGenerator otodomHtmlGenerator = GetOtodomGenerator();
-            BinanceHtmlGenerator binanceGenerator = GetBinanceGenerator();
+            //BinanceHtmlGenerator binanceGenerator = GetBinanceGenerator();
 
             EmailAssembler emailAssembler = new EmailAssembler(
                 new List<IHtmlGenerator>
                 {
-                    xtbHtmlGenerator,
+                    //xtbHtmlGenerator,
                     otodomHtmlGenerator,
-                    binanceGenerator
+                    //binanceGenerator
                 });
 
-            _emailService.SendEmail(emailAssembler.GenerateEmail());
+            emailService.SendEmail(emailAssembler.GenerateEmail());
             Log.Info($"Email Summary job finished, time {DateTime.Now.ToLocalTime()}.");
         }
 
         private BinanceHtmlGenerator GetBinanceGenerator()
         {
-            var symbolValues = _binanceService.GetSymbolValuesForAccount();
+            var symbolValues = binanceService.GetSymbolValuesForAccount();
             var binanceGenerator = new BinanceHtmlGenerator(symbolValues);
             return binanceGenerator;
         }
 
         private XtbHtmlGenerator GetXtbGenerator()
         {
-            var balance = _xtbService.GetBalance();
+            var balance = xtbService.GetBalance();
             XtbOutput balanceOutput = Mapper.Map<XtbOutput>(balance);
             var xtbHtmlGenerator = new XtbHtmlGenerator(balanceOutput);
             return xtbHtmlGenerator;
@@ -116,12 +119,12 @@ namespace Jobs.OldScheduler
 
         private OtodomHtmlGenerator GetOtodomGenerator()
         {
-            var otoDomScrapper = new OtoDomScrapper();
+            //divide this method
             var privateScrapeResult = otoDomScrapper.Scrape();
             LogFlatScrappingErrors(privateScrapeResult);
             var privateFlatAggregate = new FlatAggregateVM(privateScrapeResult);
 
-            otoDomScrapper.ScrapingUrl = OtoDomScrapper.AllOffers;
+            otoDomScrapper.ScrapingUrl = (otoDomScrapper as OtoDomScrapper).AllOffers; // change this
             var allScrapeResult = otoDomScrapper.Scrape();
             LogFlatScrappingErrors(allScrapeResult);
             var allFlatAggregate = new FlatAggregateVM(allScrapeResult);

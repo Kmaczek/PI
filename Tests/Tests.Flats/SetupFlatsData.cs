@@ -16,12 +16,12 @@ namespace Tests.Flats
         [Test]
         public void SetupOtodomData()
         {
-            var otoDomScrapper = new OtoDomScrapper();
-            var scrapeResult = otoDomScrapper.Scrape();
+            //var otoDomScrapper = new OtoDomScrapper();
+            //var scrapeResult = otoDomScrapper.Scrape();
 
-            var serializedFlats = JsonConvert.SerializeObject(scrapeResult);
+            //var serializedFlats = JsonConvert.SerializeObject(scrapeResult);
 
-            File.WriteAllText(OtodomDataPath, serializedFlats);
+            //File.WriteAllText(OtodomDataPath, serializedFlats);
         }
     }
 }

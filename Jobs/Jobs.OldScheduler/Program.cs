@@ -8,9 +8,9 @@ using Core.Model;
 using Data.EF.Models;
 using Data.Repository;
 using Data.Repository.Interfaces;
+using Flats.Core.Scraping;
 using log4net;
 using log4net.Config;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
@@ -41,16 +41,25 @@ namespace Jobs.OldScheduler
             SetupConfig();
             BuildInjectionContainer();
 
+            RunTestMethod();
+
             var emailJob = InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob));
             emailJob.Run();
-            var auditJob = InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
-            auditJob.Run();
+            //var auditJob = InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
+            //auditJob.Run();
 
             while (true)
             {
                 var command = Console.ReadLine();
                 OnCommandReceived(command);
             }
+        }
+
+        private static void RunTestMethod()
+        {
+            var otoDomScrapper = InjectionContainer.Resolve<Scraper>() as OtoDomScrapper;
+            otoDomScrapper.ScrapingUrl = otoDomScrapper.AllOffers;
+            var s = otoDomScrapper.Scrape();
         }
 
         private static void SetupLogger()
@@ -77,6 +86,7 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<PiContext>();
             diBuilder.RegisterType<BinanceRepository>().As<IBinanceRepository>();
 
+            diBuilder.RegisterType<OtoDomScrapper>().As<Scraper>(); // change this to service
             diBuilder.RegisterType<XtbService>().As<XtbInterface>();
             diBuilder.RegisterType<BinanceClient>().As<IBinanceClient>();
             diBuilder.RegisterType<BinanceService>().As<IBinanceService>();

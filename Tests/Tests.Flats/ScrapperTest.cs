@@ -21,13 +21,13 @@ namespace Tests.Flats
         [Test]
         public void TestComas()
         {
-            var otoDomScrapper = new OtoDomScrapper();
-            otoDomScrapper.ScrapingUrl = PricesWithComas;
-            var allScrapeResult = otoDomScrapper.Scrape();
+            //var otoDomScrapper = new OtoDomScrapper();
+            //otoDomScrapper.ScrapingUrl = PricesWithComas;
+            //var allScrapeResult = otoDomScrapper.Scrape();
 
-            var allFlatAggregate = new FlatAggregateVM(allScrapeResult);
+            //var allFlatAggregate = new FlatAggregateVM(allScrapeResult);
 
-            Assert.Pass();
+            //Assert.Pass();
         }
     }
 }

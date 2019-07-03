@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="morelinq" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\..\Core\Core.Model\Core.Model.csproj" />
   </ItemGroup>
 

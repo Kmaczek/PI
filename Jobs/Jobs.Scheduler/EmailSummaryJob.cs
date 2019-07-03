@@ -21,19 +21,19 @@ namespace ConsoleTesting
 
             //XtbOutput balanceOutput = Mapper.Map<XtbOutput>(balance);
             //var xtbHtmlGenerator = new XtbHtmlGenerator(balanceOutput);
-            var otoDomScrapper = new OtoDomScrapper();
-            var scrapeResult = otoDomScrapper.Scrape();
-            var flatsOutput = new FlatOutput();
+            //var otoDomScrapper = new OtoDomScrapper();
+            //var scrapeResult = otoDomScrapper.Scrape();
+            //var flatsOutput = new FlatOutput();
             //flatsOutput.FlatsCount = scrapeResult.Count();
             //flatsOutput.TotalPrice = scrapeResult.Average(x => x.TotalPrice);
             //flatsOutput.PricePerMeter = scrapeResult.Average(x => x.TotalPrice / x.SquareMeters);
-            var otodomHtmlGenerator = new OtodomHtmlGenerator(flatsOutput);
+            //var otodomHtmlGenerator = new OtodomHtmlGenerator(flatsOutput);
 
             EmailAssembler emailAssembler = new EmailAssembler(
                 new List<IHtmlGenerator>
                 {
                     //xtbHtmlGenerator,
-                    otodomHtmlGenerator
+                    //otodomHtmlGenerator
                 });
 
             //var emailSender = new EmailService();

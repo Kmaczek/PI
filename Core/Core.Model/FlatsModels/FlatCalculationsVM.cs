@@ -32,11 +32,11 @@
 
 
         [FormatAttribute(FormatType.Numeric0)]
-        public decimal? Smallest => SmallestFlat?.SquareMeters;
+        public decimal? Smallest => SmallestFlat?.Surface;
         public string SmallestLink => SmallestFlat?.Url;
 
         [FormatAttribute(FormatType.Numeric0)]
-        public decimal? Bigest => BigestFlat?.SquareMeters;
+        public decimal? Bigest => BigestFlat?.Surface;
         public string BigestLink => BigestFlat?.Url;
 
         [FormatAttribute(FormatType.Numeric0)]

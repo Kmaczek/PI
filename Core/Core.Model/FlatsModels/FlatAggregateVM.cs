@@ -30,7 +30,7 @@ namespace Core.Model.FlatsModels
 
         private static bool PriceAndMetersNotZero(FlatDataBM x)
         {
-            return x.SquareMeters != 0 && x.TotalPrice != 0;
+            return x.Surface != 0 && x.TotalPrice != 0;
         }
 
         private FlatCalculationsVM Calculate(string flatSize)
@@ -39,8 +39,8 @@ namespace Core.Model.FlatsModels
                 return null;
 
             return new FlatCalculationsVM(
-                FlatsDictionary[flatSize].MinBy(x => x.SquareMeters).FirstOrDefault(),
-                FlatsDictionary[flatSize].MaxBy(x => x.SquareMeters).FirstOrDefault(),
+                FlatsDictionary[flatSize].MinBy(x => x.Surface).FirstOrDefault(),
+                FlatsDictionary[flatSize].MaxBy(x => x.Surface).FirstOrDefault(),
                 FlatsDictionary[flatSize].MinBy(x => x.TotalPrice).FirstOrDefault(),
                 FlatsDictionary[flatSize].MaxBy(x => x.TotalPrice).FirstOrDefault())
             {

@@ -1,33 +1,52 @@
-﻿using Core.Model.FlatsModels;
+﻿using Microsoft.Extensions.Configuration;
+using Core.Model.FlatsModels;
 using Flats.Core.Models;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using Core.Common;
 
 namespace Flats.Core.Scraping
 {
     public class OtoDomScrapper : Scraper
     {
         // price 100k to 500k, price per m 1750 to 8500
-        public const string AllOffers = @"https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bfilter_float_price%3Afrom%5D=100000&search%5Bfilter_float_price%3Ato%5D=500000&search%5Bfilter_float_price_per_m%3Afrom%5D=1750&search%5Bfilter_float_price_per_m%3Ato%5D=8500&search%5Bdescription%5D=1&search%5Border%5D=filter_float_price%3Adesc&search%5Bdist%5D=0&search%5Bsubregion_id%5D=381&search%5Bcity_id%5D=39&nrAdsPerPage=72&page={0}";
-        public const string PrivateOffers = "https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bfilter_float_price%3Afrom%5D=100000&search%5Bfilter_float_price%3Ato%5D=500000&search%5Bfilter_float_price_per_m%3Afrom%5D=1750&search%5Bfilter_float_price_per_m%3Ato%5D=8500&search%5Bdescription%5D=1&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price%3Adesc&search%5Bdist%5D=0&search%5Bsubregion_id%5D=381&search%5Bcity_id%5D=39&nrAdsPerPage=72&page={0}";
-        
-        public OtoDomScrapper()
+        public readonly string AllOffers = @"https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bfilter_float_price%3Afrom%5D=100000&search%5Bfilter_float_price%3Ato%5D=500000&search%5Bfilter_float_price_per_m%3Afrom%5D=1750&search%5Bfilter_float_price_per_m%3Ato%5D=8500&search%5Bdescription%5D=1&search%5Border%5D=filter_float_price%3Adesc&search%5Bdist%5D=0&search%5Bsubregion_id%5D=381&search%5Bcity_id%5D=39&nrAdsPerPage=72&page={0}";
+        public readonly string PrivateOffers = "https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bfilter_float_price%3Afrom%5D=100000&search%5Bfilter_float_price%3Ato%5D=500000&search%5Bfilter_float_price_per_m%3Afrom%5D=1750&search%5Bfilter_float_price_per_m%3Ato%5D=8500&search%5Bdescription%5D=1&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price%3Adesc&search%5Bdist%5D=0&search%5Bsubregion_id%5D=381&search%5Bcity_id%5D=39&nrAdsPerPage=72&page={0}";
+        public readonly string TestingOffers = "https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bfilter_float_price%3Afrom%5D=350000&search%5Bfilter_float_price%3Ato%5D=400000&search%5Bfilter_float_price_per_m%3Afrom%5D=1750&search%5Bfilter_float_price_per_m%3Ato%5D=8500&search%5Bfilter_float_m%3Afrom%5D=40&search%5Bfilter_float_m%3Ato%5D=50&search%5Bfilter_enum_rooms_num%5D%5B0%5D=3&search%5Bdescription%5D=1&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price%3Adesc&search%5Bcity_id%5D=39&search%5Bsubregion_id%5D=381&search%5Bregion_id%5D=1&nrAdsPerPage=72&page={0}";
+
+        public OtoDomScrapper(
+            IConfigurationRoot configuration,
+            ILogger log)
         {
+            AllOffers = configuration.GetSection("flats:otodomUrlAllOffers").Value;
+            PrivateOffers = configuration.GetSection("flats:otodomUrlPrivateOffers").Value;
+
             ScrapingUrl = PrivateOffers;
+            Log = log;
         }
 
         public override string Name => "OtoDom";
         public string Url { get; set; }
+        public ILogger Log { get; }
 
         protected override int GetPageCount(HtmlDocument document)
         {
-            var sth = document.DocumentNode.SelectSingleNode(@"//*[@class='current']");
+            var sth = document.DocumentNode.SelectNodes(@"//*[@class='pager']/li")[4];
+            var count = 0;
             if (sth == null)
-                return 1;
+            {
+                count = 1;
+            }
             else
-                return int.Parse(sth.InnerText.Trim());
+            {
+                count = int.Parse(sth.InnerText.Trim());
+            }
+
+            Log.Info($"Processing {count} pages.");
+            return count;
         }
 
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
@@ -47,6 +66,7 @@ namespace Flats.Core.Scraping
             }
 
             Url = GetUrl(detailsNode, errors);
+            var orodomId = GetOtoDomId(errors);
             var Rooms = GetRooms(detailsNode, errors);
             var TotalPrice = GetPrice(detailsNode, errors);
             var SquareMeters = GetArea(detailsNode, errors);
@@ -170,6 +190,29 @@ namespace Flats.Core.Scraping
             }
 
             return url;
+        }
+
+        private string GetOtoDomId(List<string> errors)
+        {
+            string otodomId = string.Empty;
+
+            try
+            {
+                Regex regex = new Regex(@"(?<=ID)(.*)(?=\.html)");
+                Match match = regex.Match(Url);
+
+                if (match.Success)
+                {
+                    var groups = regex.GetGroupNames();
+                    otodomId = match.Groups[1].Value;
+                }
+            }
+            catch (Exception e)
+            {
+                errors.Add($"Can't parse Url [{Url}]. Exception {e.Message}");
+            }
+
+            return otodomId;
         }
     }
 }
