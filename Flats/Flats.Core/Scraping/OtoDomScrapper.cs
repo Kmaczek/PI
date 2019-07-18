@@ -34,7 +34,8 @@ namespace Flats.Core.Scraping
 
         protected override int GetPageCount(HtmlDocument document)
         {
-            var sth = document.DocumentNode.SelectNodes(@"//*[@class='pager']/li")[4];
+            var sth = document.DocumentNode.SelectSingleNode(@"//*[contains(@class,'offers-index')]/strong");
+
             var count = 0;
             if (sth == null)
             {
@@ -42,7 +43,8 @@ namespace Flats.Core.Scraping
             }
             else
             {
-                count = int.Parse(sth.InnerText.Trim());
+                var totalElements = int.Parse(sth.InnerText.Trim());
+                count = Convert.ToInt32(Math.Ceiling(totalElements / 72d));
             }
 
             Log.Info($"Processing {count} pages.");
