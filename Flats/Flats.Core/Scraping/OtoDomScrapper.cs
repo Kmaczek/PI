@@ -43,7 +43,7 @@ namespace Flats.Core.Scraping
             }
             else
             {
-                var totalElements = int.Parse(sth.InnerText.Trim());
+                var totalElements = int.Parse(sth.InnerText.Trim().Replace(" ", ""));
                 count = Convert.ToInt32(Math.Ceiling(totalElements / 72d));
             }
 
