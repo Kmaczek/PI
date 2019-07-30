@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading;
 using Xtb.Core;
 
-namespace Jobs.OldScheduler
+namespace Jobs.OldScheduler.Jobs
 {
     public class EmailSummaryJob : IJob
     {

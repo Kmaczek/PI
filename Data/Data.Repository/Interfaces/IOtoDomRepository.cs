@@ -9,5 +9,6 @@ namespace Data.Repository.Interfaces
     {
         Flat GetFlatByExternalId(string otodomId);
         void SaveFlat(Flat flat);
+        void SaveFlats(IEnumerable<Flat> flats);
     }
 }

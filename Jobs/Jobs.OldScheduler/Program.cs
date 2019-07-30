@@ -9,6 +9,7 @@ using Data.EF.Models;
 using Data.Repository;
 using Data.Repository.Interfaces;
 using Flats.Core.Scraping;
+using Jobs.OldScheduler.Jobs;
 using log4net;
 using log4net.Config;
 using Microsoft.Extensions.Configuration;

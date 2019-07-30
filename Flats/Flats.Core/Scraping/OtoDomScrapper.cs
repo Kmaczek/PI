@@ -61,7 +61,7 @@ namespace Flats.Core.Scraping
             var detailsNode = node.SelectSingleNode(@".//*[@class='offer-item-details']");
             var bottomDetails = node.SelectSingleNode(@".//*[@class='offer-item-details-bottom']");
             var errors = new List<string>();
-
+               
             if (IsPromo(detailsNode, errors))
             {
                 return null;

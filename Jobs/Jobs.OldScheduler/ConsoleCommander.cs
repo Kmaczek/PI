@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Jobs.OldScheduler.Jobs;
 using log4net;
 using System;
 using System.Collections.Generic;

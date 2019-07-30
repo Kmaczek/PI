@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Jobs.OldScheduler
+namespace Jobs.OldScheduler.Jobs
 {
     public class PerformanceAuditJob : IJob
     {
