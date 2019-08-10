@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="76aad765-960f-4158-a4af-ceef50bb2b07" ChangeDateTime="08/10/2019 11:51:24">
+    <Property Name="ElementName" Value="[otodom].[Flat].[CreatedData]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[otodom].[Flat]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreatedDate" />
+  </Operation>
+</Operations>

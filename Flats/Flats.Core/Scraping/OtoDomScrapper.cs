@@ -10,7 +10,7 @@ using Core.Common;
 
 namespace Flats.Core.Scraping
 {
-    public class OtoDomScrapper : Scraper
+    public class OtoDomScrapper : Scraper, IScrapper
     {
         // price 100k to 500k, price per m 1750 to 8500
         public readonly string AllOffers = @"https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bfilter_float_price%3Afrom%5D=100000&search%5Bfilter_float_price%3Ato%5D=500000&search%5Bfilter_float_price_per_m%3Afrom%5D=1750&search%5Bfilter_float_price_per_m%3Ato%5D=8500&search%5Bdescription%5D=1&search%5Border%5D=filter_float_price%3Adesc&search%5Bdist%5D=0&search%5Bsubregion_id%5D=381&search%5Bcity_id%5D=39&nrAdsPerPage=72&page={0}";
@@ -60,20 +60,23 @@ namespace Flats.Core.Scraping
         {
             var detailsNode = node.SelectSingleNode(@".//*[@class='offer-item-details']");
             var bottomDetails = node.SelectSingleNode(@".//*[@class='offer-item-details-bottom']");
-            var errors = new List<string>();
                
-            if (IsPromo(detailsNode, errors))
+            if (IsPromo(detailsNode, Errors))
             {
                 return null;
             }
 
-            Url = GetUrl(detailsNode, errors);
-            var orodomId = GetOtoDomId(errors);
-            var Rooms = GetRooms(detailsNode, errors);
-            var TotalPrice = GetPrice(detailsNode, errors);
-            var SquareMeters = GetArea(detailsNode, errors);
+            Url = GetUrl(detailsNode, Errors);
+            var otodomId = GetOtoDomId(Errors);
+            var Rooms = GetRooms(detailsNode, Errors);
+            var TotalPrice = GetPrice(detailsNode, Errors);
+            var SquareMeters = GetArea(detailsNode, Errors);
+            var isPrivate = IsPrivateOffer(bottomDetails, Errors);
 
-            var data = new FlatDataBM(SquareMeters, TotalPrice, Rooms, Url);
+            var data = new FlatDataBM(SquareMeters, TotalPrice, Rooms, Url, isPrivate)
+            {
+                OtoDomId = otodomId
+            };
             //data.Location = GetLocation(detailsNode);
             return data;
         }
@@ -215,6 +218,25 @@ namespace Flats.Core.Scraping
             }
 
             return otodomId;
+        }
+
+        private bool IsPrivateOffer(HtmlNode node, List<string> errors)
+        {
+            bool isPrivate = false;
+            var normalized = string.Empty;
+
+            try
+            {
+                //var selectedNode = node.SelectSingleNode(@"//*[@class='offer-item-details-bottom']/ul");
+
+                isPrivate = node.InnerText.Contains("Oferta prywatna");
+            }
+            catch (Exception e)
+            {
+                errors.Add($"Can't parse Url [{normalized}]. Exception {e.Message}");
+            }
+
+            return isPrivate;
         }
     }
 }

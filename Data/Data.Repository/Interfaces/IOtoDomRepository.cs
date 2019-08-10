@@ -7,8 +7,15 @@ namespace Data.Repository.Interfaces
 {
     public interface IOtoDomRepository
     {
+        int GetFlatIdByExternalId(string externalId);
         Flat GetFlatByExternalId(string otodomId);
         void SaveFlat(Flat flat);
-        void SaveFlats(IEnumerable<Flat> flats);
+        void AddFlats(IEnumerable<Flat> flats);
+        void UpdateFlats(IEnumerable<Flat> flats);
+        IEnumerable<Flat> CheckIfEntitiesAttached(List<Flat> flats);
+        void DetachFlats(IEnumerable<Flat> flats);
+        void SaveContext();
+        IEnumerable<Flat> GetPrivateFlats();
+        IEnumerable<Flat> GetActiveFlats();
     }
 }

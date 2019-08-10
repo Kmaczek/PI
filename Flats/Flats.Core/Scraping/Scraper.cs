@@ -8,11 +8,17 @@ using HtmlAgilityPack;
 
 namespace Flats.Core.Scraping
 {
+    public delegate void ScrapedPageDelegate(IEnumerable<FlatDataBM> parsedFlats);
+
     public abstract class Scraper
     {
+        public event ScrapedPageDelegate OnScrapedPage;
+
         public string ScrapingUrl { get; set; }
 
         public virtual string Name => "Generic";
+
+        public List<string> Errors => new List<string>();
 
         protected abstract FlatDataBM ParseOffer(HtmlNode node);
 
@@ -22,6 +28,8 @@ namespace Flats.Core.Scraping
 
         public IEnumerable<FlatDataBM> Scrape()
         {
+            Errors.Clear();
+
             if (string.IsNullOrEmpty(ScrapingUrl))
             {
                 throw new ArgumentException("ScrapingUrl is not set");
@@ -34,12 +42,14 @@ namespace Flats.Core.Scraping
             document.LoadHtml(pageContent);
             var pageCount = GetPageCount(document);
             results.AddRange(ScrapPage(document));
+            OnScrapedPage(results);
 
             for (int i = 2; i <= pageCount; i++)
             {
                 var content = GetContent(String.Format(ScrapingUrl, i));
                 document.LoadHtml(content);
                 var batch = ScrapPage(document);
+                OnScrapedPage(batch);
                 results.AddRange(batch);
                 Thread.Sleep(600);
             }
@@ -73,5 +83,14 @@ namespace Flats.Core.Scraping
 
             return parsedOffers;
         }
+    }
+
+    public interface IScrapper
+    {
+        event ScrapedPageDelegate OnScrapedPage;
+        string Name { get; }
+        List<string> Errors { get; }
+        string ScrapingUrl { get; set; }
+        IEnumerable<FlatDataBM> Scrape();
     }
 }

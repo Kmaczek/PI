@@ -1,6 +1,7 @@
 ﻿using Data.EF.Dto;
 using Data.EF.Models;
 using Data.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace Data.Repository
     public class OtoDomRepository : IOtoDomRepository
     {
         PiContext PiContext;
+        private readonly Func<PiContext> contextMaker;
 
-        public OtoDomRepository(PiContext dbContext)
+        public OtoDomRepository(Func<PiContext> contextMaker)
         {
-            PiContext = dbContext;
+            this.contextMaker = contextMaker;
+            PiContext = contextMaker.Invoke();
         }
 
         public void Dispose()
@@ -38,17 +41,89 @@ namespace Data.Repository
 
         public void SaveFlat(Flat flat)
         {
-            PiContext.Flat.Add(flat);
+            using (var context = contextMaker.Invoke())
+            {
+                context.Flat.Add(flat);
+            }
         }
 
-        public async void SaveFlats(IEnumerable<Flat> flats)
+        public int GetFlatIdByExternalId(string externalId)
         {
-            await PiContext.Flat.AddRangeAsync(flats);
+            var id = PiContext.Flat
+                .Where(x => x.OtoDomId == externalId)
+                .Select(x => x.Id)
+                .FirstOrDefault();
+
+            return id;
         }
 
-        public async void UpdateFlats(IEnumerable<Flat> flats)
+        public void AddFlats(IEnumerable<Flat> flats)
         {
-            await PiContext.Flat.AddRangeAsync(flats);
+            using (var context = contextMaker.Invoke())
+            {
+                context.Flat.AddRange(flats);
+                context.SaveChanges();
+            }
+        }
+
+        public void UpdateFlats(IEnumerable<Flat> flats)
+        {
+            using (var context = contextMaker.Invoke())
+            {
+                context.Flat.UpdateRange(flats);
+                context.SaveChanges();
+            }
+        }
+
+        public void DetachFlats(IEnumerable<Flat> flats)
+        {
+            foreach(var flat in flats)
+            {
+                PiContext.Entry(flat).State = EntityState.Detached;
+            }
+        }
+
+        public IEnumerable<Flat> CheckIfEntitiesAttached(List<Flat> flats)
+        {
+            var attachedEtities = new List<Flat>();
+            foreach (var flat in flats)
+            {
+                var attachedEntity =  PiContext.Flat.Local.FirstOrDefault(e => e == flat);
+                if (attachedEntity != null)
+                {
+                    attachedEtities.Add(attachedEntity);
+                }
+            }
+
+            return attachedEtities;
+        }
+
+        public void SaveContext()
+        {
+            PiContext.SaveChanges();
+        }
+
+        public IEnumerable<Flat> GetPrivateFlats()
+        {
+            var yesterdayDate = DateTime.Now.AddDays(-1);
+            var privateFlats = PiContext.Flat
+                .Where(x => 
+                    (x.IsPrivate != null && x.IsPrivate.Value)
+                    && (x.UpdatedDate != null && x.UpdatedDate > yesterdayDate))
+                .ToList();
+
+            return privateFlats;
+        }
+
+        public IEnumerable<Flat> GetActiveFlats()
+        {
+            var yesterdayDate = DateTime.Now.AddDays(-1);
+
+            var activeFlats = PiContext.Flat
+                .Where(x => x.UpdatedDate != null && x.UpdatedDate > yesterdayDate && x.TotalPrice > 1)
+                .ToList();
+
+            return activeFlats;
         }
     }
 }

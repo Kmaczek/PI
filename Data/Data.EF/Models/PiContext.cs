@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Data.EF.Models
@@ -23,7 +21,6 @@ namespace Data.EF.Models
         public virtual DbSet<Flat> Flat { get; set; }
         public virtual DbSet<FlatAdditionalInfo> FlatAdditionalInfo { get; set; }
         public virtual DbSet<FlatCategoty> FlatCategoty { get; set; }
-        public virtual DbSet<FlatParent> FlatParent { get; set; }
         public virtual DbSet<FlatSeries> FlatSeries { get; set; }
         public virtual DbSet<FormOfProperty> FormOfProperty { get; set; }
         public virtual DbSet<Heating> Heating { get; set; }
@@ -39,6 +36,8 @@ namespace Data.EF.Models
             {
                 optionsBuilder.UseSqlServer(configuration.GetSection("PI_DbConnectionString").Value);
             }
+            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableDetailedErrors();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,8 +47,6 @@ namespace Data.EF.Models
             modelBuilder.Entity<AdditionalInfo>(entity =>
             {
                 entity.ToTable("AdditionalInfo", "otodom");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -63,7 +60,7 @@ namespace Data.EF.Models
                 entity.HasIndex(e => e.OtoDomId)
                     .HasName("Flat_OtodomId_IDX");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.OtoDomId)
                     .IsRequired()
@@ -74,6 +71,8 @@ namespace Data.EF.Models
                 entity.Property(e => e.Surface).HasColumnType("decimal(9, 2)");
 
                 entity.Property(e => e.TotalPrice).HasColumnType("money");
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Url)
                     .HasMaxLength(200)
@@ -109,8 +108,6 @@ namespace Data.EF.Models
             {
                 entity.ToTable("FlatAdditionalInfo", "otodom");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.HasOne(d => d.AdditionalInfo)
                     .WithMany(p => p.FlatAdditionalInfo)
                     .HasForeignKey(d => d.AdditionalInfoId)
@@ -128,31 +125,14 @@ namespace Data.EF.Models
             {
                 entity.ToTable("FlatCategoty", "otodom");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<FlatParent>(entity =>
-            {
-                entity.ToTable("FlatParent", "otodom");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.AvgPrice).HasColumnType("money");
-
-                entity.Property(e => e.AvgPricePerMeter).HasColumnType("money");
-
-                entity.Property(e => e.DateFetched).HasColumnType("datetime");
-            });
-
             modelBuilder.Entity<FlatSeries>(entity =>
             {
                 entity.ToTable("FlatSeries", "otodom");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.AvgPrice).HasColumnType("money");
 
@@ -195,8 +175,6 @@ namespace Data.EF.Models
             {
                 entity.ToTable("FormOfProperty", "otodom");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -206,16 +184,12 @@ namespace Data.EF.Models
             {
                 entity.ToTable("Heating", "otodom");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Location>(entity =>
             {
                 entity.ToTable("Location", "otodom");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -225,8 +199,6 @@ namespace Data.EF.Models
             modelBuilder.Entity<Market>(entity =>
             {
                 entity.ToTable("Market", "otodom");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -264,8 +236,6 @@ namespace Data.EF.Models
             modelBuilder.Entity<TypeOfBuilding>(entity =>
             {
                 entity.ToTable("TypeOfBuilding", "otodom");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()

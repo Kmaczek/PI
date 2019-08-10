@@ -1,8 +1,6 @@
 ﻿using Core.Model.BinanceModels;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
+using System.Linq;
 
 namespace Core.Domain.Logic.EmailGeneration
 {
@@ -18,8 +16,11 @@ namespace Core.Domain.Logic.EmailGeneration
         {
             this.binanceModel = binanceVM;
 
-            DataDictionary.Add("symbol_value", binanceModel.SymbolsValues);
-            DataDictionary.Add("total_value", binanceModel.TotalValue.ToString("C2", CultureInfo.CreateSpecificCulture("en-US")));
+            if (binanceModel != null)
+            {
+                DataDictionary.Add("symbol_value", binanceModel.SymbolsValues.Where(x => x.ConvertedPrice > 10));
+                DataDictionary.Add("total_value", binanceModel.TotalValue.ToString("C2", CultureInfo.CreateSpecificCulture("en-US")));
+            }
         }
 
         public string GenerateBody()

@@ -7,11 +7,12 @@ namespace Core.Model.FlatsModels
         public string OtoDomId { get; set; }
         public decimal Surface { get; set; }
         public decimal TotalPrice { get; set; }
-        public decimal Rent { get; set; }
+        public decimal? Rent { get; set; }
         public int Rooms { get; set; }
-        public int Floor { get; set; }
+        public bool IsPrivate { get; set; }
+        public int? Floor { get; set; }
         public int FloorNo { get; set; }
-        public int ConstructionYear { get; set; }
+        public int? ConstructionYear { get; set; }
         public string Market { get; set; }
         public string Heating { get; set; }
         public string Location { get; set; }
@@ -33,12 +34,14 @@ namespace Core.Model.FlatsModels
             decimal squareMeters,
             decimal totalPrice,
             int rooms,
-            string url)
+            string url,
+            bool isPrivate)
         {
             Surface = squareMeters;
             TotalPrice = totalPrice;
             Rooms = rooms;
             Url = url;
+            IsPrivate = isPrivate;
 
             FlatSize = GetFlatSize(Surface);
             if (Surface != 0)

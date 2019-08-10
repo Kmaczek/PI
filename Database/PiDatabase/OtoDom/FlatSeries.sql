@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [otodom].[FlatSeries]
 (
-    [Id] INT NOT NULL PRIMARY KEY, 
+    [Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     [DateFetched] datetime NOT NULL, 
     [AvgPricePerMeter] MONEY NOT NULL, 
     [AvgPrice] MONEY NOT NULL, 

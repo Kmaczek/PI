@@ -41,7 +41,7 @@ namespace Flats.Core.Scraping
                 var SquareMeters = GetSquareMeters(ogloszenieInfo);
                 //var Year = GetYear(ogloszenieInfo);
 
-                data = new FlatDataBM(SquareMeters, TotalPrice, Rooms, Url);
+                data = new FlatDataBM(SquareMeters, TotalPrice, Rooms, Url, false);
             }
             catch (Exception e)
             {

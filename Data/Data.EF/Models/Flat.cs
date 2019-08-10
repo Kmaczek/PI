@@ -20,6 +20,7 @@ namespace Data.EF.Models
         public decimal Surface { get; set; }
         public decimal TotalPrice { get; set; }
         public byte? Rooms { get; set; }
+        public bool? IsPrivate { get; set; }
         public decimal? Rent { get; set; }
         public byte? Floor { get; set; }
         public byte? FloorsNo { get; set; }
@@ -30,6 +31,8 @@ namespace Data.EF.Models
         public int? FormOfPropertyId { get; set; }
         public int? TypeId { get; set; }
         public string Url { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public virtual FormOfProperty FormOfProperty { get; set; }
         public virtual Heating Heating { get; set; }

@@ -4,6 +4,7 @@ using Flats.Core.Scraping;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 
 namespace Jobs.OldScheduler.Jobs
@@ -34,9 +35,17 @@ namespace Jobs.OldScheduler.Jobs
         {
             log.Info($"Processing {JobName}, time {DateTime.Now.ToLocalTime()}.");
 
-            //otoDomScrapper.ScrapingUrl = (otoDomScrapper as OtoDomScrapper).AllOffers; // change this
-            //var allScrapeResult = otoDomScrapper.Scrape();
+            flatsFeed.StartFeedProcess(null);
 
+            log.Info($"{JobName} updated: {flatsFeed.FeedStats.Updated}, added: {flatsFeed.FeedStats.Added}. Errors {flatsFeed.FeedStats.Errors.Count}");
+            if (flatsFeed.FeedStats.Errors.Any())
+            {
+                log.Info($"Below errors happened during flats processing.");
+                foreach (var error in flatsFeed.FeedStats.Errors)
+                {
+                    log.Info($"\t-> {error}");
+                }
+            }
             log.Info($"{JobName} finished, time {DateTime.Now.ToLocalTime()}.");
         }
 
@@ -49,8 +58,8 @@ namespace Jobs.OldScheduler.Jobs
 
         public void Run()
         {
-            var hour = Convert.ToInt32(configuration.GetSection("otodomFeedJobHour").Value, CultureInfo.InvariantCulture);
-            var minute = Convert.ToInt32(configuration.GetSection("otodomFeedJobMinute").Value, CultureInfo.InvariantCulture);
+            var hour = Convert.ToInt32(configuration.GetSection("otodomFeed:otodomFeedJobHour").Value, CultureInfo.InvariantCulture);
+            var minute = Convert.ToInt32(configuration.GetSection("otodomFeed:otodomFeedJobMinute").Value, CultureInfo.InvariantCulture);
 
             var configDate = DateTime.Now.Date + new TimeSpan(hour, minute, 0);
 

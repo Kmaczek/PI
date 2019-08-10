@@ -53,6 +53,7 @@ namespace Core.Domain.Logic
                     });
                 }
 
+                //TODO: Split this and add saving of series in separate method and separate job
                 AddSeries(binanceVM);
 
                 binanceVM.SymbolsValues = binanceVM.SymbolsValues.OrderByDescending(x => x.ConvertedPrice).ToList();

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Features.AttributeFilters;
 using Jobs.OldScheduler.Jobs;
 using log4net;
 using System;
@@ -10,12 +11,40 @@ using System.Threading;
 
 namespace Jobs.OldScheduler
 {
-    public static class ConsoleCommander
+    public class ConsoleCommander
     {
         public static Dictionary<string, Action<string[]>> Commands = new Dictionary<string, Action<string[]>>();
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IJob emailSummaryJob;
+        private readonly IJob performanceAuditJob;
+        private readonly IJob otodomFeedJob;
+        private readonly ILifetimeScope scope;
+        private Dictionary<string, IJob> JobsToRun = new Dictionary<string, IJob>();
 
-        static ConsoleCommander()
+        public ConsoleCommander(ILifetimeScope scope)
+        {
+            this.scope = scope;
+            emailSummaryJob = scope.ResolveNamed<IJob>(nameof(EmailSummaryJob));
+            performanceAuditJob = scope.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
+            otodomFeedJob = scope.ResolveNamed<IJob>(nameof(OtodomFeedJob));
+
+            SetJobsToRun();
+            AddCommands();
+        }
+
+        private void SetJobsToRun()
+        {
+            JobsToRun.Add("es", emailSummaryJob);
+            JobsToRun.Add("EmailSummary", emailSummaryJob);
+
+            JobsToRun.Add("pa", performanceAuditJob);
+            JobsToRun.Add("PerformanceAuditJob", performanceAuditJob);
+
+            JobsToRun.Add("of", otodomFeedJob);
+            JobsToRun.Add("OtodomFeedJob", otodomFeedJob);
+        }
+
+        private void AddCommands()
         {
             Commands.Add("quit", Quit);
             Commands.Add("q", Quit);
@@ -24,13 +53,13 @@ namespace Jobs.OldScheduler
             Commands.Add("job", RunJob);
         }
 
-        public static void ListenToCommands(string command)
+        public void ListenToCommands(string command)
         {
             try
             {
                 var splitted = command.Split(" ");
 
-                if(Commands.ContainsKey(splitted[0]))
+                if (Commands.ContainsKey(splitted[0]))
                     Commands[splitted[0]](splitted);
                 else
                 {
@@ -43,42 +72,34 @@ namespace Jobs.OldScheduler
             }
         }
 
-        public static void Quit(string[] command)
+        private void Quit(string[] command)
         {
             Log.Info("Quitting Scheduler...");
             Thread.Sleep(1000);
             Environment.Exit(0);
         }
 
-        public static void Print(string[] command)
+        private void Print(string[] command)
         {
             string message = "";
             if (command.Length > 1 && !string.IsNullOrWhiteSpace(command[1]))
             {
                 message = string.Join(" ", command.Skip(1));
             }
-            
+
             Log.Info($"Printing [{message}]");
         }
 
-
-        public static Dictionary<string, IJob> JobsToRun = new Dictionary<string, IJob>()
-        {
-            {"es", Program.InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob)) },
-            {"EmailSummary", Program.InjectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob)) },
-            {"pc", Program.InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob)) },
-            {"PerformanceCounterJob", Program.InjectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob)) },
-        };
-        public static void RunJob(string[] command)
+        private void RunJob(string[] command)
         {
             if (command.Length > 1 && !string.IsNullOrWhiteSpace(command[1]))
             {
-                if(command[1] == "list")
+                if (command[1] == "list")
                 {
                     var sb = new StringBuilder();
                     sb.AppendLine();
 
-                    foreach(var key in JobsToRun.Keys)
+                    foreach (var key in JobsToRun.Keys)
                         sb.AppendLine($"\t-[{key}]");
 
                     Log.Info($"{sb}");

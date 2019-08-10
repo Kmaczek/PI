@@ -29,6 +29,8 @@ namespace Jobs.OldScheduler.Jobs
             this._performanceAudit = performanceAudit;
         }
 
+        public string JobName => nameof(PerformanceAuditJob);
+
         public void ImmediateRun()
         {
             AuditPerformance();
@@ -37,7 +39,7 @@ namespace Jobs.OldScheduler.Jobs
         public void Run()
         {
             var jobInterval = Convert.ToInt32(_configuration.GetSection("performanceAudit:minuteInterval").Value, CultureInfo.InvariantCulture);
-            _log.Info($"Config for {nameof(PerformanceAuditJob)}. Job will run every: {jobInterval} minute(s).");
+            _log.Info($"Config for {JobName}. Job will run every: {jobInterval} minute(s).");
 
             var periodTimeSpan = TimeSpan.FromMinutes(jobInterval);
 
@@ -45,7 +47,7 @@ namespace Jobs.OldScheduler.Jobs
             {
                 AuditPerformance();
             }, null, TimeSpan.Zero, periodTimeSpan);
-            _log.Info($"{nameof(PerformanceAuditJob)} enqueued.");
+            _log.Info($"{JobName} enqueued.");
         }
         
         private void AuditPerformance()
@@ -56,7 +58,7 @@ namespace Jobs.OldScheduler.Jobs
             var processesUsages = _performanceAudit.GetProcessesUsages();
             _log.Info($"Found {processesUsages.Count} processes.");
             LogProcesUsageData(processesUsages);
-            _log.Info($"{nameof(PerformanceAuditJob)} finished.");
+            _log.Info($"{JobName} finished.");
         }
 
         private void LogProcesUsageData(List<ProcessUsage> processesUsages)
