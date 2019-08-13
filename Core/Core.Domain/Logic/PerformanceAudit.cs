@@ -15,7 +15,7 @@ namespace Core.Domain.Logic
 {
     public class PerformanceAudit : IPerformanceAudit
     {
-        private const string AuditCounterSleepPeriod = "performanceAudit:counterSleepPeriod";
+        private const string AuditCounterSleepPeriod = "PerformanceAuditJob:counterSleepPeriod";
 
         private readonly ILogger log;
         private readonly IConfigurationRoot configuration;

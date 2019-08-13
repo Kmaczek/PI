@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using xAPI.Codes;
 using xAPI.Commands;
@@ -59,14 +60,20 @@ namespace Xtb.Core
 
                     streamingApi.BalanceRecordReceived += OnBalanceChanged;
 
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
                     var timestamp = DateTime.Now.Millisecond;
                     var timeout = 5000;
                     //wait for balance
                     while (BalanceRecord == null)
                     {
                         Thread.Sleep(50);
-                        if (timestamp + timeout < DateTime.Now.Millisecond)
+                        if (timestamp + timeout < sw.ElapsedMilliseconds)
+                        {
+                            sw.Stop();
                             break;
+                        }
                     }
                 }
                 catch (Exception e)

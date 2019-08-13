@@ -1,15 +1,13 @@
 ﻿using Core.Common;
 using Core.Domain.Logic.OtodomService;
-using Flats.Core.Scraping;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 
 namespace Jobs.OldScheduler.Jobs
 {
-    public class OtodomFeedJob: IJob
+    public class OtodomFeedJob : IJob
     {
         private string otodomUrl;
 
@@ -58,33 +56,7 @@ namespace Jobs.OldScheduler.Jobs
 
         public void Run()
         {
-            var hour = Convert.ToInt32(configuration.GetSection("otodomFeed:otodomFeedJobHour").Value, CultureInfo.InvariantCulture);
-            var minute = Convert.ToInt32(configuration.GetSection("otodomFeed:otodomFeedJobMinute").Value, CultureInfo.InvariantCulture);
-
-            var configDate = DateTime.Now.Date + new TimeSpan(hour, minute, 0);
-
-            log.Info($"Config for {JobName}. (H:{hour} m:{minute}). Job will run daily at: {configDate.ToShortTimeString()}");
-
-            var date = DateTime.Now.AddDays(1);
-            TimeSpan startTimeSpan;
-            if (configDate > DateTime.Now)
-            {
-                startTimeSpan = new TimeSpan(configDate.Ticks - DateTime.Now.Ticks);
-            }
-            else
-            {
-                startTimeSpan = new TimeSpan(configDate.AddDays(1).Ticks - DateTime.Now.Ticks);
-            }
-
-            var periodTimeSpan = TimeSpan.FromDays(1);
-
-            RunningTimer = new Timer((e) =>
-            {
-                FeedOtodomData();
-                log.Info($"Next Run of {JobName}, in {periodTimeSpan}.");
-            }, null, startTimeSpan, periodTimeSpan);
-
-            log.Info($"Enqueued {JobName}, first run will start in {startTimeSpan}.");
+            FeedOtodomData();
         }
     }
 }

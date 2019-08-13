@@ -38,18 +38,9 @@ namespace Jobs.OldScheduler.Jobs
 
         public void Run()
         {
-            var jobInterval = Convert.ToInt32(_configuration.GetSection("performanceAudit:minuteInterval").Value, CultureInfo.InvariantCulture);
-            _log.Info($"Config for {JobName}. Job will run every: {jobInterval} minute(s).");
-
-            var periodTimeSpan = TimeSpan.FromMinutes(jobInterval);
-
-            RunningTimer = new Timer((e) =>
-            {
-                AuditPerformance();
-            }, null, TimeSpan.Zero, periodTimeSpan);
-            _log.Info($"{JobName} enqueued.");
+            AuditPerformance();
         }
-        
+
         private void AuditPerformance()
         {
             _log.Info("Monitoring machine performance...");
@@ -65,14 +56,14 @@ namespace Jobs.OldScheduler.Jobs
         {
             var topTenUsages = processesUsages.OrderByDescending(x => x.Usage).Take(11);
             var total = topTenUsages.FirstOrDefault(x => x.ProcessName == "_Total");
-            if(total == null || total.Usage == 0)
+            if (total == null || total.Usage == 0)
             {
                 _log.Info("Total usage not found");
             }
 
             var sb = new StringBuilder("Displaying top 10 processes:");
             sb.AppendLine();
-            foreach(var processUsage in topTenUsages.Skip(1))
+            foreach (var processUsage in topTenUsages.Skip(1))
             {
                 var usage = Math
                     .Round(processUsage.Usage / total.Usage * 100, 0, MidpointRounding.AwayFromZero)

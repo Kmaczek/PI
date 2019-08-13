@@ -109,9 +109,11 @@ namespace Core.Domain.Logic.FlatsFeed
 
                 flatsToUpdate.Clear();
                 flatsToUpdate.AddRange(flats.Where(x => x.Id != 0).ToList());
+                log.Info($"Flats to update{flatsToUpdate.Count()}");
 
                 flatsToAdd.Clear();
                 flatsToAdd.AddRange(flats.Where(x => x.Id == 0).ToList());
+                log.Info($"Flats to update{flatsToAdd.Count()}");
 
                 UpdateFlats(flatsToUpdate);
                 AddFlats(flatsToAdd);
@@ -140,8 +142,11 @@ namespace Core.Domain.Logic.FlatsFeed
 
         private void UpdateStats(IEnumerable<Flat> flatsToUpdate, IEnumerable<Flat> flatsToAdd)
         {
+            log.Info($"Flats before save U:{flatsToUpdate.Count()} A: {flatsToAdd.Count()}");
             FeedStats.Updated += flatsToUpdate.Count();
             FeedStats.Added += flatsToAdd.Count();
+
+            log.Info($"Flats after save U:{FeedStats.Updated} A: {FeedStats.Added}");
         }
 
         private void UpdateStatsWithErrors()

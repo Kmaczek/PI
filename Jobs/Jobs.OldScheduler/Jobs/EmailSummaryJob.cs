@@ -48,36 +48,7 @@ namespace Jobs.OldScheduler.Jobs
 
         public void Run()
         {
-            var hour = Convert.ToInt32(configuration.GetSection("emailJobHour").Value, CultureInfo.InvariantCulture);
-            var minute = Convert.ToInt32(configuration.GetSection("emailJobMinute").Value, CultureInfo.InvariantCulture);
-
-            var configDate = DateTime.Now.Date + new TimeSpan(
-                hour,
-                minute,
-                0);
-
-            Log.Info($"Config for {JobName}. (H:{hour} m:{minute}). Job will run daily at: {configDate.ToShortTimeString()}");
-
-            var date = DateTime.Now.AddDays(1);
-            TimeSpan startTimeSpan;
-            if (configDate > DateTime.Now)
-            {
-                startTimeSpan = new TimeSpan(configDate.Ticks - DateTime.Now.Ticks);
-            }
-            else
-            {
-                startTimeSpan = new TimeSpan(configDate.AddDays(1).Ticks - DateTime.Now.Ticks);
-            }
-
-            var periodTimeSpan = TimeSpan.FromDays(1);
-
-            RunningTimer = new Timer((e) =>
-            {
-                EmailJob();
-                Log.Info($"Next Run of {JobName}, in {periodTimeSpan}.");
-            }, null, startTimeSpan, periodTimeSpan);
-
-            Log.Info($"Enqueued Email Summary job, first run will start in {startTimeSpan}.");
+            EmailJob();
         }
 
         public void ImmediateRun()

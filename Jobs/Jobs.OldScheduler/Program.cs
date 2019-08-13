@@ -34,40 +34,44 @@ namespace Jobs.OldScheduler
         private static IConfigurationRoot configuration;
         private static IMapper mapper;
         private static IContainer injectionContainer;
-        
+        private static JobRunner jobRunner;
+
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         static void Main()
         {
             SetupLogger();
-
             Log.Info("Scheduler started...");
 
             mapper = CreateMapper();
             AppDomain.CurrentDomain.UnhandledException += HandleException;
-            
+
             SetupConfig();
             BuildInjectionContainer();
 
-            consoleCommander = injectionContainer.Resolve<ConsoleCommander>();
-            OnCommandReceived += consoleCommander.ListenToCommands;
-
+            AttachConsoleCommander();
             //RunTestMethod();
 
             //TODO: Make it configurable
-            var emailJob = injectionContainer.ResolveNamed<IJob>(nameof(EmailSummaryJob));
-            emailJob.Run();
-            var auditJob = injectionContainer.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
-            //auditJob.Run();
-            var flatsFeedingJob = injectionContainer.ResolveNamed<IJob>(nameof(OtodomFeedJob));
-            //flatsFeedingJob.ImmediateRun();
-            flatsFeedingJob.Run();
+            jobRunner = new JobRunner(injectionContainer);
+            jobRunner.AddJob(nameof(EmailSummaryJob));
+            jobRunner.AddJob(nameof(PerformanceAuditJob));
+            jobRunner.AddJob(nameof(OtodomFeedJob));
+
+            jobRunner.RunJobs();
 
             while (true)
             {
                 var command = Console.ReadLine();
-                OnCommandReceived(command);
+                if (OnCommandReceived != null)
+                    OnCommandReceived(command);
             }
+        }
+
+        private static void AttachConsoleCommander()
+        {
+            consoleCommander = injectionContainer.Resolve<ConsoleCommander>();
+            OnCommandReceived += consoleCommander.ListenToCommands;
         }
 
         private static void RunTestMethod()
