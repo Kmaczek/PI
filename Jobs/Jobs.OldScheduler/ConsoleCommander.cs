@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Autofac.Features.AttributeFilters;
 using Jobs.OldScheduler.Jobs;
 using log4net;
 using System;
@@ -60,7 +59,9 @@ namespace Jobs.OldScheduler
                 var splitted = command.Split(" ");
 
                 if (Commands.ContainsKey(splitted[0]))
+                {
                     Commands[splitted[0]](splitted);
+                }
                 else
                 {
                     Log.Info($"Command [{splitted[0]}] is incorrect");
@@ -100,7 +101,9 @@ namespace Jobs.OldScheduler
                     sb.AppendLine();
 
                     foreach (var key in JobsToRun.Keys)
+                    {
                         sb.AppendLine($"\t-[{key}]");
+                    }
 
                     Log.Info($"{sb}");
 
@@ -108,7 +111,9 @@ namespace Jobs.OldScheduler
                 }
 
                 if (JobsToRun.ContainsKey(command[1]))
+                {
                     JobsToRun[command[1]].ImmediateRun();
+                }
                 else
                 {
                     Log.Info($"Job [{command[1]}] is not registered");

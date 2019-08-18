@@ -32,13 +32,6 @@ namespace Data.Repository
             return flat;
         }
 
-        public IEnumerable<FlatId> GetAllExternalIds()
-        {
-            var flatIds = PiContext.Flat.Select(x => new FlatId { Id = x.Id, OtoDomId = x.OtoDomId });
-
-            return flatIds;
-        }
-
         public void SaveFlat(Flat flat)
         {
             using (var context = contextMaker.Invoke())
@@ -124,6 +117,15 @@ namespace Data.Repository
                 .ToList();
 
             return activeFlats;
+        }
+
+        public void AddFlatSeries(FlatSeries flatSeries)
+        {
+            using (var context = contextMaker.Invoke())
+            {
+                context.FlatSeries.Add(flatSeries);
+                context.SaveChanges();
+            }
         }
     }
 }

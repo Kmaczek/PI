@@ -17,7 +17,7 @@ namespace Core.Domain.Logic.FlatsFeed
 {
     public class OtodomFeedService : IFlatsFeedService
     {
-        private readonly IConfigurationRoot configuration;
+        private readonly ConfigHelper configuration;
         private readonly IOtoDomRepository otoDomRepository;
         private readonly IMapper mapper;
         private readonly ILogger log;
@@ -29,25 +29,24 @@ namespace Core.Domain.Logic.FlatsFeed
         private Dictionary<string, int> usedKeys = new Dictionary<string, int>();
 
         public OtodomFeedService(
-            IConfigurationRoot configuration,
+            ConfigHelper configHelper,
             ILogger log,
             IScrapper otoDomScrapper,
             IOtoDomRepository otoDomRepository,
             IMapper mapper)
         {
-            this.configuration = configuration;
             this.log = log;
             this.otoDomScrapper = otoDomScrapper;
             this.otoDomRepository = otoDomRepository;
             this.mapper = mapper;
 
-            if (configuration == null)
+            if (configHelper == null || configHelper.OtodomFeedJobConfig == null)
                 throw new OtodomServiceException($"Missing configuration provider for {serviceName}.");
 
-            otodomUrl = configuration.GetSection("flats:otodomUrlAllOffers").Value;
+            otodomUrl = configHelper.OtodomFeedJobConfig.AllOffersUrl;
 
             if (string.IsNullOrEmpty(otodomUrl))
-                throw new OtodomServiceException($"Missing configuration section [flats:otodomUrlAllOffers] for {serviceName}.");
+                throw new OtodomServiceException($"Missing configuration section [OtodomFeedJob:otodomUrlAllOffers] for {serviceName}.");
         }
 
         public FeedStats FeedStats { get; } = new FeedStats(nameof(OtodomFeedService));
@@ -69,6 +68,14 @@ namespace Core.Domain.Logic.FlatsFeed
 
             otoDomScrapper.OnScrapedPage -= PersistScrappedFlats;
             UpdateStatsWithErrors();
+
+            otoDomRepository.AddFlatSeries(new FlatSeries());
+        }
+
+        public void GenerateFlatSeries()
+        {
+            var activeFlats = otoDomRepository.GetActiveFlats();
+
         }
 
         private void PersistScrappedFlats(IEnumerable<FlatDataBM> scrappedFlats)

@@ -19,6 +19,7 @@ using log4net.Config;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using xAPI.Records;
 using Xtb.Core;
@@ -38,7 +39,7 @@ namespace Jobs.OldScheduler
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        static void Main()
+        private static void Main()
         {
             SetupLogger();
             Log.Info("Scheduler started...");
@@ -52,6 +53,9 @@ namespace Jobs.OldScheduler
             AttachConsoleCommander();
             //RunTestMethod();
 
+            var c = new ConfigHelper(configuration);
+
+
             //TODO: Make it configurable
             jobRunner = new JobRunner(injectionContainer);
             jobRunner.AddJob(nameof(EmailSummaryJob));
@@ -64,7 +68,9 @@ namespace Jobs.OldScheduler
             {
                 var command = Console.ReadLine();
                 if (OnCommandReceived != null)
+                {
                     OnCommandReceived(command);
+                }
             }
         }
 
@@ -100,11 +106,12 @@ namespace Jobs.OldScheduler
         {
             var diBuilder = new ContainerBuilder();
             diBuilder.RegisterInstance(configuration).SingleInstance();
+            diBuilder.RegisterType<ConfigHelper>().SingleInstance();
             diBuilder.RegisterInstance(mapper).SingleInstance();
             diBuilder.RegisterModule<LoggingModule>();
 
             diBuilder.RegisterType<PiContext>();
-            diBuilder.Register<Func<PiContext>>(x => 
+            diBuilder.Register<Func<PiContext>>(x =>
             {
                 var context = x.Resolve<IComponentContext>();
                 return () => context.Resolve<PiContext>();
@@ -128,25 +135,20 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<ConsoleCommander>().SingleInstance();
 
             injectionContainer = diBuilder.Build();
+            var errors = injectionContainer.Verify();
+            if (errors.Any())
+            {
+                Log.Info($"Found {errors.Count} errors in container.");
+                foreach (var error in errors)
+                {
+                    Log.Info(error);
+                }
+            }
         }
 
         public static void HandleException(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error(e.ExceptionObject.ToString(), sender as Exception);
-        }
-
-        public sealed class AutomapServiceBehavior
-        {
-            static bool _initialized;
-
-            public static void InitializeMapper()
-            {
-                if (_initialized)
-                    return;
-                //TODO: remove global mapper in all places
-                Mapper.Initialize(cfg => cfg.CreateMap<StreamingBalanceRecord, XtbOutput>());
-                _initialized = true;
-            }
         }
 
         public static IMapper CreateMapper()

@@ -61,6 +61,8 @@
     <Folder Include="Properties" />
     <Folder Include="Binance" />
     <Folder Include="OtoDom" />
+    <Folder Include="PostExecution" />
+    <Folder Include="PostExecution\PopulateData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Binance\Series.sql" />
@@ -82,8 +84,13 @@
   <ItemGroup>
     <None Include="PiDatabase.publish.xml" />
     <None Include="PiDatabase_Local.publish.xml" />
+    <None Include="PostExecution\PopulateData\FillFlatCategories.sql" />
+    <None Include="PostExecution\PopulateData\_include.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="PiDatabase.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="PostExecution\PostExecutionInclude.sql" />
   </ItemGroup>
 </Project>

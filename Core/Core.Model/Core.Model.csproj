@@ -14,4 +14,10 @@
     <PackageReference Include="morelinq" Version="3.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Finance\Xtb.ApiConnector\src\SyncAPIConnector\JSON\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

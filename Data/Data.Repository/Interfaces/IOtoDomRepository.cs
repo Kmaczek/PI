@@ -17,5 +17,6 @@ namespace Data.Repository.Interfaces
         void SaveContext();
         IEnumerable<Flat> GetPrivateFlats();
         IEnumerable<Flat> GetActiveFlats();
+        void AddFlatSeries(FlatSeries flatSeries);
     }
 }

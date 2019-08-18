@@ -1,0 +1,2 @@
+﻿
+:r .\FillFlatCategories.sql
