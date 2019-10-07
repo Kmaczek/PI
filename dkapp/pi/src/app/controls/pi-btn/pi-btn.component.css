@@ -1,0 +1,37 @@
+.pi-btn{
+    height: 27px;
+    cursor: pointer;
+    user-select: none;
+
+/* color */
+    color: #4b3d00;
+    background: #f7cd15;
+
+/* size */
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.pi-btn:hover{
+    height: 27px;
+    cursor: pointer;
+    user-select: none;
+
+    color: #464b00;
+    background: #ffdb3c;
+    animation: color_change 2s;
+}
+
+.pi-btn:active{
+    height: 27px;
+    cursor: pointer;
+    user-select: none;
+
+    color: #464b00;
+    animation: color_change 2s;
+    background: #fde474;
+}
+
+.btn:focus{
+    box-shadow: none;
+}

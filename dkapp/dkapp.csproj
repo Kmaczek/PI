@@ -28,7 +28,11 @@
 
   <ItemGroup>
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Compile Remove="pi\**" />
     <Content Remove="ClientApp\**" />
+    <Content Remove="pi\**" />
+    <EmbeddedResource Remove="pi\**" />
+    <None Remove="pi\**" />
   </ItemGroup>
 
   <ItemGroup>

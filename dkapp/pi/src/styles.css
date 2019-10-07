@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "../node_modules/bootstrap/dist/css/bootstrap-grid.css";
+
+.test{
+    background: lightsteelblue;
+    border: 1px solid blueviolet;
+    padding: 0px 3px;
+}
+
+html, body { height: 100%; }
+
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.pi-input{
+    height: 29px;
+    width: 200px;
+    border: 1px solid gray;
+}
+
+.pi-input-gaps{
+    margin: 5px;
+}
+
+.pi-input::placeholder{
+    padding-left: 5px;
+    font-size: medium;
+}
