@@ -23,6 +23,7 @@ namespace Jobs.OldScheduler.Jobs
         private readonly IBinanceService binanceService;
         private readonly IEmailService emailService;
         private readonly IOtoDomRepository otoDomRepository;
+        private readonly IEmailGeneratorFactory emailGeneratorFactory;
         private readonly ILogger Log;
         private readonly IMapper mapper;
 
@@ -35,7 +36,8 @@ namespace Jobs.OldScheduler.Jobs
             XtbInterface xtbService,
             IBinanceService binanceService,
             IEmailService emailService,
-            IOtoDomRepository otoDomRepository)
+            IOtoDomRepository otoDomRepository,
+            IEmailGeneratorFactory emailGeneratorFactory)
         {
             this.configuration = configuration;
             this.Log = log;
@@ -44,6 +46,7 @@ namespace Jobs.OldScheduler.Jobs
             this.binanceService = binanceService;
             this.emailService = emailService;
             this.otoDomRepository = otoDomRepository;
+            this.emailGeneratorFactory = emailGeneratorFactory;
         }
 
         public void Run()
@@ -63,38 +66,38 @@ namespace Jobs.OldScheduler.Jobs
             Log.Info($"Processing Email Summary job, time {DateTime.Now.ToLocalTime()}.");
 
             // Create service that provides generators
-            XtbHtmlGenerator xtbHtmlGenerator = GetXtbGenerator();
-            OtodomHtmlGenerator otodomHtmlGenerator = GetOtodomGenerator();
-            BinanceHtmlGenerator binanceGenerator = GetBinanceGenerator();
-
             EmailAssembler emailAssembler = new EmailAssembler(
                 new List<IHtmlGenerator>
                 {
-                    xtbHtmlGenerator,
-                    otodomHtmlGenerator,
-                    binanceGenerator
+                    GetXtbGenerator(),
+                    GetOtodomGenerator(),
+                    GetBinanceGenerator()
                 });
 
             emailService.SendEmail(emailAssembler.GenerateEmail());
             Log.Info($"Email Summary job finished, time {DateTime.Now.ToLocalTime()}.");
         }
 
-        private BinanceHtmlGenerator GetBinanceGenerator()
+        private IHtmlGenerator GetBinanceGenerator()
         {
             var symbolValues = binanceService.GetSymbolValuesForAccount();
-            var binanceGenerator = new BinanceHtmlGenerator(symbolValues);
+            var binanceGenerator = emailGeneratorFactory.GetGenerator(EmailGenerator.Binance);
+            binanceGenerator.SetBodyData(symbolValues);
+
             return binanceGenerator;
         }
 
-        private XtbHtmlGenerator GetXtbGenerator()
+        private IHtmlGenerator GetXtbGenerator()
         {
             var balance = xtbService.GetBalance();
             XtbOutput balanceOutput = mapper.Map<XtbOutput>(balance);
-            var xtbHtmlGenerator = new XtbHtmlGenerator(balanceOutput);
+            var xtbHtmlGenerator = emailGeneratorFactory.GetGenerator(EmailGenerator.Xtb);
+            xtbHtmlGenerator.SetBodyData(balanceOutput);
+
             return xtbHtmlGenerator;
         }
 
-        private OtodomHtmlGenerator GetOtodomGenerator()
+        private IHtmlGenerator GetOtodomGenerator()
         {
             var privateOffers = otoDomRepository.GetPrivateFlats();
             var mappedPrivate = MapToFlatsBM(privateOffers);
@@ -105,7 +108,9 @@ namespace Jobs.OldScheduler.Jobs
             var allFlatAggregate = new FlatAggregateVM(flatDataBMs);
 
             var flatsOutput = new FlatOutput(privateFlatAggregate.FlatCalculations, allFlatAggregate.FlatCalculations);
-            var otodomHtmlGenerator = new OtodomHtmlGenerator(flatsOutput);
+            var otodomHtmlGenerator = emailGeneratorFactory.GetGenerator(EmailGenerator.Otodom);
+            otodomHtmlGenerator.SetBodyData(flatsOutput);
+
             return otodomHtmlGenerator;
         }
 

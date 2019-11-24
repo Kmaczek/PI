@@ -33,6 +33,7 @@ namespace Jobs.OldScheduler.Jobs
         {
             log.Info($"Processing {JobName}, time {DateTime.Now.ToLocalTime()}.");
 
+            //@"https://www.otodom.pl/sprzedaz/nowe-mieszkanie/?search%5Bfilter_float_price%3Ato%5D=500000&search%5Bfilter_float_price_per_m%3Ato%5D=6000&search%5Bfilter_float_m%3Afrom%5D=60&search%5Bfilter_enum_rooms_num%5D%5B0%5D=3&search%5Bdescription%5D=1&locations%5B0%5D%5Bcity_id%5D=39&locations%5B0%5D%5Bdistrict_id%5D=3&locations%5B0%5D%5Bstreet_id%5D=0&locations%5B1%5D%5Bregion_id%5D=1&locations%5B1%5D%5Bsubregion_id%5D=381&locations%5B1%5D%5Bcity_id%5D=39"
             flatsFeed.StartFeedProcess(null);
 
             log.Info($"{JobName} updated: {flatsFeed.FeedStats.Updated}, added: {flatsFeed.FeedStats.Added}. Errors {flatsFeed.FeedStats.Errors.Count}");

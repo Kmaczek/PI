@@ -5,5 +5,7 @@
         string HtmlKey { get; }
 
         string GenerateBody();
+
+        void SetBodyData(object data);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Core.Common;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,13 +18,17 @@ namespace Xtb.Core
         private const string XtbUserId = "PI_XtbUserId";
         private const string XtbPassword = "PI_XtbPassword";
 
+        private readonly ILogger log;
         private static Server serverData = Servers.REAL;
         private static string userId = string.Empty;
         private static string password = string.Empty;
         private static string appName = string.Empty;
+        private static int timeout = 5000;
         private static string appGuid = (new Guid()).ToString();
 
-        public XtbService(IConfigurationRoot configuration)
+        public XtbService(
+            ILogger log,
+            IConfigurationRoot configuration)
         {
             if(configuration == null)
                 throw new XtbException($"Missing configuration provider for XTB service.");
@@ -39,6 +44,10 @@ namespace Xtb.Core
             appName = configuration.GetSection("xtb:appName").Value;
             if (string.IsNullOrEmpty(appName))
                 appName = "dkapp";
+
+            timeout = Convert.ToInt32(configuration.GetSection("xtb:timeout").Value);
+
+            this.log = log;
         }
 
         private StreamingBalanceRecord BalanceRecord { get; set; }
@@ -63,8 +72,8 @@ namespace Xtb.Core
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
 
-                    var timestamp = DateTime.Now.Millisecond;
-                    var timeout = 5000;
+                    var timestamp = sw.ElapsedMilliseconds;
+                    
                     //wait for balance
                     while (BalanceRecord == null)
                     {
@@ -72,13 +81,14 @@ namespace Xtb.Core
                         if (timestamp + timeout < sw.ElapsedMilliseconds)
                         {
                             sw.Stop();
+                            log.Info($"Unable to fetch balance, timeout of [{timeout}s] elapsed.");
                             break;
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    log.Error("Unable to fetch balance, exception occured.", e);
                 }
                 finally
                 {

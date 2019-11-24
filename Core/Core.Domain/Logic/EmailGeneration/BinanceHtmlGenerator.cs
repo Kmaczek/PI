@@ -6,21 +6,14 @@ namespace Core.Domain.Logic.EmailGeneration
 {
     public class BinanceHtmlGenerator : HtmlBase, IHtmlGenerator
     {
-        private readonly BinanceVM binanceModel;
+        private BinanceVM binanceModel;
 
         public string HtmlKey => "binance_body";
 
         public override string HtmlTemplateName => "Core.Domain.Logic.EmailGeneration.BinanceTemplate.html";
 
-        public BinanceHtmlGenerator(BinanceVM binanceVM)
+        public BinanceHtmlGenerator()
         {
-            this.binanceModel = binanceVM;
-
-            if (binanceModel != null)
-            {
-                DataDictionary.Add("symbol_value", binanceModel.SymbolsValues.Where(x => x.ConvertedPrice > 10));
-                DataDictionary.Add("total_value", binanceModel.TotalValue.ToString("C2", CultureInfo.CreateSpecificCulture("en-US")));
-            }
         }
 
         public string GenerateBody()
@@ -31,6 +24,17 @@ namespace Core.Domain.Logic.EmailGeneration
             }
 
             return CombineHtmlWithData();
+        }
+
+        public void SetBodyData(object binanceVM)
+        {
+            this.binanceModel = binanceVM as BinanceVM;
+
+            if (binanceModel != null)
+            {
+                DataDictionary.Add("symbol_value", binanceModel.SymbolsValues.Where(x => x.ConvertedPrice > 10));
+                DataDictionary.Add("total_value", binanceModel.TotalValue.ToString("C2", CultureInfo.CreateSpecificCulture("en-US")));
+            }
         }
     }
 }

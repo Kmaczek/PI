@@ -116,11 +116,11 @@ namespace Core.Domain.Logic.FlatsFeed
 
                 flatsToUpdate.Clear();
                 flatsToUpdate.AddRange(flats.Where(x => x.Id != 0).ToList());
-                log.Info($"Flats to update{flatsToUpdate.Count()}");
+                log.Info($"Flats to update {flatsToUpdate.Count()}");
 
                 flatsToAdd.Clear();
                 flatsToAdd.AddRange(flats.Where(x => x.Id == 0).ToList());
-                log.Info($"Flats to update{flatsToAdd.Count()}");
+                log.Info($"Flats to add {flatsToAdd.Count()}");
 
                 UpdateFlats(flatsToUpdate);
                 AddFlats(flatsToAdd);

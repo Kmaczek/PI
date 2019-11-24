@@ -1,6 +1,4 @@
-﻿
-using Core.Model;
-using Core.Model.FlatsModels;
+﻿using Core.Model.FlatsModels;
 
 namespace Core.Domain.Logic.EmailGeneration
 {
@@ -11,11 +9,19 @@ namespace Core.Domain.Logic.EmailGeneration
 
         public override string HtmlTemplateName => "Core.Domain.Logic.EmailGeneration.OtodomTemplate.html";
 
-        public OtodomHtmlGenerator(FlatOutput flatOutput)
+        public OtodomHtmlGenerator()
         {
-            this.flatOutput = flatOutput;
-            DataDictionary.Add("private_flats", flatOutput.PrivateFlatsByCategory);
-            DataDictionary.Add("all_flats", flatOutput.AllFlatsByCategory);
+            
+        }
+
+        public void SetBodyData(object data)
+        {
+            this.flatOutput = data as FlatOutput;
+            if(this.flatOutput != null)
+            {
+                DataDictionary.Add("private_flats", flatOutput.PrivateFlatsByCategory);
+                DataDictionary.Add("all_flats", flatOutput.AllFlatsByCategory);
+            }
         }
 
         public string GenerateBody()

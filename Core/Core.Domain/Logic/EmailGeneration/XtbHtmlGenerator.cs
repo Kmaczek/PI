@@ -1,4 +1,6 @@
-﻿using Core.Model;
+﻿using Core.Common;
+using Core.Model;
+using System;
 using System.Globalization;
 
 namespace Core.Domain.Logic.EmailGeneration
@@ -10,21 +12,49 @@ namespace Core.Domain.Logic.EmailGeneration
         public string HtmlKey => "xtb_body";
         public override string HtmlTemplateName => "Core.Domain.Logic.EmailGeneration.XtbTemplate.html";
 
-        public XtbHtmlGenerator() : base()
-        {
-        }
+        public ILogger Log { get; }
 
-        public XtbHtmlGenerator(XtbOutput xtbOutput)
+        public XtbHtmlGenerator(ILogger log) : base()
         {
-            this.xtbOutput = xtbOutput;
+            Log = log;
         }
 
         public string GenerateBody()
         {
-            DataDictionary.Add("balance", xtbOutput.Balance?.ToString(CultureInfo.InvariantCulture));
-            DataDictionary.Add("gain", xtbOutput.Gain?.ToString(CultureInfo.InvariantCulture));
+            if (xtbOutput == null)
+            {
+                return "Brak danych";
+            }
 
             return CombineHtmlWithData();
+        }
+
+        public void SetBodyData(object xtbData)
+        {
+            xtbOutput = xtbData as XtbOutput;
+
+            if(xtbOutput != null)
+            {
+                try
+                {
+                    DataDictionary.Add("balance", xtbOutput.Balance?.ToString(CultureInfo.InvariantCulture));
+                    DataDictionary.Add("gain", xtbOutput.Gain?.ToString(CultureInfo.InvariantCulture));
+                }
+                catch (Exception e)
+                {
+                    if (xtbOutput == null)
+                    {
+                        Log.Error("Can't create HTML body. Xtb data is empty.");
+                    }
+                    else
+                    {
+                        Log.Error($"Can't create HTML body out of this data: Balance={this.xtbOutput.Balance} Gain={this.xtbOutput.Gain}");
+                    }
+                    Log.Error("XtbHtmlGenerator error.", e);
+
+                    return;
+                }
+            }
         }
     }
 }

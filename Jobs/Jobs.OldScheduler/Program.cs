@@ -5,6 +5,7 @@ using Binance.Api;
 using Common;
 using Core.Common;
 using Core.Domain.Logic;
+using Core.Domain.Logic.EmailGeneration;
 using Core.Domain.Logic.FlatsFeed;
 using Core.Domain.Logic.OtodomService;
 using Core.Model;
@@ -67,10 +68,7 @@ namespace Jobs.OldScheduler
             while (true)
             {
                 var command = Console.ReadLine();
-                if (OnCommandReceived != null)
-                {
-                    OnCommandReceived(command);
-                }
+                OnCommandReceived?.Invoke(command);
             }
         }
 
@@ -126,6 +124,27 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<PerformanceAudit>().As<IPerformanceAudit>();
             diBuilder.RegisterType<EmailService>().As<IEmailService>();
             diBuilder.RegisterType<OtodomFeedService>().As<IFlatsFeedService>();
+
+            //Generators
+            diBuilder.RegisterType<XtbHtmlGenerator>();
+            diBuilder.Register<Func<XtbHtmlGenerator>>(x =>
+            {
+                var context = x.Resolve<IComponentContext>();
+                return () => context.Resolve<XtbHtmlGenerator>();
+            });
+            diBuilder.RegisterType<BinanceHtmlGenerator>();
+            diBuilder.Register<Func<BinanceHtmlGenerator>>(x =>
+            {
+                var context = x.Resolve<IComponentContext>();
+                return () => context.Resolve<BinanceHtmlGenerator>();
+            });
+            diBuilder.RegisterType<OtodomHtmlGenerator>();
+            diBuilder.Register<Func<OtodomHtmlGenerator>>(x =>
+            {
+                var context = x.Resolve<IComponentContext>();
+                return () => context.Resolve<OtodomHtmlGenerator>();
+            });
+            diBuilder.RegisterType<EmailGeneratorFactory>().As<IEmailGeneratorFactory>();
 
             //Jobs
             diBuilder.RegisterType<EmailSummaryJob>().Named<IJob>(nameof(EmailSummaryJob));

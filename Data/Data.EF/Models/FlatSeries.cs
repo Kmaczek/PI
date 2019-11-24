@@ -5,6 +5,11 @@ namespace Data.EF.Models
 {
     public partial class FlatSeries
     {
+        public FlatSeries()
+        {
+            DateFetched = DateTime.Now;
+        }
+
         public int Id { get; set; }
         public DateTime DateFetched { get; set; }
         public decimal AvgPricePerMeter { get; set; }
