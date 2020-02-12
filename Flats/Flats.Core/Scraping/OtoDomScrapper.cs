@@ -53,7 +53,7 @@ namespace Flats.Core.Scraping
 
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
         {
-            return document.DocumentNode.SelectNodes(@"//*[@id='body-container']/div/div/div[2]/div/article");
+            return document.DocumentNode.SelectNodes(@"//*[@id='body-container']/div/div/div[1]/div/article");
         }
 
         protected override FlatDataBM ParseOffer(HtmlNode node)

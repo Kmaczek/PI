@@ -63,6 +63,7 @@
     <Folder Include="OtoDom" />
     <Folder Include="PostExecution" />
     <Folder Include="PostExecution\PopulateData" />
+    <Folder Include="Auth" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Binance\Series.sql" />
@@ -80,6 +81,8 @@
     <Build Include="OtoDom\FlatAdditionalInfo.sql" />
     <Build Include="OtoDom\Flat_OtodomId_IDX.sql" />
     <Build Include="OtoDom\FlatCategoty.sql" />
+    <Build Include="Auth\Auth.sql" />
+    <Build Include="Auth\User.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PiDatabase.publish.xml" />
