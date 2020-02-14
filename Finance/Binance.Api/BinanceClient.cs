@@ -110,7 +110,7 @@ namespace Binance.Api
 
             var request = new RestRequest("/api/v3/account", Method.GET);
             request.AddHeader("X-MBX-APIKEY", apiKey);
-            request.AddOrUpdateParameter(new Parameter() { Name = "timestamp", Value = ServerTime().ServerTimestamp, Type = ParameterType.QueryString });
+            request.AddOrUpdateParameter(new Parameter("timestamp", ServerTime().ServerTimestamp, ParameterType.QueryString));
 
             AddSignature(request);
             IRestResponse requestResponse = Client.Execute(request);

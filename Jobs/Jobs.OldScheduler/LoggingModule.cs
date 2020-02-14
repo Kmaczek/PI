@@ -1,4 +1,5 @@
 ﻿using Autofac.Core;
+using Autofac.Core.Registration;
 using Core.Common;
 using System.Linq;
 
@@ -17,7 +18,7 @@ namespace Jobs.OldScheduler
             });
         }
 
-        protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
+        protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
         {
             registration.Preparing += OnComponentPreparing;
         }
