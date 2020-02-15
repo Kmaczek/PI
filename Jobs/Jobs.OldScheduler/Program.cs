@@ -157,10 +157,10 @@ namespace Jobs.OldScheduler
             var errors = injectionContainer.Verify();
             if (errors.Any())
             {
-                Log.Info($"Found {errors.Count} errors in container.");
+                Log.Debug($"Found {errors.Count} errors in container.");
                 foreach (var error in errors)
                 {
-                    Log.Info(error);
+                    Log.Debug(error);
                 }
             }
         }

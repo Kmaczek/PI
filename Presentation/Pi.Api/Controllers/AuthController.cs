@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pi.Api.Controllers
@@ -7,16 +8,19 @@ namespace Pi.Api.Controllers
     [Route("auth")]
     public class AuthController : ControllerBase
     {
-        public AuthController()
-        {
+        private readonly IAppUserRepository userRepository;
 
+        public AuthController(IAppUserRepository userRepository)
+        {
+            this.userRepository = userRepository;
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
         public IActionResult Login([FromBody]LoginUser credentials)
         {
-            return Ok();
+            var user = userRepository.GetUser(credentials.Username);
+            return Ok(user);
         }
     }
 
