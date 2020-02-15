@@ -1,31 +1,32 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using Autofac;
+using Core.Common;
 using Core.Common.Logging;
 using Data.EF.Models;
-using Data.EF.Models.Auth;
 using Data.Repository;
 using Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Pi.Api
 {
-    public partial class Startup
+    public class Startup
     {
+        private static IConfigurationRoot _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            //var builder = new ConfigurationBuilder()
-            //    .SetBasePath(Environment.Con)
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            //.AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
+                            .AddEnvironmentVariables();
+
+            _configuration = builder.Build();
+            Configuration = _configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -48,25 +49,21 @@ namespace Pi.Api
             services.AddCors();
         }
 
-        public void ConfigureContainer(ContainerBuilder containerBuilder)
+        public void ConfigureContainer(ContainerBuilder diBuilder)
         {
-            // wire up using autofac specific APIs here
+            diBuilder.RegisterModule<LoggingModule>();
+
+            diBuilder.RegisterInstance(_configuration).SingleInstance();
+            //diBuilder.RegisterType<ConfigHelper>().SingleInstance();
+            diBuilder.RegisterType<PiContext>();
+            diBuilder.Register<Func<PiContext>>(x =>
+            {
+                var context = x.Resolve<IComponentContext>();
+                return () => context.Resolve<PiContext>();
+            });
+
+            diBuilder.RegisterType<AppUserRepository>().As<IAppUserRepository>();
         }
-
-        //public void ConfigureContainer(ContainerBuilder diBuilder)
-        //{
-        //    diBuilder.RegisterModule<LoggingModule>();
-
-        //    diBuilder.RegisterType<PiContext>();
-        //    diBuilder.Register<Func<PiContext>>(x =>
-        //    {
-        //        var context = x.Resolve<IComponentContext>();
-        //        return () => context.Resolve<PiContext>();
-        //    });
-        //    //diBuilder.RegisterType<BinanceRepository>().As<IBinanceRepository>();
-        //    //diBuilder.RegisterType<OtoDomRepository>().As<IOtoDomRepository>();
-        //    diBuilder.RegisterType<AppUser>().As<IAppUserRepository>();
-        //}
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
