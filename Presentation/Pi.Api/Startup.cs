@@ -22,7 +22,7 @@ namespace Pi.Api
         {
             var builder = new ConfigurationBuilder()
                             .SetBasePath(Directory.GetCurrentDirectory())
-                            //.AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
+                            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
                             .AddEnvironmentVariables();
 
             _configuration = builder.Build();

@@ -5,6 +5,7 @@ using Autofac;
 using Data.EF.Models;
 using Data.EF.Models.Auth;
 using Data.Repository.Interfaces;
+using System.Net;
 
 namespace Pi.Api
 {
@@ -26,7 +27,16 @@ namespace Pi.Api
                 //})
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.Listen(IPAddress.Loopback, 5001);
+                        serverOptions.Listen(IPAddress.Any, 80);
+                        serverOptions.Listen(IPAddress.Loopback, 443, listenOprions =>
+                        {
+                            listenOprions.UseHttps();
+                        });
+
+                    }).UseStartup<Startup>();
                 });
     }
 }
