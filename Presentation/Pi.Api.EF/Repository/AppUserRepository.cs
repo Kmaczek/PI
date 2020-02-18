@@ -1,18 +1,15 @@
-﻿using Data.EF.Models;
-using Data.EF.Models.Auth;
-using Data.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using Pi.Api.EF;
+using Pi.Api.EF.Models.Auth;
+using Pi.Api.EF.Repository.Interfaces;
 using System.Linq;
-using System.Text;
 
 namespace Data.Repository
 {
     public class AppUserRepository : IAppUserRepository
     {
-        PiContext PiContext;
+        ApiContext PiContext;
 
-        public AppUserRepository(PiContext dbContext)
+        public AppUserRepository(ApiContext dbContext)
         {
             PiContext = dbContext;
         }
@@ -20,6 +17,14 @@ namespace Data.Repository
         public AppUser GetUser(string username)
         {
             var user = PiContext.ApplicationUsers.FirstOrDefault(x => x.Username == username);
+
+            return user;
+        }
+
+        public AppUser InsertUser(AppUser user)
+        {
+            PiContext.ApplicationUsers.Add(user);
+            PiContext.SaveChanges();
 
             return user;
         }

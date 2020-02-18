@@ -1,6 +1,7 @@
 ﻿using Autofac.Core;
 using Autofac.Core.Registration;
 using Core.Common;
+using Core.Common.Logging;
 using System.Linq;
 
 namespace Jobs.OldScheduler

@@ -65,15 +65,17 @@ namespace Core.Domain.Logic
 
                 foreach (var process in processesUsage)
                 {
-                    var processCpu = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
-                    try
+                    using (var processCpu = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true))
                     {
-                        processCpu.NextValue();
-                        counterUsagePairs.Add(new Tuple<ProcessUsage, PerformanceCounter>(process, processCpu));
-                    }
-                    catch(InvalidOperationException)
-                    {
-                        //
+                        try
+                        {
+                            processCpu.NextValue();
+                            counterUsagePairs.Add(new Tuple<ProcessUsage, PerformanceCounter>(process, processCpu));
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            //
+                        }
                     }
                 }
 
@@ -106,12 +108,12 @@ namespace Core.Domain.Logic
             foreach(var usage in usages.Where(x => x.ProcessName.Contains("svc")))
             {
                 var query = "SELECT * FROM Win32_Service where ProcessId = " + usage.Pid;
-                ManagementObjectSearcher searcher =
-                    new ManagementObjectSearcher(query);
-
-                foreach (ManagementObject queryObj in searcher.Get())
+                using (var searcher = new ManagementObjectSearcher(query))
                 {
-                    usage.ServiceName = queryObj["Name"].ToString();
+                    foreach (ManagementObject queryObj in searcher.Get())
+                    {
+                        usage.ServiceName = queryObj["Name"].ToString();
+                    }
                 }
             }
         }

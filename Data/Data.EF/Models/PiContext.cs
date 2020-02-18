@@ -1,5 +1,4 @@
-﻿using Data.EF.Models.Auth;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Data.EF.Models
@@ -30,8 +29,6 @@ namespace Data.EF.Models
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesParent> SeriesParent { get; set; }
         public virtual DbSet<TypeOfBuilding> TypeOfBuilding { get; set; }
-
-        public virtual DbSet<AppUser> ApplicationUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -243,36 +240,6 @@ namespace Data.EF.Models
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
-            });
-
-            modelBuilder.Entity<AppUser>(entity =>
-            {
-                entity.ToTable("User", "auth");
-
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(100);
-                    //.Metadata.IsIndex();
-
-                entity.HasIndex(x => x.Username).IsUnique();
-
-                entity.Property(e => e.DisplayName)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.ActiveFrom)
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.ActiveTo)
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.CreatedDate)
-                    .IsRequired()
-                    .HasColumnType("datetime");
             });
         }
     }

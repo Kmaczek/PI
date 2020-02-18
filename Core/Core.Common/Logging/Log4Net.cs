@@ -1,7 +1,7 @@
 ﻿using log4net;
 using System;
 
-namespace Core.Common
+namespace Core.Common.Logging
 {
     public class Log4Net : ILogger
     {

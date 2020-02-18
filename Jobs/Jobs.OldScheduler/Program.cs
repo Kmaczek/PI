@@ -4,6 +4,7 @@ using AutoMapper.Configuration;
 using Binance.Api;
 using Common;
 using Core.Common;
+using Core.Common.Config;
 using Core.Domain.Logic;
 using Core.Domain.Logic.EmailGeneration;
 using Core.Domain.Logic.FlatsFeed;

@@ -11,19 +11,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="log4net.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Results\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\..\Data\Data.EF\Data.EF.csproj" />
     <ProjectReference Include="..\..\Data\Data.Repository\Data.Repository.csproj" />
+    <ProjectReference Include="..\Pi.Api.EF\Pi.Api.EF.csproj" />
+    <ProjectReference Include="..\Pi.Api.Services\Pi.Api.Services.csproj" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

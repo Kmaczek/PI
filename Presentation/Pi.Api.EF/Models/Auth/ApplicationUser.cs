@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
-namespace Data.EF.Models.Auth
+namespace Pi.Api.EF.Models.Auth
 {
     public class AppUser
     {
@@ -14,7 +11,9 @@ namespace Data.EF.Models.Auth
         public int Id { get; set; }
         public string Username { get; set; }
         public string DisplayName { get; set; }
-        public string Password { get; set; }
+        public byte[] Password { get; set; }
+        public byte[] Salt { get; set; }
+        public string Email { get; set; }
         public DateTime ActiveFrom { get; set; }
         public DateTime ActiveTo { get; set; }
         public DateTime CreatedDate { get; set; }

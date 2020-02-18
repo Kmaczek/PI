@@ -3,7 +3,8 @@
     [Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
     [Username] NVARCHAR(100) NOT NULL UNIQUE, 
     [DisplayName] NVARCHAR(100) NOT NULL, 
-    [Password] NVARCHAR(50) NOT NULL, 
+    [Password] VARBINARY(50) NOT NULL, 
+    [Salt] VARBINARY(50) NOT NULL, 
     [Email] NVARCHAR(256) NULL, 
     --If this is NULL, then User is not active, regardless of ActiveTo
     [ActiveFrom] DATETIME NULL, 

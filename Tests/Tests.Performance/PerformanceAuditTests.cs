@@ -1,4 +1,5 @@
 using Core.Common;
+using Core.Common.Logging;
 using Core.Domain.Logic;
 using NUnit.Framework;
 using System.Linq;

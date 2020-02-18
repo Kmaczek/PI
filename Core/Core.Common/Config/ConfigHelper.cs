@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace Core.Common
+namespace Core.Common.Config
 {
     public class ConfigHelper
     {

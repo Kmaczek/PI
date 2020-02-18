@@ -1,5 +1,6 @@
 using Binance.Api;
 using Core.Common;
+using Core.Common.Logging;
 using Core.Domain.Logic;
 using Data.Repository.Interfaces;
 using Microsoft.Extensions.Configuration;

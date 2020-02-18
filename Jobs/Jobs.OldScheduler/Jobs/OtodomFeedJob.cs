@@ -9,11 +9,8 @@ namespace Jobs.OldScheduler.Jobs
 {
     public class OtodomFeedJob : IJob
     {
-        private string otodomUrl;
-
         private static Timer RunningTimer = null;
         private IConfigurationRoot configuration;
-        private readonly IEmailService emailService;
         private readonly IFlatsFeedService flatsFeed;
         private readonly ILogger log;
 

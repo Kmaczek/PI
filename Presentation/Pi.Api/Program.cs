@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Autofac.Extensions.DependencyInjection;
-using Autofac;
-using Data.EF.Models;
-using Data.EF.Models.Auth;
-using Data.Repository.Interfaces;
 using System.Net;
 
 namespace Pi.Api
@@ -19,12 +15,6 @@ namespace Pi.Api
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                //.ConfigureContainer<ContainerBuilder>(diBuilder =>
-                //{
-                //    diBuilder.RegisterType<PiContext>();
-                //    diBuilder.RegisterType<AppUser>().As<IAppUserRepository>();
-                //    //builder.RegisterType
-                //})
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Common;
+using Core.Common.Config;
 using Core.Domain.Logic.OtodomService;
 using Core.Model.Exceptions;
 using Core.Model.FlatsModels;
@@ -17,7 +18,6 @@ namespace Core.Domain.Logic.FlatsFeed
 {
     public class OtodomFeedService : IFlatsFeedService
     {
-        private readonly ConfigHelper configuration;
         private readonly IOtoDomRepository otoDomRepository;
         private readonly IMapper mapper;
         private readonly ILogger log;
@@ -116,11 +116,11 @@ namespace Core.Domain.Logic.FlatsFeed
 
                 flatsToUpdate.Clear();
                 flatsToUpdate.AddRange(flats.Where(x => x.Id != 0).ToList());
-                log.Info($"Flats to update {flatsToUpdate.Count()}");
+                log.Info($"Flats to update {flatsToUpdate.Count}");
 
                 flatsToAdd.Clear();
                 flatsToAdd.AddRange(flats.Where(x => x.Id == 0).ToList());
-                log.Info($"Flats to add {flatsToAdd.Count()}");
+                log.Info($"Flats to add {flatsToAdd.Count}");
 
                 UpdateFlats(flatsToUpdate);
                 AddFlats(flatsToAdd);
