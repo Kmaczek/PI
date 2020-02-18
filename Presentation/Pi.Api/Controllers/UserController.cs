@@ -18,7 +18,7 @@ namespace Pi.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "View")]
         public IActionResult GetUser(string username)
         {
             var user = userRepository.GetUser(username);

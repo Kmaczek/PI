@@ -14,82 +14,36 @@ namespace Pi.Api.Controllers
     [Route("auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IAppUserRepository userRepository;
-        private readonly ITokenService tokenService;
+        private readonly IUserService userService;
 
-        public AuthController(
-            IAppUserRepository userRepository, 
-            ITokenService tokenService)
+        public AuthController(IUserService userService)
         {
-            this.userRepository = userRepository;
-            this.tokenService = tokenService;
+            this.userService = userService;
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
         public IActionResult Login([FromBody]LoginUser credentials)
         {
-            var user = userRepository.GetUser(credentials.Username);
-            var passwordHash = Hash(credentials.Password, user.Salt);
+            var token = userService.LoginUser(credentials.Username, credentials.Password);
 
-            if (Enumerable.SequenceEqual(passwordHash, user.Password))
+            if (!string.IsNullOrEmpty(token))
             {
-                var daysValid = 7;
-                var token = tokenService.CreateJwtAsync(user, daysValid);
-
-                return Ok(token.Result);
+                return Ok(token);
             }
 
-            return Ok("Incorrect user or password.");
+            return Unauthorized("Incorrect user or password.");
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateUser([FromBody]LoginUser credentials)
         {
-            var user = new AppUser()
-            {
-                ActiveFrom = DateTime.Now,
-                ActiveTo = DateTime.Now.AddYears(100),
-                CreatedDate = DateTime.Now,
-                DisplayName = "Damian Kmak",
-                Username = credentials.Username
-            };
-            var salt = GetSalt(50);
-            var passwordHash = Hash(credentials.Password, salt);
-            user.Password = passwordHash;
-            user.Salt = salt;
+            userService.CreateUser(credentials.Username, credentials.Password);
 
-            userRepository.InsertUser(user);
-
-            return Ok(user);
+            return Ok();
         }
         
-
-        //Hash Password
-        public static byte[] Hash(string value, byte[] salt)
-        {
-            return Hash(Encoding.UTF8.GetBytes(value), salt);
-        }
-
-        public static byte[] Hash(byte[] value, byte[] salt)
-        {
-            byte[] saltedValue = value.Concat(salt).ToArray();
-
-            return new SHA256Managed().ComputeHash(saltedValue);
-        }
-
-        private static byte[] GetSalt(int maximumSaltLength)
-        {
-            var salt = new byte[maximumSaltLength];
-            using (var random = new RNGCryptoServiceProvider())
-            {
-                random.GetNonZeroBytes(salt);
-            }
-
-            return salt;
-        }
-        /////////
     }
 
     public class LoginUser

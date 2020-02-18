@@ -8,5 +8,6 @@ namespace Pi.Api.Services.Interfaces
     {
         string PrivateKey { get; }
         string Issuer { get; }
+        int TokenExpirationTime { get; }
     }
 }

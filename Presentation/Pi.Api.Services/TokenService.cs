@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Pi.Api.EF.Models.Auth;
 using Pi.Api.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -30,11 +31,12 @@ namespace Pi.Api.Services
         }
 
         public async Task<string> CreateJwtAsync(
-            AppUser user,
+            AppUserDm user,
+            IEnumerable<string> roles,
             int daysValid)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var claims = await CreateClaimsIdentities(user);
+            var claims = await CreateClaimsIdentities(user, roles);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(apiConfig.PrivateKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -49,18 +51,17 @@ namespace Pi.Api.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private Task<ClaimsIdentity> CreateClaimsIdentities(AppUser user)
+        private Task<ClaimsIdentity> CreateClaimsIdentities(AppUserDm user, IEnumerable<string> roles)
         {
             ClaimsIdentity claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id + ""));
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(user)));
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.DisplayName));
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(new { DisplayName = user.DisplayName})));
 
-            //foreach (var role in roles)
-            //{ claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "admin")); }
-
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "admin"));
+            foreach (var role in roles)
+            { claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role)); }
 
             return Task.FromResult(claimsIdentity);
         }

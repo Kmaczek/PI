@@ -86,6 +86,8 @@ namespace Pi.Api
 
             diBuilder.RegisterType<ApiConfig>().As<IApiConfig>();
             diBuilder.RegisterType<TokenService>().As<ITokenService>();
+            diBuilder.RegisterType<PasswordHashingService>().As<IPasswordHashing>();
+            diBuilder.RegisterType<UserService>().As<IUserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

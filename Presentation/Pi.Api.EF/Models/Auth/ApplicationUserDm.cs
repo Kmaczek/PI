@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Pi.Api.EF.Models.Auth
 {
-    public class AppUser
+    public class AppUserDm
     {
-        public AppUser()
+        public AppUserDm()
         {
+            UserRoles = new HashSet<UserRoleDm>();
         }
 
         public int Id { get; set; }
@@ -17,5 +19,7 @@ namespace Pi.Api.EF.Models.Auth
         public DateTime ActiveFrom { get; set; }
         public DateTime ActiveTo { get; set; }
         public DateTime CreatedDate { get; set; }
+
+        public virtual ICollection<UserRoleDm> UserRoles { get; set; }
     }
 }

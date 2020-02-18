@@ -8,6 +8,7 @@ namespace Pi.Api.Services
 {
     public class ApiConfig : IApiConfig
     {
+        private const int DefaultTokenExpirationTime = 8;
         private readonly IConfigurationRoot configuration;
 
         public ApiConfig(IConfigurationRoot configuration)
@@ -32,6 +33,17 @@ namespace Pi.Api.Services
                 var privateKey = configuration["Jwt:Issuer"];
 
                 return privateKey;
+            }
+        }
+
+        public int TokenExpirationTime
+        {
+            get
+            {
+                int result;
+                var parsingResult = Int32.TryParse(configuration["Jwt:HoursValid"], out result);
+
+                return parsingResult ? result : DefaultTokenExpirationTime;
             }
         }
     }

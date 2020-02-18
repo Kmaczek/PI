@@ -18,7 +18,7 @@ namespace Pi.Api.EF
         {
         }
 
-        public virtual DbSet<AppUser> ApplicationUsers { get; set; }
+        public virtual DbSet<AppUserDm> ApplicationUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -34,7 +34,7 @@ namespace Pi.Api.EF
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
-            modelBuilder.Entity<AppUser>(entity =>
+            modelBuilder.Entity<AppUserDm>(entity =>
             {
                 entity.ToTable("User", "auth");
 
@@ -72,6 +72,32 @@ namespace Pi.Api.EF
                 entity.Property(e => e.CreatedDate)
                     .IsRequired()
                     .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<RoleDm>(entity =>
+            {
+                entity.ToTable("Role", "auth");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<UserRoleDm>(entity =>
+            {
+                entity.ToTable("UserRoles", "auth");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserRoles_User");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserRoles_Role");
             });
         }
     }
