@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'pi-navbar',
-  templateUrl: './pi-navbar.component.html',
-  styleUrls: ['./pi-navbar.component.css']
+  selector: 'piNavbar',
+  templateUrl: './piNavbar.component.html',
+  styleUrls: ['./piNavbar.component.css']
 })
 export class PiNavbarComponent implements OnInit {
 

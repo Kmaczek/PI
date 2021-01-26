@@ -32,7 +32,7 @@ namespace Pi.Api.Services
                 ActiveFrom = DateTime.Now,
                 ActiveTo = DateTime.Now.AddYears(100),
                 CreatedDate = DateTime.Now,
-                DisplayName = "Damian Kmak",
+                DisplayName = username,
                 Username = username
             };
             var hashedPassword = passwordHashing.HashPassword(password);

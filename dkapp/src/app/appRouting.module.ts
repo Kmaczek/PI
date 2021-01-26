@@ -10,6 +10,7 @@ const routes: Routes = [
     redirectTo: '/',
     pathMatch: 'full'
   },
+  { path: 'flats', component: AppComponent },
   { path: '**', component: AppComponent }
 ];
 

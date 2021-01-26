@@ -3,9 +3,9 @@ import * as $ from 'jquery';
 declare var Chart: any;
 
 @Component({
-  selector: 'pi-line-chart',
-  templateUrl: './pi-line-chart.component.html',
-  styleUrls: ['./pi-line-chart.component.css']
+  selector: 'piLineChart',
+  templateUrl: './piLineChart.component.html',
+  styleUrls: ['./piLineChart.component.css']
 })
 export class PiLineChartComponent implements OnInit {
 
