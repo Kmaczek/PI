@@ -7,12 +7,10 @@ using Core.Model.FlatsModels;
 using Data.EF.Models;
 using Data.Repository.Interfaces;
 using Flats.Core.Scraping;
-using Microsoft.Extensions.Configuration;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Core.Domain.Logic.FlatsFeed
 {
@@ -68,14 +66,6 @@ namespace Core.Domain.Logic.FlatsFeed
 
             otoDomScrapper.OnScrapedPage -= PersistScrappedFlats;
             UpdateStatsWithErrors();
-
-            otoDomRepository.AddFlatSeries(new FlatSeries());
-        }
-
-        public void GenerateFlatSeries()
-        {
-            var activeFlats = otoDomRepository.GetActiveFlats();
-
         }
 
         private void PersistScrappedFlats(IEnumerable<FlatDataBM> scrappedFlats)
@@ -134,17 +124,6 @@ namespace Core.Domain.Logic.FlatsFeed
 
                 log.Error("Error during saving entities to DB.", e);
             }
-        }
-
-        private IEnumerable<Flat> CheckIfEntitiesAttached(List<Flat> flatsToUpdate)
-        {
-            return otoDomRepository.CheckIfEntitiesAttached(flatsToUpdate);
-        }
-
-        private static void SetFlatsToUpdate(IEnumerable<Flat> flats, List<Flat> flatsToUpdate)
-        {
-            flatsToUpdate.Clear();
-            flatsToUpdate.AddRange(flats.Where(x => x.Id != 0).ToList());
         }
 
         private void UpdateStats(IEnumerable<Flat> flatsToUpdate, IEnumerable<Flat> flatsToAdd)

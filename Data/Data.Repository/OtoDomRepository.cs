@@ -1,11 +1,9 @@
-﻿using Data.EF.Dto;
-using Data.EF.Models;
+﻿using Data.EF.Models;
 using Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Data.Repository
 {

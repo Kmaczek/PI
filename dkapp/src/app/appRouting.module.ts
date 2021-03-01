@@ -1,8 +1,10 @@
+import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { RedirectComponent } from './RouteComponents/RedirectComponent/redirect.component';
-import { AppComponent } from './app.component';
-
+import { InflationScreenComponent } from './InflationModule/inflationScreen/inflationScreen.component';
+import { FlatsScreenComponent } from './flatsModule/flatsScreen/flatsScreen.component';
+import { HomeScreenComponent } from './homeScreen/homeScreen.component';
 
 const routes: Routes = [
   { path: 'callback', component: RedirectComponent},
@@ -10,12 +12,16 @@ const routes: Routes = [
     redirectTo: '/',
     pathMatch: 'full'
   },
-  { path: 'flats', component: AppComponent },
-  { path: '**', component: AppComponent }
+  { path: 'flats', component: FlatsScreenComponent },
+  { path: 'inflation', component: InflationScreenComponent },
+  { path: '**', component: HomeScreenComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    BrowserModule,
+    [RouterModule.forRoot(routes)]
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

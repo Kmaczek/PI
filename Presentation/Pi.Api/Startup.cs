@@ -96,7 +96,7 @@ namespace Pi.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
+            AutofacContainer = app.ApplicationServices.GetAutofacRoot();
 
             app.UseMiddleware(typeof(ErrorHandlingMiddleware), Log);
             //app.UseExceptionHandler(a => a.Run(async context =>

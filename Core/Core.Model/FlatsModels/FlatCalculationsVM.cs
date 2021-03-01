@@ -22,7 +22,7 @@
 
         public string FlatSize { get; set; }
 
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
 
         [FormatAttribute(FormatType.Numeric2)]
         public decimal AvgPrice { get; set; }

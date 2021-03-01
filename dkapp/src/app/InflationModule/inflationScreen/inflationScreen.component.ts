@@ -3,11 +3,11 @@ import { IdentityService } from 'src/app/Services/external/identity.ext.service'
 import { PiExtService } from 'src/app/Services/external/pi.ext.service';
 
 @Component({
-  selector: 'piContent',
-  templateUrl: './piContent.component.html',
-  styleUrls: ['./piContent.component.css']
+  selector: 'inflationScreen',
+  templateUrl: './inflationScreen.component.html',
+  styleUrls: ['./inflationScreen.component.css']
 })
-export class PiContentComponent implements OnInit
+export class InflationScreenComponent implements OnInit
 {
 
   constructor(
@@ -17,6 +17,8 @@ export class PiContentComponent implements OnInit
 
   ngOnInit()
   {
-    //this.identity.login();
+    console.log('inflation');
+    this.piService.GetWeatherForecast();
+    //this.identity.login(); 
   }
 }

@@ -20,13 +20,14 @@ namespace Pi.Api
                     webBuilder.ConfigureKestrel(serverOptions =>
                     {
                         serverOptions.Listen(IPAddress.Loopback, 5001);
-                        serverOptions.Listen(IPAddress.Any, 80);
-                        serverOptions.Listen(IPAddress.Loopback, 443, listenOprions =>
-                        {
-                            listenOprions.UseHttps();
-                        });
+                        serverOptions.Listen(IPAddress.Any, 8080);
+                        //serverOptions.Listen(IPAddress.Loopback, 443, listenOprions =>
+                        //{
+                        //    listenOprions.UseHttps();
+                        //});
 
                     }).UseStartup<Startup>();
+                    webBuilder.UseKestrel();
                 });
     }
 }
