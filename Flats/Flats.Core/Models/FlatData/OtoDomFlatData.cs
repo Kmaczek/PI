@@ -2,7 +2,7 @@
 
 namespace CenyMieszkan.Models.FlatData
 {
-    public class OtoDomFlatData : FlatDataBM
+    public class OtoDomFlatData : FlatDataBm
     {
         public OtoDomFlatData(decimal squareMeters, decimal totalPrice, int rooms, string url, bool isPrivate) 
             : base(squareMeters, totalPrice, rooms, url, isPrivate)

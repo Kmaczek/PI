@@ -56,7 +56,7 @@ namespace Flats.Core.Scraping
             return document.DocumentNode.SelectNodes(@"//*[@id='body-container']/div/div/div[1]/div/article");
         }
 
-        protected override FlatDataBM ParseOffer(HtmlNode node)
+        protected override FlatDataBm ParseOffer(HtmlNode node)
         {
             var detailsNode = node.SelectSingleNode(@".//*[@class='offer-item-details']");
             var bottomDetails = node.SelectSingleNode(@".//*[@class='offer-item-details-bottom']");
@@ -73,7 +73,7 @@ namespace Flats.Core.Scraping
             var SquareMeters = GetArea(detailsNode, Errors);
             var isPrivate = IsPrivateOffer(bottomDetails, Errors);
 
-            var data = new FlatDataBM(SquareMeters, TotalPrice, Rooms, Url, isPrivate)
+            var data = new FlatDataBm(SquareMeters, TotalPrice, Rooms, Url, isPrivate)
             {
                 OtoDomId = otodomId
             };

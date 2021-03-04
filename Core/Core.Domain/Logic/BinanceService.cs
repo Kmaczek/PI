@@ -16,7 +16,10 @@ namespace Core.Domain.Logic
         private readonly ILogger _log;
         private readonly IBinanceRepository binanceRepository;
 
-        public BinanceService(IBinanceClient binanceClient, ILogger log, IBinanceRepository binanceRepository)
+        public BinanceService(
+            IBinanceClient binanceClient, 
+            ILogger log, 
+            IBinanceRepository binanceRepository)
         {
             this._binanceClient = binanceClient;
             this._log = log;

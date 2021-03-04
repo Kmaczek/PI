@@ -1,17 +1,17 @@
 ﻿namespace Core.Model.FlatsModels
 {
-    public class FlatCalculationsVM
+    public class FlatCalculationsVm
     {
-        private readonly FlatDataBM SmallestFlat;
-        private readonly FlatDataBM BigestFlat;
-        private readonly FlatDataBM CheapestFlat;
-        private readonly FlatDataBM MostExpensiveFlat;
+        private readonly FlatDataBm SmallestFlat;
+        private readonly FlatDataBm BigestFlat;
+        private readonly FlatDataBm CheapestFlat;
+        private readonly FlatDataBm MostExpensiveFlat;
 
-        public FlatCalculationsVM(
-            FlatDataBM smallestFlat,
-            FlatDataBM bigestFlat,
-            FlatDataBM cheapestFlat,
-            FlatDataBM mostExpensiveFlat
+        public FlatCalculationsVm(
+            FlatDataBm smallestFlat,
+            FlatDataBm bigestFlat,
+            FlatDataBm cheapestFlat,
+            FlatDataBm mostExpensiveFlat
             )
         {
             SmallestFlat = smallestFlat;

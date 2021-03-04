@@ -30,24 +30,6 @@ namespace Data.Repository
             return flat;
         }
 
-        public void SaveFlat(Flat flat)
-        {
-            using (var context = contextMaker.Invoke())
-            {
-                context.Flat.Add(flat);
-            }
-        }
-
-        public int GetFlatIdByExternalId(string externalId)
-        {
-            var id = PiContext.Flat
-                .Where(x => x.OtoDomId == externalId)
-                .Select(x => x.Id)
-                .FirstOrDefault();
-
-            return id;
-        }
-
         public void AddFlats(IEnumerable<Flat> flats)
         {
             using (var context = contextMaker.Invoke())
@@ -74,25 +56,6 @@ namespace Data.Repository
             }
         }
 
-        public IEnumerable<Flat> CheckIfEntitiesAttached(List<Flat> flats)
-        {
-            var attachedEtities = new List<Flat>();
-            foreach (var flat in flats)
-            {
-                var attachedEntity =  PiContext.Flat.Local.FirstOrDefault(e => e == flat);
-                if (attachedEntity != null)
-                {
-                    attachedEtities.Add(attachedEntity);
-                }
-            }
-
-            return attachedEtities;
-        }
-
-        public void SaveContext()
-        {
-            PiContext.SaveChanges();
-        }
 
         public IEnumerable<Flat> GetPrivateFlats()
         {
@@ -123,6 +86,18 @@ namespace Data.Repository
             {
                 context.FlatSeries.Add(flatSeries);
                 context.SaveChanges();
+            }
+        }
+
+        public IEnumerable<FlatSeries> GetFlatSeries()
+        {
+            using (var context = contextMaker.Invoke())
+            {
+                var flatSeries = context.FlatSeries
+                    .Where(x => x.AvgPricePerMeter > 0)
+                    .ToList();
+
+                return flatSeries;
             }
         }
     }

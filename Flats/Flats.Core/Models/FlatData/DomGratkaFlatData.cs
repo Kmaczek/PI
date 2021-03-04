@@ -2,7 +2,7 @@
 
 namespace CenyMieszkan.Models.FlatData
 {
-    public class DomGratkaFlatData: FlatDataBM
+    public class DomGratkaFlatData: FlatDataBm
     {
         public DomGratkaFlatData(
             decimal squareMeters, 

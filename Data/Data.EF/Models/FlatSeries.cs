@@ -15,7 +15,7 @@ namespace Data.EF.Models
         public decimal AvgPricePerMeter { get; set; }
         public decimal AvgPrice { get; set; }
         public int? CategoryId { get; set; }
-        public int? Amount { get; set; }
+        public int Amount { get; set; }
         public int? BiggestId { get; set; }
         public int? SmallestId { get; set; }
         public int? CheapestId { get; set; }

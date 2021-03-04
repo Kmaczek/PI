@@ -7,7 +7,7 @@
     [CategoryId] INT NULL
         CONSTRAINT FK_Category_FlatSeries 
         FOREIGN KEY REFERENCES [otodom].[FlatCategoty],
-    [Amount] INT NULL,
+    [Amount] INT NOT NULL,
     [BiggestId] INT NULL
         CONSTRAINT FK_Biggest_FlatSeries 
         FOREIGN KEY REFERENCES [otodom].[Flat],

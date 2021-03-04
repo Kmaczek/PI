@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Domain.Logic;
+using Core.Model.FlatSerie;
+using Data.EF.Models;
+using Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,29 +17,23 @@ namespace Pi.Api.Controllers
     [Route("[controller]")]
     public class FlatController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<FlatController> _logger;
+        private readonly IFlatSeriesService flatSeriesService;
 
-        public FlatController(ILogger<FlatController> logger)
+        public FlatController(
+            ILogger<FlatController> logger,
+            IFlatSeriesService flatSeriesService)
         {
             _logger = logger;
+            this.flatSeriesService = flatSeriesService;
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("series")]
+        public IEnumerable<FlatSerieVm> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var flatSerieVm = flatSeriesService.GetFlatSeries();
+
+            return flatSerieVm;
         }
     }
 }

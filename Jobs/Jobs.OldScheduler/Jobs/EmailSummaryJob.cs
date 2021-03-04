@@ -103,11 +103,11 @@ namespace Jobs.OldScheduler.Jobs
         {
             var privateOffers = otoDomRepository.GetPrivateFlats();
             var mappedPrivate = MapToFlatsBM(privateOffers);
-            var privateFlatAggregate = new FlatAggregateVM(mappedPrivate);
+            var privateFlatAggregate = new FlatAggregateVm(mappedPrivate);
 
             var allOffers = otoDomRepository.GetActiveFlats();
             var flatDataBMs = MapToFlatsBM(allOffers);
-            var allFlatAggregate = new FlatAggregateVM(flatDataBMs);
+            var allFlatAggregate = new FlatAggregateVm(flatDataBMs);
             SaveFlatSeries(allOffers);
 
             var flatsOutput = new FlatOutput(privateFlatAggregate.FlatCalculations, allFlatAggregate.FlatCalculations);
@@ -117,12 +117,12 @@ namespace Jobs.OldScheduler.Jobs
             return otodomHtmlGenerator;
         }
 
-        private List<FlatDataBM> MapToFlatsBM(IEnumerable<Data.EF.Models.Flat> allOffers)
+        private List<FlatDataBm> MapToFlatsBM(IEnumerable<Data.EF.Models.Flat> allOffers)
         {
-            var flatDataBMs = new List<FlatDataBM>();
+            var flatDataBMs = new List<FlatDataBm>();
             foreach (var flat in allOffers)
             {
-                var flatBM = new FlatDataBM(
+                var flatBM = new FlatDataBm(
                     flat.Surface,
                     flat.TotalPrice,
                     flat.Rooms.HasValue ? (int)flat.Rooms : 0,
@@ -154,7 +154,7 @@ namespace Jobs.OldScheduler.Jobs
             otoDomRepository.AddFlatSeries(flatSeries);
         }
 
-        private void LogFlatScrappingErrors(IEnumerable<FlatDataBM> flats)
+        private void LogFlatScrappingErrors(IEnumerable<FlatDataBm> flats)
         {
             var flatsWithErrors = flats.Where(x => x.Errors.Any());
             if (flatsWithErrors.Any())

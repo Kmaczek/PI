@@ -4,18 +4,18 @@ using System.Linq;
 
 namespace Core.Model.FlatsModels
 {
-    public class FlatAggregateVM
+    public class FlatAggregateVm
     {
-        public IEnumerable<FlatDataBM> Flats { get; set; } = new List<FlatDataBM>();
+        public IEnumerable<FlatDataBm> Flats { get; set; } = new List<FlatDataBm>();
 
-        public List<FlatDataBM> SmallFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Small && PriceAndMetersNotZero(x)).ToList();
-        public List<FlatDataBM> MediumFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Medium && PriceAndMetersNotZero(x)).ToList();
-        public List<FlatDataBM> BigFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Big && PriceAndMetersNotZero(x)).ToList();
+        public List<FlatDataBm> SmallFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Small && PriceAndMetersNotZero(x)).ToList();
+        public List<FlatDataBm> MediumFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Medium && PriceAndMetersNotZero(x)).ToList();
+        public List<FlatDataBm> BigFlats => Flats.Where(x => x.FlatSize == FlatSizeEnum.Big && PriceAndMetersNotZero(x)).ToList();
 
-        public Dictionary<string, List<FlatDataBM>> FlatsDictionary { get; } = new Dictionary<string, List<FlatDataBM>>();
-        public List<FlatCalculationsVM> FlatCalculations { get; } = new List<FlatCalculationsVM>();
+        public Dictionary<string, List<FlatDataBm>> FlatsDictionary { get; } = new Dictionary<string, List<FlatDataBm>>();
+        public List<FlatCalculationsVm> FlatCalculations { get; } = new List<FlatCalculationsVm>();
 
-        public FlatAggregateVM(IEnumerable<FlatDataBM> flats)
+        public FlatAggregateVm(IEnumerable<FlatDataBm> flats)
         {
             Flats = flats;
 
@@ -28,17 +28,17 @@ namespace Core.Model.FlatsModels
             FlatCalculations.Add(Calculate(FlatSizeEnum.Big));
         }
 
-        private static bool PriceAndMetersNotZero(FlatDataBM x)
+        private static bool PriceAndMetersNotZero(FlatDataBm x)
         {
             return x.Surface != 0 && x.TotalPrice != 0;
         }
 
-        private FlatCalculationsVM Calculate(string flatSize)
+        private FlatCalculationsVm Calculate(string flatSize)
         {
             if (FlatsDictionary[flatSize] == null || FlatsDictionary[flatSize].Count == 0)
                 return null;
 
-            return new FlatCalculationsVM(
+            return new FlatCalculationsVm(
                 FlatsDictionary[flatSize].MinBy(x => x.Surface).FirstOrDefault(),
                 FlatsDictionary[flatSize].MaxBy(x => x.Surface).FirstOrDefault(),
                 FlatsDictionary[flatSize].MinBy(x => x.TotalPrice).FirstOrDefault(),

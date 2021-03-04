@@ -20,7 +20,7 @@ namespace Flats.Core.Scraping
             throw new NotImplementedException();
         }
 
-        protected override FlatDataBM ParseOffer(HtmlNode node)
+        protected override FlatDataBm ParseOffer(HtmlNode node)
         {
             throw new NotImplementedException();
         }

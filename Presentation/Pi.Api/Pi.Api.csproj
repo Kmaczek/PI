@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Domain\Core.Domain.csproj" />
     <ProjectReference Include="..\..\Data\Data.EF\Data.EF.csproj" />
     <ProjectReference Include="..\..\Data\Data.Repository\Data.Repository.csproj" />
     <ProjectReference Include="..\Pi.Api.EF\Pi.Api.EF.csproj" />

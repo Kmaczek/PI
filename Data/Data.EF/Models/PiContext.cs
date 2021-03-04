@@ -140,6 +140,8 @@ namespace Data.EF.Models
 
                 entity.Property(e => e.DateFetched).HasColumnType("datetime");
 
+                entity.Property(e => e.DateFetched).HasColumnType("amount");
+
                 entity.HasOne(d => d.BestValue)
                     .WithMany(p => p.FlatSeriesBestValue)
                     .HasForeignKey(d => d.BestValueId)

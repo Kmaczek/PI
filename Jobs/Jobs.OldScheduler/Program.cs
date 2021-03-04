@@ -175,8 +175,8 @@ namespace Jobs.OldScheduler
         {
             var mapperInit = new MapperConfigurationExpression();
             mapperInit.CreateMap<StreamingBalanceRecord, XtbOutput>();
-            mapperInit.CreateMap<FlatDataBM, Flat>();
-            mapperInit.CreateMap<Flat, FlatDataBM>();
+            mapperInit.CreateMap<FlatDataBm, Flat>();
+            mapperInit.CreateMap<Flat, FlatDataBm>();
 
             var config = new MapperConfiguration(mapperInit);
             var mapper = config.CreateMapper();

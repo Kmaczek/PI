@@ -2,7 +2,7 @@
 
 namespace Core.Model.FlatsModels
 {
-    public class FlatDataBM
+    public class FlatDataBm
     {
         public string OtoDomId { get; set; }
         public decimal Surface { get; set; }
@@ -25,12 +25,12 @@ namespace Core.Model.FlatsModels
 
         public List<string> Errors { get; } = new List<string>();
 
-        public FlatDataBM()
+        public FlatDataBm()
         {
 
         }
 
-        public FlatDataBM(
+        public FlatDataBm(
             decimal squareMeters,
             decimal totalPrice,
             int rooms,

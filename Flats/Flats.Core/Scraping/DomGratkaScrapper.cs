@@ -27,10 +27,10 @@ namespace Flats.Core.Scraping
             return int.Parse(sth.InnerText.Trim());
         }
 
-        protected override FlatDataBM ParseOffer(HtmlNode node)
+        protected override FlatDataBm ParseOffer(HtmlNode node)
         {
             var ogloszenieInfo = node.SelectSingleNode(@".//*[@class='ogloszenieInfo']");
-            FlatDataBM data;
+            FlatDataBm data;
 
             try
             {
@@ -41,7 +41,7 @@ namespace Flats.Core.Scraping
                 var SquareMeters = GetSquareMeters(ogloszenieInfo);
                 //var Year = GetYear(ogloszenieInfo);
 
-                data = new FlatDataBM(SquareMeters, TotalPrice, Rooms, Url, false);
+                data = new FlatDataBm(SquareMeters, TotalPrice, Rooms, Url, false);
             }
             catch (Exception e)
             {

@@ -8,7 +8,7 @@ using HtmlAgilityPack;
 
 namespace Flats.Core.Scraping
 {
-    public delegate void ScrapedPageDelegate(IEnumerable<FlatDataBM> parsedFlats);
+    public delegate void ScrapedPageDelegate(IEnumerable<FlatDataBm> parsedFlats);
 
     public abstract class Scraper
     {
@@ -20,13 +20,13 @@ namespace Flats.Core.Scraping
 
         public List<string> Errors => new List<string>();
 
-        protected abstract FlatDataBM ParseOffer(HtmlNode node);
+        protected abstract FlatDataBm ParseOffer(HtmlNode node);
 
         protected abstract HtmlNodeCollection GetOffers(HtmlDocument document);
 
         protected abstract int GetPageCount(HtmlDocument document);
 
-        public IEnumerable<FlatDataBM> Scrape()
+        public IEnumerable<FlatDataBm> Scrape()
         {
             Errors.Clear();
 
@@ -35,7 +35,7 @@ namespace Flats.Core.Scraping
                 throw new ArgumentException("ScrapingUrl is not set");
             }
 
-            var results = new List<FlatDataBM>();
+            var results = new List<FlatDataBm>();
             var currentPage = 1;
             var pageContent = GetContent(String.Format(ScrapingUrl, currentPage));
             HtmlDocument document = new HtmlDocument();
@@ -66,9 +66,9 @@ namespace Flats.Core.Scraping
             }
         }
 
-        protected IEnumerable<FlatDataBM> ScrapPage(HtmlDocument document)
+        protected IEnumerable<FlatDataBm> ScrapPage(HtmlDocument document)
         {
-            var parsedOffers = new List<FlatDataBM>();
+            var parsedOffers = new List<FlatDataBm>();
             var offers = GetOffers(document);
 
             foreach (var offer in offers)
@@ -91,6 +91,6 @@ namespace Flats.Core.Scraping
         string Name { get; }
         List<string> Errors { get; }
         string ScrapingUrl { get; set; }
-        IEnumerable<FlatDataBM> Scrape();
+        IEnumerable<FlatDataBm> Scrape();
     }
 }

@@ -68,7 +68,7 @@ namespace Core.Domain.Logic.FlatsFeed
             UpdateStatsWithErrors();
         }
 
-        private void PersistScrappedFlats(IEnumerable<FlatDataBM> scrappedFlats)
+        private void PersistScrappedFlats(IEnumerable<FlatDataBm> scrappedFlats)
         {
             var flatsToUpdate = new List<Flat>();
             var flatsToAdd = new List<Flat>();
@@ -78,7 +78,7 @@ namespace Core.Domain.Logic.FlatsFeed
                 var distinctScrappedFlats = scrappedFlats
                     .DistinctBy(x => x.OtoDomId)
                     .Where(x => !usedKeys.ContainsKey(x.OtoDomId));
-                var flats = mapper.Map<IEnumerable<FlatDataBM>, IEnumerable<Flat>>(distinctScrappedFlats);
+                var flats = mapper.Map<IEnumerable<FlatDataBm>, IEnumerable<Flat>>(distinctScrappedFlats);
 
                 foreach (var flat in flats)
                 {

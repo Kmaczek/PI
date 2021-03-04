@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Core.Common.Logging;
+using Core.Domain.Logic;
+using Data.EF.Models;
 using Data.Repository;
+using Data.Repository.Interfaces;
 using log4net;
 using log4net.Config;
 using Microsoft.AspNetCore.Authentication;
@@ -82,12 +85,21 @@ namespace Pi.Api
                 return () => context.Resolve<ApiContext>();
             });
 
+            diBuilder.RegisterType<PiContext>();
+            diBuilder.Register<Func<PiContext>>(x =>
+            {
+                var context = x.Resolve<IComponentContext>();
+                return () => context.Resolve<PiContext>();
+            });
+
             diBuilder.RegisterType<AppUserRepository>().As<IAppUserRepository>();
+            diBuilder.RegisterType<OtoDomRepository>().As<IOtoDomRepository>();
 
             diBuilder.RegisterType<ApiConfig>().As<IApiConfig>();
             diBuilder.RegisterType<TokenService>().As<ITokenService>();
             diBuilder.RegisterType<PasswordHashingService>().As<IPasswordHashing>();
             diBuilder.RegisterType<UserService>().As<IUserService>();
+            diBuilder.RegisterType<FlatSeriesService>().As<IFlatSeriesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
