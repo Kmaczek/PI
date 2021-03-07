@@ -26,7 +26,7 @@
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
     "glyphicons": "^0.2.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "linqts": "^1.14.4",
     "moment": "^2.29.1",
     "oidc-client": "^1.10.1",
