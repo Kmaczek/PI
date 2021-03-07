@@ -27,7 +27,11 @@
     "chart.js": "^2.8.0",
     "glyphicons": "^0.2.0",
     "jquery": "^3.4.1",
+    "linqts": "^1.14.4",
+    "moment": "^2.29.1",
     "oidc-client": "^1.10.1",
+    "primeicons": "^4.1.0",
+    "primeng": "^11.3.0-rc.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

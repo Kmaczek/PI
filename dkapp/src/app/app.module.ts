@@ -6,13 +6,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './appRouting.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
-import { InflationModule } from './InflationModule/inflation.module';
+import { InflationModule } from './inflationModule/inflation.module';
 import { PiContentComponent } from './pageComponents/piContent/piContent.component';
 import { PiFooterComponent } from './pageComponents/piFooter/piFooter.component';
 import { PiNavbarComponent } from './pageComponents/piNavbar/piNavbar.component';
 import { PiControlsModule } from './piControls/piControls.module';
 import { FlatsModule } from './flatsModule/flats.module';
 import { HomeScreenComponent } from './homeScreen/homeScreen.component';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,9 @@ import { HomeScreenComponent } from './homeScreen/homeScreen.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+
+    TableModule,
+
     PiControlsModule,
     FlatsModule,
     InflationModule

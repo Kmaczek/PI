@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { RedirectComponent } from './RouteComponents/RedirectComponent/redirect.component';
-import { InflationScreenComponent } from './InflationModule/inflationScreen/inflationScreen.component';
+import { RedirectComponent } from './routeComponents/RedirectComponent/redirect.component';
+import { InflationScreenComponent } from './inflationModule/inflationScreen/inflationScreen.component';
 import { FlatsScreenComponent } from './flatsModule/flatsScreen/flatsScreen.component';
 import { HomeScreenComponent } from './homeScreen/homeScreen.component';
 
