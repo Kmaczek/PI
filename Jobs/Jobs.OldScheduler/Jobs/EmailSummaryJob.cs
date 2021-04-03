@@ -9,7 +9,6 @@ using Data.Repository.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using MoreLinq;
 using System.Linq;
 using System.Threading;
@@ -20,14 +19,14 @@ namespace Jobs.OldScheduler.Jobs
     public class EmailSummaryJob : IJob
     {
         private static Timer RunningTimer = null;
-        private IConfigurationRoot configuration;
-        private XtbInterface xtbService;
-        private readonly IBinanceService binanceService;
-        private readonly IEmailService emailService;
-        private readonly IOtoDomRepository otoDomRepository;
-        private readonly IEmailGeneratorFactory emailGeneratorFactory;
-        private readonly ILogger Log;
-        private readonly IMapper mapper;
+        private IConfigurationRoot _configuration;
+        private XtbInterface _xtbService;
+        private readonly IBinanceService _binanceService;
+        private readonly IEmailService _emailService;
+        private readonly IOtoDomRepository _otoDomRepository;
+        private readonly IEmailGeneratorFactory _emailGeneratorFactory;
+        private readonly ILogger _log;
+        private readonly IMapper _mapper;
 
         public string JobName => nameof(EmailSummaryJob);
 
@@ -41,14 +40,14 @@ namespace Jobs.OldScheduler.Jobs
             IOtoDomRepository otoDomRepository,
             IEmailGeneratorFactory emailGeneratorFactory)
         {
-            this.configuration = configuration;
-            this.Log = log;
-            this.mapper = mapper;
-            this.xtbService = xtbService;
-            this.binanceService = binanceService;
-            this.emailService = emailService;
-            this.otoDomRepository = otoDomRepository;
-            this.emailGeneratorFactory = emailGeneratorFactory;
+            _configuration = configuration;
+            _log = log;
+            _mapper = mapper;
+            _xtbService = xtbService;
+            _binanceService = binanceService;
+            _emailService = emailService;
+            _otoDomRepository = otoDomRepository;
+            _emailGeneratorFactory = emailGeneratorFactory;
         }
 
         public void Run()
@@ -58,32 +57,38 @@ namespace Jobs.OldScheduler.Jobs
 
         public void ImmediateRun()
         {
-            Log.Info($"Immediate execution of {JobName}.");
+            _log.Info($"Immediate execution of {JobName}.");
             EmailJob();
-            Log.Info($"Job {JobName} done.");
+            _log.Info($"Job {JobName} done.");
         }
 
         public void EmailJob()
         {
-            Log.Info($"Processing Email Summary job, time {DateTime.Now.ToLocalTime()}.");
+            _log.Info($"Processing Email Summary job, time {DateTime.Now.ToLocalTime()}.");
 
-            // Create service that provides generators
-            EmailAssembler emailAssembler = new EmailAssembler(
-                new List<IHtmlGenerator>
+            try
+            {
+                var generators = new List<IHtmlGenerator>
                 {
                     GetXtbGenerator(),
                     GetOtodomGenerator(),
                     GetBinanceGenerator()
-                });
+                };
+                EmailAssembler emailAssembler = new EmailAssembler(generators);
 
-            emailService.SendEmail(emailAssembler.GenerateEmail());
-            Log.Info($"Email Summary job finished, time {DateTime.Now.ToLocalTime()}.");
+                _emailService.SendEmail(emailAssembler.GenerateEmail());
+                _log.Info($"Email Summary job finished, time {DateTime.Now.ToLocalTime()}.");
+            }
+            catch(Exception e)
+            {
+                _log.Error($"Exception happened when trying to generate email.", e);
+            }
         }
 
         private IHtmlGenerator GetBinanceGenerator()
         {
-            var symbolValues = binanceService.GetSymbolValuesForAccount();
-            var binanceGenerator = emailGeneratorFactory.GetGenerator(EmailGenerator.Binance);
+            var symbolValues = _binanceService.GetSymbolValuesForAccount();
+            var binanceGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.Binance);
             binanceGenerator.SetBodyData(symbolValues);
 
             return binanceGenerator;
@@ -91,9 +96,9 @@ namespace Jobs.OldScheduler.Jobs
 
         private IHtmlGenerator GetXtbGenerator()
         {
-            var balance = xtbService.GetBalance();
-            XtbOutput balanceOutput = mapper.Map<XtbOutput>(balance);
-            var xtbHtmlGenerator = emailGeneratorFactory.GetGenerator(EmailGenerator.Xtb);
+            var balance = _xtbService.GetBalance();
+            XtbOutput balanceOutput = _mapper.Map<XtbOutput>(balance);
+            var xtbHtmlGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.Xtb);
             xtbHtmlGenerator.SetBodyData(balanceOutput);
 
             return xtbHtmlGenerator;
@@ -101,17 +106,17 @@ namespace Jobs.OldScheduler.Jobs
 
         private IHtmlGenerator GetOtodomGenerator()
         {
-            var privateOffers = otoDomRepository.GetPrivateFlats();
+            var privateOffers = _otoDomRepository.GetPrivateFlats();
             var mappedPrivate = MapToFlatsBM(privateOffers);
             var privateFlatAggregate = new FlatAggregateVm(mappedPrivate);
 
-            var allOffers = otoDomRepository.GetActiveFlats();
+            var allOffers = _otoDomRepository.GetActiveFlats();
             var flatDataBMs = MapToFlatsBM(allOffers);
             var allFlatAggregate = new FlatAggregateVm(flatDataBMs);
             SaveFlatSeries(allOffers);
 
             var flatsOutput = new FlatOutput(privateFlatAggregate.FlatCalculations, allFlatAggregate.FlatCalculations);
-            var otodomHtmlGenerator = emailGeneratorFactory.GetGenerator(EmailGenerator.Otodom);
+            var otodomHtmlGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.Otodom);
             otodomHtmlGenerator.SetBodyData(flatsOutput);
 
             return otodomHtmlGenerator;
@@ -151,7 +156,7 @@ namespace Jobs.OldScheduler.Jobs
 
             flatSeries.DateFetched = DateTime.Now.Date;
 
-            otoDomRepository.AddFlatSeries(flatSeries);
+            _otoDomRepository.AddFlatSeries(flatSeries);
         }
 
         private void LogFlatScrappingErrors(IEnumerable<FlatDataBm> flats)
@@ -159,12 +164,12 @@ namespace Jobs.OldScheduler.Jobs
             var flatsWithErrors = flats.Where(x => x.Errors.Any());
             if (flatsWithErrors.Any())
             {
-                Log.Info($"Detected {flatsWithErrors.Count()} flats with errors. Printing them now.");
+                _log.Info($"Detected {flatsWithErrors.Count()} flats with errors. Printing them now.");
 
                 foreach (var flat in flatsWithErrors)
                 {
                     var joinedErrors = string.Join(Environment.NewLine, flat.Errors);
-                    Log.Info($"Flat errors: {Environment.NewLine}{joinedErrors}.");
+                    _log.Info($"Flat errors: {Environment.NewLine}{joinedErrors}.");
                 }
             }
         }

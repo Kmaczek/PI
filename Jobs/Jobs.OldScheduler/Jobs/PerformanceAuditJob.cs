@@ -24,9 +24,9 @@ namespace Jobs.OldScheduler.Jobs
             ILogger log,
             IPerformanceAudit performanceAudit)
         {
-            this._configuration = configuration;
-            this._log = log;
-            this._performanceAudit = performanceAudit;
+            _configuration = configuration;
+            _log = log;
+            _performanceAudit = performanceAudit;
         }
 
         public string JobName => nameof(PerformanceAuditJob);
@@ -43,13 +43,20 @@ namespace Jobs.OldScheduler.Jobs
 
         private void AuditPerformance()
         {
-            _log.Info("Monitoring machine performance...");
-            _log.Info($"RAM {_performanceAudit.GetAvailableRAM()}MB");
-            _log.Info($"CPU {_performanceAudit.GetCurrentCpuUsage()}%");
-            var processesUsages = _performanceAudit.GetProcessesUsages();
-            _log.Info($"Found {processesUsages.Count} processes.");
-            LogProcesUsageData(processesUsages);
-            _log.Info($"{JobName} finished.");
+            try
+            {
+                _log.Info("Monitoring machine performance...");
+                _log.Info($"RAM {_performanceAudit.GetAvailableRAM()}MB");
+                _log.Info($"CPU {_performanceAudit.GetCurrentCpuUsage()}%");
+                var processesUsages = _performanceAudit.GetProcessesUsages();
+                _log.Info($"Found {processesUsages.Count} processes.");
+                LogProcesUsageData(processesUsages);
+                _log.Info($"{JobName} finished.");
+            }
+            catch(Exception e)
+            {
+                _log.Error($"Exception happened when trying to process otodom data.", e);
+            }
         }
 
         private void LogProcesUsageData(List<ProcessUsage> processesUsages)

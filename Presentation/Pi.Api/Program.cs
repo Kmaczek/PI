@@ -19,8 +19,10 @@ namespace Pi.Api
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                     {
-                        serverOptions.Listen(IPAddress.Loopback, 5001);
-                        serverOptions.Listen(IPAddress.Any, 8080);
+                        //serverOptions.Listen(IPAddress.Loopback, 5001);
+                        //serverOptions.Listen(IPAddress.Parse("116.203.100.224"), 5001);
+                        serverOptions.Listen(IPAddress.Any, 5001);
+                        //serverOptions.Listen(IPAddress.Any, 8080);
                         //serverOptions.Listen(IPAddress.Loopback, 443, listenOprions =>
                         //{
                         //    listenOprions.UseHttps();

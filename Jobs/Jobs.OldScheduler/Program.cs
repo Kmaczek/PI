@@ -55,9 +55,6 @@ namespace Jobs.OldScheduler
             AttachConsoleCommander();
             //RunTestMethod();
 
-            var c = new ConfigHelper(configuration);
-
-
             //TODO: Make it configurable
             jobRunner = new JobRunner(injectionContainer);
             jobRunner.AddJob(nameof(EmailSummaryJob));
@@ -95,9 +92,9 @@ namespace Jobs.OldScheduler
         private static void SetupConfig()
         {
             var builder = new ConfigurationBuilder()
-                            .SetBasePath(Directory.GetCurrentDirectory())
-                            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
-                            .AddEnvironmentVariables();
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
             configuration = builder.Build();
         }
 

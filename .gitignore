@@ -331,3 +331,5 @@ ASALocalRun/
 
 #My
 /Data/Data.EF/Models/TempCont.cs
+dkapp/src/environments/environment.prod.ts
+
