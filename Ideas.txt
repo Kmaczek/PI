@@ -8,3 +8,6 @@ Advice slips
 https://api.adviceslip.com/
 
 Weather
+
+Inflation
+

@@ -11,12 +11,13 @@ namespace Core.Domain.Logic
         public EmailGeneratorFactory(
             Func<XtbHtmlGenerator> xtbGenerator,
             Func<BinanceHtmlGenerator> binanceGenerator,
-            Func<OtodomHtmlGenerator> otodomGenerator
-            )
+            Func<OtodomHtmlGenerator> otodomGenerator,
+            Func<PriceDetectiveGenerator> priceDetectiveGenerator)
         {
             generators.Add(EmailGenerator.Xtb, xtbGenerator);
             generators.Add(EmailGenerator.Binance, binanceGenerator);
             generators.Add(EmailGenerator.Otodom, otodomGenerator);
+            generators.Add(EmailGenerator.PriceDetective, priceDetectiveGenerator);
         }
 
         public IHtmlGenerator GetGenerator(EmailGenerator generatorType)
@@ -29,6 +30,7 @@ namespace Core.Domain.Logic
     {
         Xtb = 1,
         Binance,
-        Otodom
+        Otodom,
+        PriceDetective
     }
 }

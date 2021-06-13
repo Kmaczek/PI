@@ -12,5 +12,6 @@ namespace Data.Repository.Interfaces
 
         IEnumerable<Parser> GetParsers();
         IEnumerable<PriceDetails> GetPriceDetails();
+        IEnumerable<PriceSeries> GetTodaysPricesDetails();
     }
 }

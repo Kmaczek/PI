@@ -13,6 +13,7 @@ using MoreLinq;
 using System.Linq;
 using System.Threading;
 using Xtb.Core;
+using Core.Model.PriceDetectiveModels;
 
 namespace Jobs.OldScheduler.Jobs
 {
@@ -24,6 +25,7 @@ namespace Jobs.OldScheduler.Jobs
         private readonly IBinanceService _binanceService;
         private readonly IEmailService _emailService;
         private readonly IOtoDomRepository _otoDomRepository;
+        private readonly IPriceRepository _priceRepository;
         private readonly IEmailGeneratorFactory _emailGeneratorFactory;
         private readonly ILogger _log;
         private readonly IMapper _mapper;
@@ -38,6 +40,7 @@ namespace Jobs.OldScheduler.Jobs
             IBinanceService binanceService,
             IEmailService emailService,
             IOtoDomRepository otoDomRepository,
+            IPriceRepository priceRepository,
             IEmailGeneratorFactory emailGeneratorFactory)
         {
             _configuration = configuration;
@@ -47,6 +50,7 @@ namespace Jobs.OldScheduler.Jobs
             _binanceService = binanceService;
             _emailService = emailService;
             _otoDomRepository = otoDomRepository;
+            this._priceRepository = priceRepository;
             _emailGeneratorFactory = emailGeneratorFactory;
         }
 
@@ -72,7 +76,8 @@ namespace Jobs.OldScheduler.Jobs
                 {
                     GetXtbGenerator(),
                     GetOtodomGenerator(),
-                    GetBinanceGenerator()
+                    GetBinanceGenerator(),
+                    GetPriceDetectiveGenerator()
                 };
                 EmailAssembler emailAssembler = new EmailAssembler(generators);
 
@@ -122,7 +127,36 @@ namespace Jobs.OldScheduler.Jobs
             return otodomHtmlGenerator;
         }
 
-        private List<FlatDataBm> MapToFlatsBM(IEnumerable<Data.EF.Models.Flat> allOffers)
+        private IHtmlGenerator GetPriceDetectiveGenerator()
+        {
+            var todaysPrices = _priceRepository.GetTodaysPricesDetails();
+            var emailModel = MapToPriceDetectiveItemModel(todaysPrices);
+            var priceDetectiveGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.PriceDetective);
+            priceDetectiveGenerator.SetBodyData(emailModel);
+
+            return priceDetectiveGenerator;
+        }
+
+        private PriceDetectiveEmailModel MapToPriceDetectiveItemModel(IEnumerable<PriceSeries> priceSeries)
+        {
+            var priceDetectiveEmailModel = new PriceDetectiveEmailModel();
+
+            foreach(var priceSerie in priceSeries)
+            {
+                var priceDetectiveItemModel = new PriceDetectiveItemModel()
+                {
+                    Price = priceSerie.Price,
+                    Title = priceSerie.PriceDetails.Title,
+                    Url = priceSerie.Parser.Uri
+                };
+
+                priceDetectiveEmailModel.Items.Add(priceDetectiveItemModel);
+            }
+
+            return priceDetectiveEmailModel;
+        }
+
+        private List<FlatDataBm> MapToFlatsBM(IEnumerable<Flat> allOffers)
         {
             var flatDataBMs = new List<FlatDataBm>();
             foreach (var flat in allOffers)

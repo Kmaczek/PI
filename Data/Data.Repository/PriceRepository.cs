@@ -48,6 +48,23 @@ namespace Data.Repository
             }
         }
 
+        public IEnumerable<PriceSeries> GetTodaysPricesDetails()
+        {
+            var dateNow = DateTime.Now;
+            using (var context = contextMaker.Invoke())
+            {
+                var priceSeries = context.PriceSeries
+                    .Include(ps => ps.PriceDetails)
+                    .Include(ps => ps.Parser)
+                    .Where(p => dateNow > p.CreatedDate && p.CreatedDate > dateNow.AddDays(-1))
+                    .ToList();
+
+                var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Id == g.Max(y => y.Id))).ToList();
+
+                return latestPrices;
+            }
+        }
+
         public void SavePriceDetails(PriceDetails priceDetails)
         {
             var dateNow = DateTime.Now;

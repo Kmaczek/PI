@@ -146,6 +146,12 @@ namespace Jobs.OldScheduler
                 var context = x.Resolve<IComponentContext>();
                 return () => context.Resolve<OtodomHtmlGenerator>();
             });
+            diBuilder.RegisterType<PriceDetectiveGenerator>();
+            diBuilder.Register<Func<PriceDetectiveGenerator>>(x =>
+            {
+                var context = x.Resolve<IComponentContext>();
+                return () => context.Resolve<PriceDetectiveGenerator>();
+            });
             diBuilder.RegisterType<EmailGeneratorFactory>().As<IEmailGeneratorFactory>();
 
             //Jobs

@@ -16,10 +16,14 @@
     <None Remove="Logic\EmailGeneration\BinanceTemplate.html" />
     <None Remove="Logic\EmailGeneration\EmailTemplate.html" />
     <None Remove="Logic\EmailGeneration\OtodomTemplate.html" />
+    <None Remove="Logic\EmailGeneration\PriceDetectiveTemplate.html" />
     <None Remove="Logic\EmailGeneration\XtbTemplate.html" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Logic\EmailGeneration\PriceDetectiveTemplate.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Logic\EmailGeneration\BinanceTemplate.html">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
