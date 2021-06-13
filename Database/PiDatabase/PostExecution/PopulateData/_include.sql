@@ -1,2 +1,2 @@
 ﻿
-:r .\FillFlatCategories.sql
+:r .\FillParserTypes.sql

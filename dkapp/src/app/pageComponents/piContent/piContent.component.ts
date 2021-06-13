@@ -3,7 +3,7 @@ import { IdentityService } from 'src/app/services/external/identity.ext.service'
 import { PiExtService } from 'src/app/services/external/pi.ext.service';
 
 @Component({
-  selector: 'piContent',
+  selector: 'pi-content',
   templateUrl: './piContent.component.html',
   styleUrls: ['./piContent.component.css']
 })

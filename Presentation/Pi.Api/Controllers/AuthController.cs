@@ -29,7 +29,7 @@ namespace Pi.Api.Controllers
 
             if (!string.IsNullOrEmpty(token))
             {
-                return Ok(token);
+                return Ok(new { token = token });
             }
 
             return Unauthorized("Incorrect user or password.");

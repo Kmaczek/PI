@@ -17,6 +17,7 @@ namespace Jobs.OldScheduler
         private readonly IJob emailSummaryJob;
         private readonly IJob performanceAuditJob;
         private readonly IJob otodomFeedJob;
+        private readonly IJob priceDetectiveJob;
         private readonly ILifetimeScope scope;
         private Dictionary<string, IJob> JobsToRun = new Dictionary<string, IJob>();
 
@@ -26,6 +27,7 @@ namespace Jobs.OldScheduler
             emailSummaryJob = scope.ResolveNamed<IJob>(nameof(EmailSummaryJob));
             performanceAuditJob = scope.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
             otodomFeedJob = scope.ResolveNamed<IJob>(nameof(OtodomFeedJob));
+            priceDetectiveJob = scope.ResolveNamed<IJob>(nameof(PriceDetectiveJob));
 
             SetJobsToRun();
             AddCommands();
@@ -41,6 +43,9 @@ namespace Jobs.OldScheduler
 
             JobsToRun.Add("of", otodomFeedJob);
             JobsToRun.Add("OtodomFeedJob", otodomFeedJob);
+
+            JobsToRun.Add("pd", priceDetectiveJob);
+            JobsToRun.Add(nameof(PriceDetectiveJob), priceDetectiveJob);
         }
 
         private void AddCommands()

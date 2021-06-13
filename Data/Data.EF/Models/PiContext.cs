@@ -26,9 +26,16 @@ namespace Data.EF.Models
         public virtual DbSet<Heating> Heating { get; set; }
         public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<Market> Market { get; set; }
+        public virtual DbSet<Parser> Parser { get; set; }
+        public virtual DbSet<ParserType> ParserType { get; set; }
+        public virtual DbSet<PriceDetails> PriceDetails { get; set; }
+        public virtual DbSet<PriceSeries> PriceSeries { get; set; }
+        public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesParent> SeriesParent { get; set; }
         public virtual DbSet<TypeOfBuilding> TypeOfBuilding { get; set; }
+        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserRoles> UserRoles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -42,8 +49,6 @@ namespace Data.EF.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
-
             modelBuilder.Entity<AdditionalInfo>(entity =>
             {
                 entity.ToTable("AdditionalInfo", "otodom");
@@ -125,9 +130,13 @@ namespace Data.EF.Models
             {
                 entity.ToTable("FlatCategoty", "otodom");
 
+                entity.Property(e => e.LowerBand).HasColumnType("money");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.Property(e => e.UpperBand).HasColumnType("money");
             });
 
             modelBuilder.Entity<FlatSeries>(entity =>
@@ -139,8 +148,6 @@ namespace Data.EF.Models
                 entity.Property(e => e.AvgPricePerMeter).HasColumnType("money");
 
                 entity.Property(e => e.DateFetched).HasColumnType("datetime");
-
-                entity.Property(e => e.DateFetched).HasColumnType("amount");
 
                 entity.HasOne(d => d.BestValue)
                     .WithMany(p => p.FlatSeriesBestValue)
@@ -207,6 +214,84 @@ namespace Data.EF.Models
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<Parser>(entity =>
+            {
+                entity.ToTable("Parser", "price");
+
+                entity.Property(e => e.ActiveFrom).HasColumnType("datetime");
+
+                entity.Property(e => e.ActiveTo).HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Uri)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.ParserType)
+                    .WithMany(p => p.Parser)
+                    .HasForeignKey(d => d.ParserTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParserType_Parser");
+            });
+
+            modelBuilder.Entity<ParserType>(entity =>
+            {
+                entity.ToTable("ParserType", "price");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<PriceDetails>(entity =>
+            {
+                entity.ToTable("PriceDetails", "price");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.RetailerNo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<PriceSeries>(entity =>
+            {
+                entity.ToTable("PriceSeries", "price");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Price).HasColumnType("money");
+
+                entity.HasOne(d => d.Parser)
+                    .WithMany(p => p.PriceSeries)
+                    .HasForeignKey(d => d.ParserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Parser_ParserSeries");
+
+                entity.HasOne(d => d.PriceDetails)
+                    .WithMany(p => p.PriceSeries)
+                    .HasForeignKey(d => d.PriceDetailsId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PriceDetails_ParserSeries");
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Role", "auth");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Series>(entity =>
             {
                 entity.ToTable("Series", "binance");
@@ -243,6 +328,60 @@ namespace Data.EF.Models
                     .IsRequired()
                     .HasMaxLength(100);
             });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("User", "auth");
+
+                entity.HasIndex(e => e.Username)
+                    .HasName("UQ__tmp_ms_x__536C85E43FCA7DCF")
+                    .IsUnique();
+
+                entity.Property(e => e.ActiveFrom).HasColumnType("datetime");
+
+                entity.Property(e => e.ActiveTo).HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.DisplayName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Email).HasMaxLength(256);
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<UserRoles>(entity =>
+            {
+                entity.ToTable("UserRoles", "auth");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserRoles_Role");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserRoles_User");
+            });
+
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

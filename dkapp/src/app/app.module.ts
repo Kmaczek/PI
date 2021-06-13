@@ -1,5 +1,5 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -14,6 +14,8 @@ import { PiControlsModule } from './piControls/piControls.module';
 import { FlatsModule } from './flatsModule/flats.module';
 import { HomeScreenComponent } from './homeScreen/homeScreen.component';
 import { TableModule } from 'primeng/table';
+import { PiLoginComponent } from './pageComponents/piLogin/piLogin.component';
+import { AuthInterceptor } from './services/interceptors/authInterceptor';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { TableModule } from 'primeng/table';
     PiNavbarComponent,
     PiContentComponent,
     PiFooterComponent,
+    PiLoginComponent,
     HomeScreenComponent
   ],
   imports: [
@@ -37,7 +40,11 @@ import { TableModule } from 'primeng/table';
     FlatsModule,
     InflationModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'piFooter',
+  selector: 'pi-footer',
   templateUrl: './piFooter.component.html',
   styleUrls: ['./piFooter.component.css']
 })

@@ -9,6 +9,7 @@ using Core.Domain.Logic;
 using Core.Domain.Logic.EmailGeneration;
 using Core.Domain.Logic.FlatsFeed;
 using Core.Domain.Logic.OtodomService;
+using Core.Domain.Logic.PriceDetective;
 using Core.Model;
 using Core.Model.FlatsModels;
 using Data.EF.Models;
@@ -60,6 +61,7 @@ namespace Jobs.OldScheduler
             jobRunner.AddJob(nameof(EmailSummaryJob));
             jobRunner.AddJob(nameof(PerformanceAuditJob));
             jobRunner.AddJob(nameof(OtodomFeedJob));
+            jobRunner.AddJob(nameof(PriceDetectiveJob));
 
             jobRunner.RunJobs();
 
@@ -114,6 +116,7 @@ namespace Jobs.OldScheduler
             });
             diBuilder.RegisterType<BinanceRepository>().As<IBinanceRepository>();
             diBuilder.RegisterType<OtoDomRepository>().As<IOtoDomRepository>();
+            diBuilder.RegisterType<PriceRepository>().As<IPriceRepository>();
 
             diBuilder.RegisterType<OtoDomScrapper>().As<IScrapper>();
             diBuilder.RegisterType<XtbService>().As<XtbInterface>();
@@ -122,6 +125,7 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<PerformanceAudit>().As<IPerformanceAudit>();
             diBuilder.RegisterType<EmailService>().As<IEmailService>();
             diBuilder.RegisterType<OtodomFeedService>().As<IFlatsFeedService>();
+            diBuilder.RegisterType<PriceDetectiveService>().As<IPriceDetectiveService>();
 
             //Generators
             diBuilder.RegisterType<XtbHtmlGenerator>();
@@ -148,6 +152,7 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<EmailSummaryJob>().Named<IJob>(nameof(EmailSummaryJob));
             diBuilder.RegisterType<PerformanceAuditJob>().Named<IJob>(nameof(PerformanceAuditJob));
             diBuilder.RegisterType<OtodomFeedJob>().Named<IJob>(nameof(OtodomFeedJob));
+            diBuilder.RegisterType<PriceDetectiveJob>().Named<IJob>(nameof(PriceDetectiveJob));
 
             diBuilder.RegisterType<ConsoleCommander>().SingleInstance();
 

@@ -17,10 +17,8 @@
         <a class="nav-link" routerLink="/inflation">Inflation</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="pi-input pi-input-gaps" placeholder="Login">
-      <input class="pi-input pi-input-gaps" placeholder="Password">
-      <piButton></piButton>
-    </form>
+    <pi-login *ngIf="identityService.isLoggedOut()"></pi-login>
+
+    <button *ngIf="identityService.isLoggedIn()" (click)="identityService.logout()">Log out</button>
   </div>
 </nav>

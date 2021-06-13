@@ -12,6 +12,8 @@ namespace Data.EF.Models
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public decimal LowerBand { get; set; }
+        public decimal UpperBand { get; set; }
 
         public virtual ICollection<FlatSeries> FlatSeries { get; set; }
     }
