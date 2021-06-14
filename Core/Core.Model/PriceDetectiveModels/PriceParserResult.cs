@@ -8,7 +8,7 @@ namespace Core.Model.PriceDetectiveModels
     {
         public string Title { get; set; }
         public decimal Price { get; set; }
-        public string RetailerNo { get; set; }
+        public string ProductNo { get; set; }
         public int ParserConfigId { get; set; }
         public bool Proper { get; set; }
     }

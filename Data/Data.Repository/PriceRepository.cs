@@ -56,7 +56,9 @@ namespace Data.Repository
                 var priceSeries = context.PriceSeries
                     .Include(ps => ps.PriceDetails)
                     .Include(ps => ps.Parser)
-                    .Where(p => dateNow > p.CreatedDate && p.CreatedDate > dateNow.AddDays(-1))
+                    .Where(p =>
+                        p.Parser.Track &&
+                        dateNow > p.CreatedDate && p.CreatedDate > dateNow.AddDays(-1))
                     .ToList();
 
                 var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Id == g.Max(y => y.Id))).ToList();

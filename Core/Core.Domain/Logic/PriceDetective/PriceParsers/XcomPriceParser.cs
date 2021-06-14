@@ -38,7 +38,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 var priceNumber = Convert.ToDecimal(price, CultureInfo.InvariantCulture);
 
                 result.Price = priceNumber;
-                result.RetailerNo = retailerPartNo;
+                result.ProductNo = retailerPartNo;
                 result.Title = title;
                 result.Proper = priceNumber != 0;
             }
@@ -51,7 +51,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
             return result;
         }
 
-        protected string DownloadContent(Uri uri)
+        private string DownloadContent(Uri uri)
         {
             using (WebClient client = new WebClient())
             {
@@ -59,7 +59,6 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 client.Headers.Add(HttpRequestHeader.Referer, "https://www.x-kom.pl/szukaj?q=rtx");
                 client.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
                 client.Headers.Add(HttpRequestHeader.Host, "www.x-kom.pl");
-                //client.Headers.Add(HttpRequestHeader.Cookie, "gcCobrowseStatus=null; PHPSESSID=sb2mh8iej0jj2t7co0lk80na9i; gcCobrowseStatus=null; utm_source=duckduckgo.com; utm_medium=referral; recently_viewed=[%22507702%22]");
                 client.Headers.Add(HttpRequestHeader.CacheControl, "no-cache");
                 client.Encoding = new UTF8Encoding();
                 return client.DownloadString(uri);

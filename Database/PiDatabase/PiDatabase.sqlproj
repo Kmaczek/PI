@@ -92,11 +92,11 @@
     <Build Include="PriceParser\PriceSeries.sql" />
     <None Include="PostExecution\PopulateData\FillParserTypes.sql" />
     <Build Include="PriceParser\PriceDetails.sql" />
+    <None Include="PostExecution\PopulateData\FillParsers.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PiDatabase.publish.xml" />
     <None Include="PiDatabase_Local.publish.xml" />
-    <None Include="PostExecution\PopulateData\FillFlatCategories.sql" />
     <None Include="PostExecution\PopulateData\_include.sql" />
   </ItemGroup>
   <ItemGroup>

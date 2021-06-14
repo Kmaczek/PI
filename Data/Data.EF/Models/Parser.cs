@@ -14,6 +14,7 @@ namespace Data.EF.Models
         public string Uri { get; set; }
         public int ParserTypeId { get; set; }
         public string Params { get; set; }
+        public bool Track { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public DateTime ActiveFrom { get; set; }

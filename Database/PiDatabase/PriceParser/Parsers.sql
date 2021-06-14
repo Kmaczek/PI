@@ -6,6 +6,7 @@
         CONSTRAINT FK_ParserType_Parser 
         FOREIGN KEY REFERENCES [price].[ParserType],
     [Params] NVARCHAR(MAX), 
+    [Track] BIT NOT NULL, 
     [CreatedDate] DATETIME NOT NULL, 
     [UpdatedDate] DATETIME NOT NULL,
     [ActiveFrom] DATETIME NOT NULL,

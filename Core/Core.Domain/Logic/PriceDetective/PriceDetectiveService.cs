@@ -6,13 +6,17 @@ using Data.Repository.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Core.Domain.Logic.PriceDetective
 {
     public class PriceDetectiveService: IPriceDetectiveService
     {
+        private const string DelayConfigKey = "PriceDetectiveJob:delay";
+
         private Dictionary<string, Func<IPriceParser>> parsers = new Dictionary<string, Func<IPriceParser>>();
 
         private readonly IConfigurationRoot configuration;
@@ -29,6 +33,14 @@ namespace Core.Domain.Logic.PriceDetective
             this.priceRepository = priceRepository;
 
             parsers.Add(nameof(XcomPriceParser), () => new XcomPriceParser());
+            parsers.Add(nameof(FriscoPriceParser), () => new FriscoPriceParser());
+        }
+
+        public int Delay { 
+            get
+            {
+                return Convert.ToInt32(this.configuration.GetSection(DelayConfigKey).Value, CultureInfo.InvariantCulture);
+            }
         }
 
         public IEnumerable<PriceParserResult> CollectPriceData()
@@ -43,6 +55,7 @@ namespace Core.Domain.Logic.PriceDetective
                 result.ParserConfigId = parserConfig.Id;
 
                 priceData.Add(result);
+                Thread.Sleep(Delay);
             }
 
             return priceData;
@@ -57,7 +70,7 @@ namespace Core.Domain.Logic.PriceDetective
             foreach (var price in priceData)
             {
                 var existingPriceDetail = dbPriceDetails
-                    .Where(pd => pd.Title == price.Title && pd.RetailerNo == price.RetailerNo)
+                    .Where(pd => pd.Title == price.Title && pd.RetailerNo == price.ProductNo)
                     .OrderByDescending(pd => pd.Id)
                     .FirstOrDefault();
 
@@ -65,7 +78,7 @@ namespace Core.Domain.Logic.PriceDetective
                 {
                     var priceDetailsItem = new PriceDetails();
                     priceDetailsItem.Title = price.Title;
-                    priceDetailsItem.RetailerNo = price.RetailerNo;
+                    priceDetailsItem.RetailerNo = price.ProductNo;
                     priceDetailsItem.CreatedDate = dateNow;
 
                     priceRepository.SavePriceDetails(priceDetailsItem);
