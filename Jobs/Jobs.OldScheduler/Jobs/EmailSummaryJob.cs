@@ -111,47 +111,85 @@ namespace Jobs.OldScheduler.Jobs
 
         private IHtmlGenerator GetOtodomGenerator()
         {
-            var privateOffers = _otoDomRepository.GetPrivateFlats();
-            var mappedPrivate = MapToFlatsBM(privateOffers);
-            var privateFlatAggregate = new FlatAggregateVm(mappedPrivate);
+            IHtmlGenerator otodomHtmlGenerator = new OtodomHtmlGenerator();
+            try
+            {
+                var privateOffers = _otoDomRepository.GetPrivateFlats();
+                var mappedPrivate = MapToFlatsBM(privateOffers);
+                var privateFlatAggregate = new FlatAggregateVm(mappedPrivate);
 
-            var allOffers = _otoDomRepository.GetActiveFlats();
-            var flatDataBMs = MapToFlatsBM(allOffers);
-            var allFlatAggregate = new FlatAggregateVm(flatDataBMs);
-            SaveFlatSeries(allOffers);
+                var allOffers = _otoDomRepository.GetActiveFlats();
+                var flatDataBMs = MapToFlatsBM(allOffers);
+                var allFlatAggregate = new FlatAggregateVm(flatDataBMs);
+                SaveFlatSeries(allOffers);
 
-            var flatsOutput = new FlatOutput(privateFlatAggregate.FlatCalculations, allFlatAggregate.FlatCalculations);
-            var otodomHtmlGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.Otodom);
-            otodomHtmlGenerator.SetBodyData(flatsOutput);
+                var flatsOutput = new FlatOutput(privateFlatAggregate.FlatCalculations, allFlatAggregate.FlatCalculations);
+                otodomHtmlGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.Otodom);
+                otodomHtmlGenerator.SetBodyData(flatsOutput);
+            }
+            catch(Exception e)
+            {
+                _log.Error($"Failed to generate {nameof(OtodomHtmlGenerator)} data.", e);
+            }
 
             return otodomHtmlGenerator;
         }
 
         private IHtmlGenerator GetPriceDetectiveGenerator()
         {
-            var todaysPrices = _priceRepository.GetTodaysPricesDetails();
-            var emailModel = MapToPriceDetectiveItemModel(todaysPrices);
-            var priceDetectiveGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.PriceDetective);
-            priceDetectiveGenerator.SetBodyData(emailModel);
+            IHtmlGenerator priceDetectiveGenerator = new PriceDetectiveGenerator();
+            try
+            {
+                var todaysPrices = _priceRepository.GetPriceSeries(DateTime.Now);
+                var yesterdaysPrices = _priceRepository.GetPriceSeries(DateTime.Now.AddDays(-1));
+                var minPrices = _priceRepository.GetMinPricesDetails();
+                var maxPrices = _priceRepository.GetMaxPricesDetails();
+                var emailModel = MapToPriceDetectiveItemModel(
+                    todaysPrices,
+                    yesterdaysPrices,
+                    minPrices,
+                    maxPrices);
+                priceDetectiveGenerator = _emailGeneratorFactory.GetGenerator(EmailGenerator.PriceDetective);
+                priceDetectiveGenerator.SetBodyData(emailModel);
+            }
+            catch(Exception e)
+            {
+                _log.Error($"Failed to generate {nameof(PriceDetectiveGenerator)} data.", e);
+            }
 
             return priceDetectiveGenerator;
         }
 
-        private PriceDetectiveEmailModel MapToPriceDetectiveItemModel(IEnumerable<PriceSeries> priceSeries)
+        private PriceDetectiveEmailModel MapToPriceDetectiveItemModel(
+            IEnumerable<PriceSeries> todayPriceSeries,
+            IEnumerable<PriceSeries> yesterdayPriceSeries,
+            IEnumerable<PriceSeries> minPriceSeries,
+            IEnumerable<PriceSeries> maxPriceSeries)
         {
             var priceDetectiveEmailModel = new PriceDetectiveEmailModel();
+            var parsers = todayPriceSeries.GroupBy(x => x.ParserId);
 
-            foreach(var priceSerie in priceSeries)
+            foreach(var parser in parsers)
             {
+                var todayPrice = todayPriceSeries.FirstOrDefault(x => x.ParserId == parser.Key);
+                var yesterdayPrice = yesterdayPriceSeries.FirstOrDefault(x => x.ParserId == parser.Key);
+                var minPrice = minPriceSeries.FirstOrDefault(x => x.ParserId == parser.Key);
+                var maxPrice = maxPriceSeries.FirstOrDefault(x => x.ParserId == parser.Key);
+
                 var priceDetectiveItemModel = new PriceDetectiveItemModel()
                 {
-                    Price = priceSerie.Price,
-                    Title = priceSerie.PriceDetails.Title,
-                    Url = priceSerie.Parser.Uri
+                    Min = minPrice?.Price,
+                    Max = maxPrice?.Price,
+                    Prev = yesterdayPrice?.Price,
+                    Currrent = todayPrice?.Price,
+                    Title = todayPrice.PriceDetails.Title,
+                    Url = todayPrice.Parser.Uri
                 };
 
                 priceDetectiveEmailModel.Items.Add(priceDetectiveItemModel);
             }
+
+            priceDetectiveEmailModel.Items = priceDetectiveEmailModel.Items.OrderByDescending(x => x.Currrent).ToList();
 
             return priceDetectiveEmailModel;
         }

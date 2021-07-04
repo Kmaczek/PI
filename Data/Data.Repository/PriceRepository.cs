@@ -48,7 +48,7 @@ namespace Data.Repository
             }
         }
 
-        public IEnumerable<PriceSeries> GetTodaysPricesDetails()
+        public IEnumerable<PriceSeries> GetPriceSeries(DateTime date)
         {
             var dateNow = DateTime.Now;
             using (var context = contextMaker.Invoke())
@@ -58,10 +58,42 @@ namespace Data.Repository
                     .Include(ps => ps.Parser)
                     .Where(p =>
                         p.Parser.Track &&
-                        dateNow > p.CreatedDate && p.CreatedDate > dateNow.AddDays(-1))
+                        date.AddDays(-1) < p.CreatedDate && p.CreatedDate < date)
                     .ToList();
 
                 var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Id == g.Max(y => y.Id))).ToList();
+
+                return latestPrices;
+            }
+        }
+
+        public IEnumerable<PriceSeries> GetMaxPricesDetails()
+        {
+            using (var context = contextMaker.Invoke())
+            {
+                var priceSeries = context.PriceSeries
+                    .Include(ps => ps.PriceDetails)
+                    .Include(ps => ps.Parser)
+                    .Where(p => p.Parser.Track)
+                    .ToList();
+
+                var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Price == g.Max(y => y.Price))).ToList();
+
+                return latestPrices;
+            }
+        }
+
+        public IEnumerable<PriceSeries> GetMinPricesDetails()
+        {
+            using (var context = contextMaker.Invoke())
+            {
+                var priceSeries = context.PriceSeries
+                    .Include(ps => ps.PriceDetails)
+                    .Include(ps => ps.Parser)
+                    .Where(p => p.Parser.Track)
+                    .ToList();
+
+                var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Price == g.Min(y => y.Price))).ToList();
 
                 return latestPrices;
             }
