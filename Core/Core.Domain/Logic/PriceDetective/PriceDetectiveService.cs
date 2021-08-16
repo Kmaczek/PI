@@ -71,8 +71,13 @@ namespace Core.Domain.Logic.PriceDetective
             var dbPriceDetails = priceRepository.GetPriceDetails();
             foreach (var price in priceData)
             {
+                var priceSerie = new PriceSeries();
+                priceSerie.CreatedDate = dateNow;
+                priceSerie.ParserId = price.ParserConfigId;
+                priceSerie.Price = price.Price;
+
                 var existingPriceDetail = dbPriceDetails
-                    .Where(pd => pd.Title == price.Title && pd.RetailerNo == price.ProductNo)
+                    .Where(pd => pd.RetailerNo == price.ProductNo)
                     .OrderByDescending(pd => pd.Id)
                     .FirstOrDefault();
 
@@ -87,10 +92,6 @@ namespace Core.Domain.Logic.PriceDetective
                     existingPriceDetail = priceDetailsItem;
                 }
 
-                var priceSerie = new PriceSeries();
-                priceSerie.CreatedDate = dateNow;
-                priceSerie.ParserId = price.ParserConfigId;
-                priceSerie.Price = price.Price;
                 priceSerie.PriceDetailsId = existingPriceDetail.Id;
 
                 priceSeries.Add(priceSerie);

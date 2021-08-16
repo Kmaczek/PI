@@ -63,7 +63,10 @@ namespace Data.Repository
             var privateFlats = PiContext.Flat
                 .Where(x => 
                     (x.IsPrivate != null && x.IsPrivate.Value)
-                    && (x.UpdatedDate != null && x.UpdatedDate > yesterdayDate))
+                    && (x.UpdatedDate != null && x.UpdatedDate > yesterdayDate)
+                    && x.TotalPrice > 100000
+                    && x.Surface > 1
+                    && x.Surface < 500)
                 .ToList();
 
             return privateFlats;
@@ -74,7 +77,12 @@ namespace Data.Repository
             var yesterdayDate = DateTime.Now.AddDays(-1);
 
             var activeFlats = PiContext.Flat
-                .Where(x => x.UpdatedDate != null && x.UpdatedDate > yesterdayDate && x.TotalPrice > 1)
+                .Where(x => 
+                    x.UpdatedDate != null 
+                    && x.UpdatedDate > yesterdayDate 
+                    && x.TotalPrice > 100000
+                    && x.Surface > 1
+                    && x.Surface < 500)
                 .ToList();
 
             return activeFlats;

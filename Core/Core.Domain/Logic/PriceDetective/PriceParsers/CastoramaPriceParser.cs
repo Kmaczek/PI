@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Core.Domain.Logic.PriceDetective.PriceParsers
 {
@@ -12,9 +13,13 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
     {
         public string Content { get; set; } = String.Empty;
 
+        private  CultureInfo _polishCulture = new CultureInfo("pl-PL");
+
         public void Load(Uri uri)
         {
             Content = DownloadContent(uri);
+            CultureInfo ci = new CultureInfo("pl-PL");
+            Thread.CurrentThread.CurrentCulture = ci;
         }
 
         public PriceParserResult Parse()
@@ -31,7 +36,8 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
 
                     while (!string.IsNullOrEmpty(line))
                     {
-                        if (line.Contains("\"aggregateRating\":", StringComparison.InvariantCulture))
+                        if (line.Contains("\"aggregateRating\":", StringComparison.InvariantCulture) 
+                            || line.Contains("\"isRelatedTo\":", StringComparison.InvariantCulture))
                         {
                             break;
                         }
@@ -56,8 +62,8 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                             }
                             else if (line.Contains("\"price\":", StringComparison.InvariantCulture)) 
                             {
-                                var priceStr = GetValue(line);
-                                result.Price = Convert.ToDecimal(priceStr, CultureInfo.InvariantCulture);
+                                var priceStr = GetValue(line).Replace(".", ",");
+                                result.Price = Convert.ToDecimal(priceStr, _polishCulture);
                             }
                         }
 
@@ -90,9 +96,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
             using (WebClient client = new WebClient())
             {
                 client.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0");
-                //client.Headers.Add(HttpRequestHeader.Referer, "https://www.x-kom.pl/szukaj?q=rtx");
                 client.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
-                //client.Headers.Add(HttpRequestHeader.Host, "www.x-kom.pl");
                 client.Headers.Add(HttpRequestHeader.CacheControl, "no-cache");
                 client.Encoding = new UTF8Encoding();
                 return client.DownloadString(uri);
