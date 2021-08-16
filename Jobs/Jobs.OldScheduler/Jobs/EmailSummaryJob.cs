@@ -203,7 +203,7 @@ namespace Jobs.OldScheduler.Jobs
                     flat.Surface,
                     flat.TotalPrice,
                     flat.Rooms.HasValue ? (int)flat.Rooms : 0,
-                    flat.Url,
+                    flat.NormalizedUrl,
                     flat.IsPrivate.HasValue ? flat.IsPrivate.Value : false);
                 flatDataBMs.Add(flatBM);
             }
@@ -216,9 +216,9 @@ namespace Jobs.OldScheduler.Jobs
             var flatSeries = new FlatSeries();
             flatSeries.Amount = flats.Count();
             flatSeries.AvgPrice = flats.Average(x => x.TotalPrice);
-            flatSeries.AvgPricePerMeter = flatSeries.AvgPrice / flats.Average(x => x.Surface);
+            flatSeries.AvgPricePerMeter = flats.Average(x => x.Surface) == 0 ? 0 : flatSeries.AvgPrice / flats.Average(x => x.Surface);
 
-            flatSeries.BestValueId = flats.MinBy(x => x.TotalPrice / x.Surface).FirstOrDefault()?.Id;
+            flatSeries.BestValueId = flats.MinBy(x => x.Surface == 0 ? 0 : (x.TotalPrice / x.Surface)).FirstOrDefault()?.Id;
 
             flatSeries.BiggestId = flats.MaxBy(x => x.Surface).FirstOrDefault()?.Id;
             flatSeries.MostExpensiveId = flats.MaxBy(x => x.TotalPrice).FirstOrDefault()?.Id;

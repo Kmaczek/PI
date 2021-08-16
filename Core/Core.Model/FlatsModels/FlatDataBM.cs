@@ -61,5 +61,11 @@ namespace Core.Model.FlatsModels
 
             return FlatSizeEnum.Small;
         }
+
+        public override string ToString()
+        {
+            var str = $"OtodomID: {OtoDomId}, Url: {Url}, Surface: {Surface}, Total: {TotalPrice}, Rooms: {Rooms}, IsPrivate: {IsPrivate}";
+            return str;
+        }
     }
 }

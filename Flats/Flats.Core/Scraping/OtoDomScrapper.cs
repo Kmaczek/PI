@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Core.Model.FlatsModels;
-using Flats.Core.Models;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ namespace Flats.Core.Scraping
 
         protected override int GetPageCount(HtmlDocument document)
         {
-            var sth = document.DocumentNode.SelectSingleNode(@"//*[contains(@class,'offers-index')]/strong");
+            var sth = document.DocumentNode.SelectSingleNode(@"//main/div/div[3]/div[1]/div[1]/div/strong/span[2]");
 
             var count = 0;
             if (sth == null)
@@ -53,66 +52,32 @@ namespace Flats.Core.Scraping
 
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
         {
-            return document.DocumentNode.SelectNodes(@"//*[@id='body-container']/div/div/div[1]/div/article");
+            return document.DocumentNode.SelectNodes(@"//*[@data-cy='frontend.search.listing']/ul/li/a");
         }
 
         protected override FlatDataBm ParseOffer(HtmlNode node)
         {
-            var detailsNode = node.SelectSingleNode(@".//*[@class='offer-item-details']");
-            var bottomDetails = node.SelectSingleNode(@".//*[@class='offer-item-details-bottom']");
+            Url = GetUrl(node, Errors);
+
+            //var locationNode = node.SelectSingleNode(@".//article/p[1]");
+            var priceNode = node.SelectSingleNode(@".//article/p[2]");
+            var detailsNode = node.SelectSingleNode(@".//article/p[3]");
+            var bottomDetails = node.SelectSingleNode(@".//article/div[1]");
                
-            if (IsPromo(detailsNode, Errors))
-            {
-                return null;
-            }
-
-            Url = GetUrl(detailsNode, Errors);
             var otodomId = GetOtoDomId(Errors);
-            var Rooms = GetRooms(detailsNode, Errors);
-            var TotalPrice = GetPrice(detailsNode, Errors);
-            var SquareMeters = GetArea(detailsNode, Errors);
+            var totalPrice = GetPrice(priceNode, Errors);
+            var rooms = GetRooms(detailsNode, Errors);
+            var squareMeters = GetArea(detailsNode, Errors);
             var isPrivate = IsPrivateOffer(bottomDetails, Errors);
+            //var location = GetLocation(locationNode, Errors);
 
-            var data = new FlatDataBm(SquareMeters, TotalPrice, Rooms, Url, isPrivate)
+            var data = new FlatDataBm(squareMeters, totalPrice, rooms, Url, isPrivate)
             {
-                OtoDomId = otodomId
+                OtoDomId = otodomId,
+                //Location = location
             };
-            //data.Location = GetLocation(detailsNode);
+
             return data;
-        }
-
-        private bool IsPromo(HtmlNode node, List<string> errors)
-        {
-            var promoString = string.Empty;
-            try
-            {
-                var urlNode = node.SelectSingleNode(@".//header/h3/a");
-                promoString = urlNode.GetAttributeValue("data-featured-tracking", "");
-            }
-            catch(Exception e)
-            {
-                errors.Add($"Can't tell if promo offer. Offer: {Url}. Exception {e.Message}");
-            }
-            
-            return "promo_top_ads".Equals(promoString) || "promo_vip".Equals(promoString);
-        }
-
-        private string GetLocation(HtmlNode node, List<string> errors)
-        {
-            var location = string.Empty;
-            var normalized = string.Empty;
-
-            try
-            {
-                var urlNode = node.SelectSingleNode(@".//header/p");
-                location = urlNode.InnerText;
-            }
-            catch(Exception e)
-            {
-                errors.Add($"Can't parse Location. Offer: {Url}. Exception {e.Message}");
-            }
-
-            return location;
         }
 
         private decimal GetArea(HtmlNode node, List<string> errors)
@@ -122,9 +87,9 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var areaNode = node.SelectSingleNode(@".//*[@class='hidden-xs offer-item-area']");
+                var areaNode = node.SelectSingleNode(@".//span[2]");
                 normalized = areaNode.InnerText.Trim();
-                var str = normalized.Remove(normalized.Length - 3).Replace(" ", "");
+                var str = normalized.Remove(normalized.Length - 3).Replace(" ", "").Replace(".", ",");
 
                 squareMeters = decimal.Parse(str, CultureInfo.CreateSpecificCulture("pl-PL"));
             }
@@ -136,6 +101,23 @@ namespace Flats.Core.Scraping
             return squareMeters;
         }
 
+        private string GetLocation(HtmlNode node, List<string> errors)
+        {
+            string location = null;
+
+            try
+            {
+                var roomsNode = node.SelectSingleNode(@".//span[1]");
+                location = roomsNode.InnerText.Trim();
+            }
+            catch (Exception e)
+            {
+                errors.Add($"Can't parse {nameof(location)}. Offer: {Url}. Exception {e.Message}");
+            }
+
+            return location;
+        }
+
         private decimal GetPrice(HtmlNode node, List<string> errors)
         {
             decimal price = 0m;
@@ -143,11 +125,10 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var urlNode = node.SelectSingleNode(@".//*[@class='offer-item-price']");
-                normalized = urlNode.InnerText.Trim();
+                normalized = node.InnerText.Trim();
                 var str = normalized.Remove(normalized.Length - 3).Replace(" ", "").Replace(",", ".");
 
-                price = decimal.Parse(str, CultureInfo.InvariantCulture);
+                price = decimal.Parse(str, CultureInfo.CreateSpecificCulture("pl-PL"));
             }
             catch (Exception e)
             {
@@ -164,7 +145,7 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var roomsNode = node.SelectSingleNode(@".//*[@class='offer-item-rooms hidden-xs']");
+                var roomsNode = node.SelectSingleNode(@".//span[1]");
                 normalized = roomsNode.InnerText.Trim().Split(' ')[0].Replace(">", "");
 
                 rooms = int.Parse(normalized);
@@ -184,10 +165,7 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var urlNode = node.SelectSingleNode(@".//header/h3/a");
-                normalized = urlNode.InnerText.Trim().Split(' ')[0].Replace(">", "");
-
-                url = urlNode.GetAttributeValue("href", "");
+                url = node.GetAttributeValue("href", "");
             }
             catch (Exception e)
             {
@@ -203,13 +181,14 @@ namespace Flats.Core.Scraping
 
             try
             {
-                Regex regex = new Regex(@"(?<=ID)(.*)(?=\.html)");
+                Regex regex = new Regex(@"(ID.+)");
                 Match match = regex.Match(Url);
 
                 if (match.Success)
                 {
                     var groups = regex.GetGroupNames();
-                    otodomId = match.Groups[1].Value;
+                    var lastOne = match.Groups.Count-1;
+                    otodomId = match.Groups[lastOne].Value?.Replace("ID", "");
                 }
             }
             catch (Exception e)

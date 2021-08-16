@@ -12,5 +12,14 @@ namespace Core.Model.PriceDetectiveModels
         public decimal? Prev { get; set; }
         public decimal? Currrent { get; set; }
         public string Url { get; set; }
+
+        public string Indicator => GetIndicatorClass();
+
+        public string GetIndicatorClass()
+        {
+            if (Currrent == Prev) return "no-change";
+            else if (Currrent - Prev > 0) return "up";
+            else return "down";
+        }
     }
 }
