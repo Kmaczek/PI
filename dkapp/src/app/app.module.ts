@@ -14,6 +14,9 @@ import { PiControlsModule } from './piControls/piControls.module';
 import { FlatsModule } from './flatsModule/flats.module';
 import { HomeScreenComponent } from './homeScreen/homeScreen.component';
 import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { DividerModule } from 'primeng/divider';
 import { PiLoginComponent } from './pageComponents/piLogin/piLogin.component';
 import { AuthInterceptor } from './services/interceptors/authInterceptor';
 
@@ -35,6 +38,9 @@ import { AuthInterceptor } from './services/interceptors/authInterceptor';
     BrowserAnimationsModule,
 
     TableModule,
+    ButtonModule,
+    DropdownModule,
+    DividerModule,
 
     PiControlsModule,
     FlatsModule,

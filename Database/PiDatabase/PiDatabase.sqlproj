@@ -65,6 +65,7 @@
     <Folder Include="PostExecution\PopulateData" />
     <Folder Include="Auth" />
     <Folder Include="PriceParser" />
+    <Folder Include="Pi" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Binance\Series.sql" />
@@ -93,6 +94,8 @@
     <None Include="PostExecution\PopulateData\FillParserTypes.sql" />
     <Build Include="PriceParser\PriceDetails.sql" />
     <None Include="PostExecution\PopulateData\FillParsers.sql" />
+    <Build Include="Pi\Pi.sql" />
+    <Build Include="Pi\Settings.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PiDatabase.publish.xml" />

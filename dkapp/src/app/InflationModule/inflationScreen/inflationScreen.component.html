@@ -1,13 +1,29 @@
 <br />
 <div class="container">
-  <h3>INFLATION</h3>
-  <div class="row">
-    <div class="col-xl">
-      
-      <span class="glyphicon glyphicon-thumbs-up"></span>
-    </div>
-    
+  <div class="grid pb-3">
+    <h3>INFLATION</h3>
   </div>
+  
+  <div class="grid pb-3">
+    Value: 5%
+  </div>
+
+  <div class="grid pb-3">
+  </div>
+
+  <div class="grid pb-3 flex flex-row flex-wrap card-container blue-container">
+    <div class="flex align-items-center justify-content-center pr-3">Product:</div>
+    <div class="flex align-items-center justify-content-center pr-3"><p-dropdown [options]="products" [(ngModel)]="selectedProduct" optionLabel="name" placeholder="Select Product"></p-dropdown></div>
+    <div class="flex align-items-center justify-content-center"><p-button label="Submit" (click)="loadSeries($event)"></p-button></div>
+  </div>
+
+  <div class="grid pb-3 w-full">
+    <div class="card w-full">
+      <h5>Basic</h5>
+      <p-chart type="line" [data]="basicData" [options]="basicOptions"></p-chart>
+    </div>
+  </div>
+  
 </div>
 
 <br />

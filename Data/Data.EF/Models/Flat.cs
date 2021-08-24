@@ -5,8 +5,6 @@ namespace Data.EF.Models
 {
     public partial class Flat
     {
-        private const string otodomBaseUrl = "https://www.otodom.pl";
-        private string normalizedUrl = null;
         public Flat()
         {
             FlatAdditionalInfo = new HashSet<FlatAdditionalInfo>();
@@ -33,21 +31,6 @@ namespace Data.EF.Models
         public int? FormOfPropertyId { get; set; }
         public int? TypeId { get; set; }
         public string Url { get; set; }
-        public string NormalizedUrl 
-        { 
-            get
-            {
-                if(normalizedUrl == null)
-                {
-                    if (Url.Contains("https"))
-                        normalizedUrl = Url;
-                    else
-                        normalizedUrl = otodomBaseUrl + Url;
-                }
-
-                return normalizedUrl;
-            }
-        }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 

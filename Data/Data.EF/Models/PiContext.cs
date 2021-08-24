@@ -33,6 +33,7 @@ namespace Data.EF.Models
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesParent> SeriesParent { get; set; }
+        public virtual DbSet<Settings> Settings { get; set; }
         public virtual DbSet<TypeOfBuilding> TypeOfBuilding { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
@@ -318,6 +319,19 @@ namespace Data.EF.Models
                 entity.Property(e => e.FetchedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Total).HasColumnType("money");
+            });
+
+            modelBuilder.Entity<Settings>(entity =>
+            {
+                entity.ToTable("Settings", "pi");
+
+                entity.Property(e => e.Description).HasMaxLength(300);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Value).IsRequired();
             });
 
             modelBuilder.Entity<TypeOfBuilding>(entity =>

@@ -203,7 +203,7 @@ namespace Jobs.OldScheduler.Jobs
                     flat.Surface,
                     flat.TotalPrice,
                     flat.Rooms.HasValue ? (int)flat.Rooms : 0,
-                    flat.NormalizedUrl,
+                    flat.Url,
                     flat.IsPrivate.HasValue ? flat.IsPrivate.Value : false);
                 flatDataBMs.Add(flatBM);
             }

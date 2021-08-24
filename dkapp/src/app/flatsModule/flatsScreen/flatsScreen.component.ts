@@ -39,7 +39,6 @@ export class FlatsScreenComponent implements OnInit
       this.lineChart.labels = labels.ToArray();
       this.lineChart.loadChart();
     });
-    //this.piService.GetWeatherForecast();
     //this.identity.login(); 
   }
 }

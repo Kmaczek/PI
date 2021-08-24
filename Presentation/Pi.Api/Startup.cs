@@ -94,12 +94,14 @@ namespace Pi.Api
 
             diBuilder.RegisterType<AppUserRepository>().As<IAppUserRepository>();
             diBuilder.RegisterType<OtoDomRepository>().As<IOtoDomRepository>();
+            diBuilder.RegisterType<PriceRepository>().As<IPriceRepository>();
 
             diBuilder.RegisterType<ApiConfig>().As<IApiConfig>();
             diBuilder.RegisterType<TokenService>().As<ITokenService>();
             diBuilder.RegisterType<PasswordHashingService>().As<IPasswordHashing>();
             diBuilder.RegisterType<UserService>().As<IUserService>();
             diBuilder.RegisterType<FlatSeriesService>().As<IFlatSeriesService>();
+            diBuilder.RegisterType<PriceService>().As<IPriceService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

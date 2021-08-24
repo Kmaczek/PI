@@ -35,6 +35,7 @@ namespace Core.Domain.Logic.PriceDetective
             parsers.Add(nameof(XcomPriceParser), () => new XcomPriceParser());
             parsers.Add(nameof(FriscoPriceParser), () => new FriscoPriceParser());
             parsers.Add(nameof(CastoramaPriceParser), () => new CastoramaPriceParser());
+            parsers.Add(nameof(DozPriceParser), () => new DozPriceParser());
         }
 
         public int Delay 

@@ -8,5 +8,6 @@ namespace Core.Domain.Logic
     public interface IPriceService
     {
         IEnumerable<ProductVm> GetProducts();
+        IEnumerable<PriceSeriesVm> GetPriceSeries(int productId);
     }
 }

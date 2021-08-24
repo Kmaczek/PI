@@ -67,6 +67,18 @@ namespace Data.Repository
             }
         }
 
+        public IEnumerable<PriceSeries> GetPriceSeries(int productId)
+        {
+            using (var context = contextMaker.Invoke())
+            {
+                var priceSeries = context.PriceSeries
+                    .Where(ps => ps.PriceDetailsId == productId)
+                    .ToList();
+
+                return priceSeries;
+            }
+        }
+
         public IEnumerable<PriceSeries> GetMaxPricesDetails()
         {
             using (var context = contextMaker.Invoke())

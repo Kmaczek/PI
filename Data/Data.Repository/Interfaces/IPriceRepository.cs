@@ -15,5 +15,6 @@ namespace Data.Repository.Interfaces
         IEnumerable<PriceSeries> GetMaxPricesDetails();
         IEnumerable<PriceSeries> GetMinPricesDetails();
         IEnumerable<PriceSeries> GetPriceSeries(DateTime date);
+        IEnumerable<PriceSeries> GetPriceSeries(int productId);
     }
 }
