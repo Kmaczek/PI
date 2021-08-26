@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
 import { PriceSerie, IPriceSerie } from '../models/priceSerie';
+import { GrouppedProducts } from '../models/grouppedProducts';
 
 @Injectable({
     providedIn: 'root',
@@ -15,9 +16,9 @@ export class ProductsService
     constructor(private httpClient: HttpClient ) 
     { }
 
-    public GetProducts() : Observable<Product[]>
+    public GetProducts() : Observable<GrouppedProducts[]>
     {
-        return this.httpClient.get<Product[]>(this.allProductsUrl);
+        return this.httpClient.get<GrouppedProducts[]>(this.allProductsUrl);
     }
 
     public GetProductSeries(productId: number) : Observable<IPriceSerie[]>

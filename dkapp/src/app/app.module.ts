@@ -17,6 +17,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { DividerModule } from 'primeng/divider';
+import { ListboxModule } from 'primeng/listbox';
 import { PiLoginComponent } from './pageComponents/piLogin/piLogin.component';
 import { AuthInterceptor } from './services/interceptors/authInterceptor';
 
@@ -41,6 +42,7 @@ import { AuthInterceptor } from './services/interceptors/authInterceptor';
     ButtonModule,
     DropdownModule,
     DividerModule,
+    ListboxModule,
 
     PiControlsModule,
     FlatsModule,

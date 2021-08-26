@@ -243,6 +243,8 @@ namespace Data.EF.Models
             {
                 entity.ToTable("ParserType", "price");
 
+                entity.Property(e => e.DisplayName).HasMaxLength(200);
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);

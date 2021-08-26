@@ -22,7 +22,7 @@ namespace Pi.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProductVm> Get()
+        public IEnumerable<GrouppedProductsVm> Get()
         {
             var products = _priceService.GetProducts();
 

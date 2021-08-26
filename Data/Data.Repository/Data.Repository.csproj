@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Model\Core.Model.csproj" />
     <ProjectReference Include="..\..\Presentation\Pi.Api.EF\Pi.Api.EF.csproj" />
     <ProjectReference Include="..\Data.EF\Data.EF.csproj" />
   </ItemGroup>

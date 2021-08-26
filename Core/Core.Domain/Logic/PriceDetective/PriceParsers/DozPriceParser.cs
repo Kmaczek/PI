@@ -42,7 +42,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 var priceNumber = Convert.ToDecimal(price, CultureInfo.InvariantCulture);
 
                 result.Price = priceNumber;
-                result.ProductNo = $"{ brand}.{retailerPartNo}";
+                result.ProductNo = $"{ brand ?? string.Empty}.{retailerPartNo}";
                 result.Title = title;
                 result.Proper = priceNumber != 0;
             }
@@ -71,9 +71,13 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
 
         private string GetPropertyValue(string selector)
         {
+            string result = null;
             var element = HtmlDocument.DocumentNode.SelectSingleNode(selector);
-            var value = element.Attributes.FirstOrDefault(x => x.Name == "content").Value;
-            return value;
+
+            if(element != null)
+                result = element.Attributes.FirstOrDefault(x => x.Name == "content")?.Value;
+
+            return result;
         }
     }
 }

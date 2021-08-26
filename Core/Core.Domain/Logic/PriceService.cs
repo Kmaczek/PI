@@ -20,21 +20,11 @@ namespace Core.Domain.Logic
             _priceRepository = priceRepository;
         }
 
-        public IEnumerable<ProductVm> GetProducts()
+        public IEnumerable<GrouppedProductsVm> GetProducts()
         {
-            var priceDetails = _priceRepository.GetPriceDetails();
-            var products = new List<ProductVm>();
-            foreach(var pd in priceDetails)
-            {
-                var product = new ProductVm();
-                product.Id = pd.Id;
-                product.Name = pd.Title;
-                product.Code = pd.RetailerNo;
+            var priceDetails = _priceRepository.GetProductsGrouppedBySite();
 
-                products.Add(product);
-            }
-
-            return products;
+            return priceDetails;
         }
 
         public IEnumerable<PriceSeriesVm> GetPriceSeries(int productId)

@@ -1,4 +1,5 @@
-﻿using Data.EF.Models;
+﻿using Core.Model.PriceView;
+using Data.EF.Models;
 using Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -45,6 +46,38 @@ namespace Data.Repository
                 var parsers = context.PriceDetails.ToList();
 
                 return parsers;
+            }
+        }
+
+        public IEnumerable<GrouppedProductsVm> GetProductsGrouppedBySite()
+        {
+            var dateNow = DateTime.Now;
+            using (var context = contextMaker.Invoke())
+            {
+                var grouppedParsers = context.PriceDetails
+                    .Select(p => new
+                    {
+                        p.Id,
+                        p.Title,
+                        p.RetailerNo,
+                        p.PriceSeries.FirstOrDefault().Parser.ParserType
+                    })
+                    .ToList()
+                    .GroupBy(pd => pd.ParserType)
+                    .Select(p => new GrouppedProductsVm
+                    {
+                        SiteId = p.Key.Id,
+                        SiteName = p.Key.DisplayName,
+                        Products = p.Select(pr => new ProductVm()
+                        {
+                            Id = pr.Id,
+                            Code = pr.RetailerNo,
+                            Name = pr.Title
+                        })
+                    })
+                    .ToList();
+
+                return grouppedParsers;
             }
         }
 

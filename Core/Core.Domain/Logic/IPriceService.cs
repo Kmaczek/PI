@@ -7,7 +7,7 @@ namespace Core.Domain.Logic
 {
     public interface IPriceService
     {
-        IEnumerable<ProductVm> GetProducts();
+        IEnumerable<GrouppedProductsVm> GetProducts();
         IEnumerable<PriceSeriesVm> GetPriceSeries(int productId);
     }
 }

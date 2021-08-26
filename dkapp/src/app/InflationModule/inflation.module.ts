@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
+import { ListboxModule } from 'primeng/listbox';
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import { DividerModule } from 'primeng/divider';
         ButtonModule,
         DropdownModule,
         ChartModule,
-        DividerModule
+        DividerModule,
+        ListboxModule
     ],
     declarations: [
         InflationScreenComponent,

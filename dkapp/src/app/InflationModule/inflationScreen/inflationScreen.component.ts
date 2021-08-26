@@ -5,6 +5,8 @@ import { Product } from '../models/product';
 import { PriceSerie, IPriceSerie } from '../models/priceSerie';
 import { List } from 'linqts';
 import { map } from 'rxjs/operators';
+import { GrouppedProducts } from '../models/grouppedProducts';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'inflationScreen',
@@ -13,8 +15,8 @@ import { map } from 'rxjs/operators';
 })
 export class InflationScreenComponent implements OnInit
 {
-  products: Product[];
-  selectedProduct: Product;
+  products: GrouppedProducts[];
+  selectedProduct: Product = null;
 
   productSeries: PriceSerie[];
   chartData: number[];
@@ -24,13 +26,15 @@ export class InflationScreenComponent implements OnInit
 
   constructor(
     private productService: ProductsService,
-    private identity: IdentityService)
+    private identity: IdentityService,
+    private primengConfig: PrimeNGConfig)
   {
 
   }
 
   ngOnInit()
   {
+    this.primengConfig.ripple = true;
     console.log('inflation');
     this.productService.GetProducts().subscribe(x =>
     {
@@ -72,6 +76,7 @@ export class InflationScreenComponent implements OnInit
 
   loadSeries(event: any)
   {
+    this.selectedProduct = event.option as Product;
     this.productService.GetProductSeries(this.selectedProduct.id)
       .pipe(map(ps => {
         let psList = new List<IPriceSerie>(ps);
