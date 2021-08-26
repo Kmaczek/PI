@@ -76,8 +76,8 @@ export class InflationScreenComponent implements OnInit
 
   loadSeries(event: any)
   {
-    this.selectedProduct = event.option as Product;
-    this.productService.GetProductSeries(this.selectedProduct.id)
+    var selectedProduct = event.option as Product;
+    this.productService.GetProductSeries(selectedProduct.id)
       .pipe(map(ps => {
         let psList = new List<IPriceSerie>(ps);
         let result = psList.Select(s => new PriceSerie(s.price, s.createdDate));
@@ -97,7 +97,7 @@ export class InflationScreenComponent implements OnInit
           labels: this.labelData,
           datasets: [
             {
-              label: this.selectedProduct.name,
+              label: selectedProduct.name,
               data: this.chartData,
               fill: false,
               borderColor: '#42A5F5'
