@@ -1,7 +1,13 @@
 <div>
-  <form class="form-inline my-2 my-lg-0">
-    <input class="pi-input pi-input-gaps" placeholder="Login">
-    <input class="pi-input pi-input-gaps" placeholder="Password">
-    <piButton (click)="login()"></piButton>
-  </form>
+  <div class="flex flex-wrap align-content-center">
+    <div class="flex align-items-center p-inputtext-sm mr-2">
+      <input [(ngModel)]="username" class="pl-2" type="text" pInputText placeholder="Username">
+    </div>
+    <div class="flex align-items-center p-inputtext-sm mr-2">
+      <input [(ngModel)]="password" class="pl-2" type="password" pInputText placeholder="Password">
+    </div>
+    <div class="flex align-items-center">
+      <button class="col p-button-rounded p-button-warning" pButton pRipple type="button" icon="pi pi-sign-in" ></button>
+    </div>
+  </div>
 </div>

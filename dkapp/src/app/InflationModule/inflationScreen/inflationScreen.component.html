@@ -13,8 +13,7 @@
 
   <div class="grid pb-3 w-full">
     <div class="col-3">
-      <div class="grid pb-3 flex flex-row flex-wrap card-container blue-container">
-        <div class="flex align-items-center justify-content-center pr-3">Product:</div>
+      <div class="grid mt-1">
         <div class="flex align-items-center justify-content-center pr-3">
           <p-listbox 
             [options]="products" 
@@ -32,7 +31,7 @@
     </div>
     <div class="col">
       <div class="card w-full">
-        <h5>Basic</h5>
+        <h5>{{selectedProduct?.name}}</h5>
         <p-chart type="line" [data]="basicData" [options]="basicOptions"></p-chart>
       </div>
     </div>

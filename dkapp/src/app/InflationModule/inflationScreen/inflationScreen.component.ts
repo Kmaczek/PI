@@ -41,18 +41,6 @@ export class InflationScreenComponent implements OnInit
       this.products = x;
     });
 
-    this.basicData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: this.chartData,
-          fill: false,
-          borderColor: '#42A5F5'
-        }
-      ]
-    }
-
     this.basicOptions = {
       legend: {
         labels: {

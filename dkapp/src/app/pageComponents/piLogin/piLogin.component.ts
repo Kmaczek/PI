@@ -8,6 +8,8 @@ import { IdentityService } from 'src/app/services/external/identity.ext.service'
 })
 export class PiLoginComponent implements OnInit
 {
+  username: string;
+  password: string;
 
   constructor(private identityService: IdentityService) { }
 
