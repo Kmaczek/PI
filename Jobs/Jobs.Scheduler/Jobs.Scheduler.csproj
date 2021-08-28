@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="Hangfire" Version="1.7.9" />
-    <PackageReference Include="Hangfire.MemoryStorage" Version="1.6.3" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Hangfire" Version="1.7.24" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
   </ItemGroup>
 
