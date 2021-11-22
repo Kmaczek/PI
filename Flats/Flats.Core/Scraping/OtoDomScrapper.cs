@@ -33,7 +33,7 @@ namespace Flats.Core.Scraping
 
         protected override int GetPageCount(HtmlDocument document)
         {
-            var sth = document.DocumentNode.SelectSingleNode(@"//main/div/div[3]/div[1]/div[1]/div/strong/span[2]");
+            var sth = document.DocumentNode.SelectSingleNode(@"//*[@data-cy='search.listing-panel.label.ads-number']/span[2]");
 
             var count = 0;
             if (sth == null)
