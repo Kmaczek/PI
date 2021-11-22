@@ -33,7 +33,7 @@ namespace Data.EF.Models
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesParent> SeriesParent { get; set; }
-        public virtual DbSet<Settings> Settings { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<TypeOfBuilding> TypeOfBuilding { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
@@ -323,7 +323,7 @@ namespace Data.EF.Models
                 entity.Property(e => e.Total).HasColumnType("money");
             });
 
-            modelBuilder.Entity<Settings>(entity =>
+            modelBuilder.Entity<Setting>(entity =>
             {
                 entity.ToTable("Settings", "pi");
 

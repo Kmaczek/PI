@@ -52,7 +52,7 @@ namespace Flats.Core.Scraping
 
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
         {
-            return document.DocumentNode.SelectNodes(@"//*[@data-cy='frontend.search.listing']/ul/li/a");
+            return document.DocumentNode.SelectNodes(@"//*[@data-cy='search.listing']/ul/li/a");
         }
 
         protected override FlatDataBm ParseOffer(HtmlNode node)

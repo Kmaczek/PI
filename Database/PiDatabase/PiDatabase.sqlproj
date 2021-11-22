@@ -96,11 +96,11 @@
     <None Include="PostExecution\PopulateData\FillParsers.sql" />
     <Build Include="Pi\Pi.sql" />
     <Build Include="Pi\Settings.sql" />
+    <None Include="PostExecution\PopulateData\FillSettings.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PiDatabase.publish.xml" />
-    <None Include="PiDatabase_Local.publish.xml" />
     <None Include="PostExecution\PopulateData\_include.sql" />
+    <None Include="PiDatabase_Local.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="PiDatabase.refactorlog" />

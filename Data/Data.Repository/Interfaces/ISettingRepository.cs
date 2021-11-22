@@ -1,4 +1,4 @@
-﻿namespace Data.Repository
+﻿namespace Data.Repository.Interfaces
 {
     public interface ISettingRepository
     {

@@ -115,6 +115,8 @@ namespace Jobs.OldScheduler
                 var context = x.Resolve<IComponentContext>();
                 return () => context.Resolve<PiContext>();
             });
+            
+            diBuilder.RegisterType<SettingRepository>().As<ISettingRepository>();
             diBuilder.RegisterType<BinanceRepository>().As<IBinanceRepository>();
             diBuilder.RegisterType<OtoDomRepository>().As<IOtoDomRepository>();
             diBuilder.RegisterType<PriceRepository>().As<IPriceRepository>();
