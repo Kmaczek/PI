@@ -74,7 +74,7 @@ namespace Jobs.OldScheduler.Jobs
             {
                 var generators = new List<IHtmlGenerator>
                 {
-                    GetXtbGenerator(),
+                    //GetXtbGenerator(),
                     GetOtodomGenerator(),
                     GetBinanceGenerator(),
                     GetPriceDetectiveGenerator()
