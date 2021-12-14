@@ -74,7 +74,7 @@ namespace Flats.Core.Scraping
             foreach (var offer in offers)
             {
                 var parsedOffer = ParseOffer(offer);
-                if (parsedOffer == null)
+                if (parsedOffer == null || parsedOffer.Errors.Count > 0)
                 {
                     continue;
                 }

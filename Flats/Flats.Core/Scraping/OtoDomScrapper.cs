@@ -60,8 +60,8 @@ namespace Flats.Core.Scraping
             Url = GetUrl(node, Errors);
 
             //var locationNode = node.SelectSingleNode(@".//article/p[1]");
-            var priceNode = node.SelectSingleNode(@".//article/p[2]");
-            var detailsNode = node.SelectSingleNode(@".//article/p[3]");
+            var priceNode = node.SelectSingleNode(@".//article/p[3]");
+            var detailsNode = node.SelectSingleNode(@".//article/p[2]");
             var bottomDetails = node.SelectSingleNode(@".//article/div[1]");
                
             var otodomId = GetOtoDomId(Errors);

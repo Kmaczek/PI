@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using xAPI.Records;
 using Xtb.Core;
