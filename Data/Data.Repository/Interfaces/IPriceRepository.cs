@@ -12,6 +12,7 @@ namespace Data.Repository.Interfaces
         void SavePrices(IEnumerable<PriceSeries> priceSeries);
 
         IEnumerable<Parser> GetParsers();
+        IEnumerable<Parser> GetParsers(IEnumerable<int> parsersToRun);
         IEnumerable<PriceDetails> GetPriceDetails();
         IEnumerable<GrouppedProductsVm> GetProductsGrouppedBySite();
         IEnumerable<PriceSeries> GetMaxPricesDetails();

@@ -36,6 +36,11 @@ namespace Jobs.OldScheduler.Jobs
             AuditPerformance();
         }
 
+        public void ImmediateRun(IEnumerable<string> parameters)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Run()
         {
             AuditPerformance();

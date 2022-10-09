@@ -37,7 +37,25 @@ namespace Data.Repository
                 return parsers;
             }
         }
-        
+
+        public IEnumerable<Parser> GetParsers(IEnumerable<int> parsersToRun)
+        {
+            var dateNow = DateTime.Now;
+            using (var context = contextMaker.Invoke())
+            {
+                var parsers = context.Parser
+                    .Include(p => p.ParserType)
+                    .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo);
+
+                if (parsersToRun != null)
+                {
+                    parsers = parsers.Where(p => parsersToRun.Contains(p.Id));
+                }
+
+                return parsers.ToList();
+            }
+        }
+
         public IEnumerable<PriceDetails> GetPriceDetails()
         {
             var dateNow = DateTime.Now;
@@ -60,7 +78,8 @@ namespace Data.Repository
                         p.Id,
                         p.Title,
                         p.RetailerNo,
-                        p.PriceSeries.FirstOrDefault().Parser.ParserType
+                        p.PriceSeries.FirstOrDefault().Parser.ParserType,
+                        p.PriceSeries.FirstOrDefault().Parser.Uri,
                     })
                     .ToList()
                     .GroupBy(pd => pd.ParserType)
@@ -72,7 +91,8 @@ namespace Data.Repository
                         {
                             Id = pr.Id,
                             Code = pr.RetailerNo,
-                            Name = pr.Title
+                            Name = pr.Title,
+                            Uri = pr.Uri
                         })
                     })
                     .ToList();

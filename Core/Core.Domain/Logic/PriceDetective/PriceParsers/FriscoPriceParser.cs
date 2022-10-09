@@ -1,5 +1,6 @@
 ﻿using Core.Model.PriceDetectiveModels;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -7,7 +8,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
 {
     public class FriscoPriceParser : BasePriceParser
     {
-        public override PriceParserResult Parse()
+        public override IEnumerable<PriceParserResult> Parse()
         {
             if (string.IsNullOrEmpty(Content)) throw new Exception("No content loaded, call Load first.");
             var result = new PriceParserResult();
@@ -16,16 +17,74 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 string priceStr = String.Empty;
                 try
                 {
-                    priceStr = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'product-page_short-desc')]/div[contains(., 'Cena')]/span[@class='value']").InnerText;
+                    if (String.IsNullOrWhiteSpace(priceStr))
+                    {
+                        var part1 = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'new-product-page__prices_price')]/span/span[contains(@class, 'price_num')]");
+                        var part2 = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'new-product-page__prices_price')]/span/span[contains(@class, 'price_decimals')]");
+
+                        if (part1 != null || part2 != null)
+                            priceStr = $"{part1?.InnerText},{part2?.InnerText}";
+                    }
+
+                    if (String.IsNullOrWhiteSpace(priceStr) || priceStr.Contains("0,00") || priceStr.Contains(","))
+                    {
+                        var priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'product-page_short-desc')]/div[contains(., 'Cena')]/span[@class='value']");
+
+                        if (PriceIsInvalid(priceNodes))
+                            priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'new-product-page__prices_price')]/div[contains(., 'Cena')]/strong");
+
+                        if (PriceIsInvalid(priceNodes))
+                            priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'main-price')]");
+
+                        if (priceNodes != null && priceNodes.Count > 0)
+                            priceStr = priceNodes[0].InnerText;
+                    }
                 }
+                catch (Exception e)
+                {
+                    priceStr = "0";
+                }
+                var price = Convert.ToDecimal(priceStr
+                    .Replace("zł", String.Empty)
+                    .Replace("gr", String.Empty)
+                    .Replace("/ kg", String.Empty)
+                    .Trim(), CultureInfo.GetCultureInfo("pl"));
+
+                string ean = String.Empty;
+                try
+                {
+                    var eanNode = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'product-page_short-desc')]/div[contains(., 'EAN')]/span[@class='value']");
+
+                    if (eanNode == null)
+                        eanNode = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'new-product-page__parameters')]/div[contains(., 'EAN')]/strong");
+
+                    if (eanNode != null)
+                        ean = eanNode.InnerText;
+                    else
+                        result.Proper = false;
+                } 
                 catch(Exception e)
                 {
-                    priceStr = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'main-price')]").InnerText;
+                    result.Proper = false;
                 }
-                var price = Convert.ToDecimal(priceStr.Replace("zł", String.Empty).Trim(), CultureInfo.GetCultureInfo("pl"));
-                var ean = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'product-page_short-desc')]/div[contains(., 'EAN')]/span[@class='value']").InnerText;
 
-                var title = HtmlDocument.DocumentNode.SelectSingleNode(@"//*/h1[contains(@itemprop,'name')]").InnerText?.Trim();
+                string title = String.Empty;
+                try
+                {
+                    var titleNode = HtmlDocument.DocumentNode.SelectSingleNode(@"//*/h1[contains(@itemprop,'name')]");
+
+                    if (titleNode == null)
+                        titleNode = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'large-title')]");
+
+                    if (titleNode != null)
+                        title = titleNode.InnerText?.Trim();
+                    else
+                        result.Proper = false;
+                }
+                catch (Exception e)
+                {
+                    result.Proper = false;
+                }
                 
                 result.Price = price;
                 result.ProductNo = ean;
@@ -38,7 +97,12 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 throw;
             }
 
-            return result;
+            return new List<PriceParserResult>() { result }; ;
+        }
+
+        private static bool PriceIsInvalid(HtmlAgilityPack.HtmlNodeCollection priceNodes)
+        {
+            return priceNodes == null || priceNodes.Count < 1 || String.IsNullOrWhiteSpace(priceNodes[0].InnerText) || priceNodes[0].InnerText.Contains("0,00");
         }
     }
 }

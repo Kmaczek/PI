@@ -117,7 +117,14 @@ namespace Jobs.OldScheduler
 
                 if (JobsToRun.ContainsKey(command[1]))
                 {
-                    JobsToRun[command[1]].ImmediateRun();
+                    if(command.Length > 2)
+                    {
+                        JobsToRun[command[1]].ImmediateRun(command.Skip(2));
+                    }
+                    else
+                    {
+                        JobsToRun[command[1]].ImmediateRun();
+                    }
                 }
                 else
                 {

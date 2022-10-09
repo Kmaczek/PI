@@ -66,6 +66,11 @@ namespace Jobs.OldScheduler.Jobs
             _log.Info($"Job {JobName} done.");
         }
 
+        public void ImmediateRun(IEnumerable<string> parameters)
+        {
+            throw new NotImplementedException();
+        }
+
         public void EmailJob()
         {
             _log.Info($"Processing Email Summary job, time {DateTime.Now.ToLocalTime()}.");

@@ -7,9 +7,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
 import { ListboxModule } from 'primeng/listbox';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [
+        CommonModule,
         FormsModule,
         PiControlsModule,
         PiControlsModule,

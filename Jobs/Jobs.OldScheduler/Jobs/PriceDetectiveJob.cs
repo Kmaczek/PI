@@ -1,13 +1,8 @@
 ﻿using Core.Common;
 using Core.Domain.Logic.PriceDetective;
-using Core.Domain.Logic.PriceDetective.PriceParsers;
-using Data.Repository.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jobs.OldScheduler.Jobs
 {
@@ -38,16 +33,22 @@ namespace Jobs.OldScheduler.Jobs
             _log.Info($"Job {JobName} done.");
         }
 
+        public void ImmediateRun(IEnumerable<string> stringParameters)
+        {
+            var convertedParameters = new PriceDetectiveParameters(stringParameters);
+            RunPriceDetective(convertedParameters);
+        }
+
         public void Run()
         {
             RunPriceDetective();
         }
 
-        private void RunPriceDetective()
+        private void RunPriceDetective(PriceDetectiveParameters parameters = null)
         {
             try
             {
-                var priceData = priceDetectiveService.CollectPriceData();
+                var priceData = priceDetectiveService.CollectPriceData(parameters?.ParsersToRun);
                 priceDetectiveService.SavePrices(priceData);
             }
             catch(Exception e)

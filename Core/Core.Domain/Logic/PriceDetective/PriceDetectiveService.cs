@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace Core.Domain.Logic.PriceDetective
 {
-    public class PriceDetectiveService: IPriceDetectiveService
+    public class PriceDetectiveService : IPriceDetectiveService
     {
         private const string DelayConfigKey = "PriceDetectiveJob:delay";
 
@@ -38,27 +38,40 @@ namespace Core.Domain.Logic.PriceDetective
             parsers.Add(nameof(DozPriceParser), () => new DozPriceParser());
         }
 
-        public int Delay 
-        { 
+        public int Delay
+        {
             get
             {
                 return Convert.ToInt32(this.configuration.GetSection(DelayConfigKey).Value, CultureInfo.InvariantCulture);
             }
         }
 
-        public IEnumerable<PriceParserResult> CollectPriceData()
+        public IEnumerable<PriceParserResult> CollectPriceData(IEnumerable<int> parsersToRun = null)
         {
             var priceData = new List<PriceParserResult>();
-            var parserConfigs = priceRepository.GetParsers();
+            var parserConfigs = parsersToRun != null ? priceRepository.GetParsers(parsersToRun) : priceRepository.GetParsers();
+
             foreach (var parserConfig in parserConfigs)
             {
                 var parser = parsers[parserConfig.ParserType.Name]();
-                parser.Load(new Uri(parserConfig.Uri));
-                var result = parser.Parse();
-                result.ParserConfigId = parserConfig.Id;
+                try
+                {
+                    parser.Load(new Uri(parserConfig.Uri));
+                    var results = parser.Parse();
+                    foreach(var result in results)
+                    {
+                        result.ParserConfigId = parserConfig.Id;
+                        if (result.Proper)
+                            priceData.Add(result);
+                    }
+                    
+                    Thread.Sleep(Delay);
+                }
+                catch (Exception e)
+                {
+                    log.Error($"Error while parsing {parserConfig.Uri}", e);
+                }
 
-                priceData.Add(result);
-                Thread.Sleep(Delay);
             }
 
             return priceData;

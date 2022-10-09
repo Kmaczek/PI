@@ -5,6 +5,7 @@ import { RedirectComponent } from './routeComponents/RedirectComponent/redirect.
 import { InflationScreenComponent } from './inflationModule/inflationScreen/inflationScreen.component';
 import { FlatsScreenComponent } from './flatsModule/flatsScreen/flatsScreen.component';
 import { HomeScreenComponent } from './homeScreen/homeScreen.component';
+import { AdminComponent } from './admin/admin.component';
 
 const routes: Routes = [
   { path: 'callback', component: RedirectComponent},
@@ -12,6 +13,7 @@ const routes: Routes = [
     redirectTo: '/',
     pathMatch: 'full'
   },
+  { path: 'admin', component: AdminComponent },
   { path: 'flats', component: FlatsScreenComponent },
   { path: 'inflation', component: InflationScreenComponent },
   { path: '**', component: HomeScreenComponent }

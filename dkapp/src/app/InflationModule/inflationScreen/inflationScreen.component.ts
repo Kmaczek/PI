@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IdentityService } from 'src/app/services/external/identity.ext.service';
+import { IdentityService } from 'src/app/Services/external/identity.ext.service';
 import { ProductsService } from '../services/product.api.service';
 import { Product } from '../models/product';
 import { PriceSerie, IPriceSerie } from '../models/priceSerie';
@@ -11,7 +11,7 @@ import { PrimeNGConfig } from 'primeng/api';
 @Component({
   selector: 'inflationScreen',
   templateUrl: './inflationScreen.component.html',
-  styleUrls: ['./inflationScreen.component.css']
+  styleUrls: ['./inflationScreen.component.scss']
 })
 export class InflationScreenComponent implements OnInit
 {
@@ -45,7 +45,7 @@ export class InflationScreenComponent implements OnInit
       legend: {
         labels: {
           fontColor: '#495057'
-        }
+        },
       },
       scales: {
         xAxes: [{
@@ -64,8 +64,8 @@ export class InflationScreenComponent implements OnInit
 
   loadSeries(event: any)
   {
-    var selectedProduct = event.option as Product;
-    this.productService.GetProductSeries(selectedProduct.id)
+    this.selectedProduct = event.option as Product;
+    this.productService.GetProductSeries(this.selectedProduct.id)
       .pipe(map(ps => {
         let psList = new List<IPriceSerie>(ps);
         let result = psList.Select(s => new PriceSerie(s.price, s.createdDate));
@@ -85,7 +85,7 @@ export class InflationScreenComponent implements OnInit
           labels: this.labelData,
           datasets: [
             {
-              label: selectedProduct.name,
+              label: this.selectedProduct.name,
               data: this.chartData,
               fill: false,
               borderColor: '#42A5F5'
@@ -93,5 +93,9 @@ export class InflationScreenComponent implements OnInit
           ]
         }
       });
+  }
+
+  navigateToProduct(): void {
+    window.open(this.selectedProduct.uri, "_blank");
   }
 }

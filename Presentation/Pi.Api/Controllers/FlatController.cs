@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Core.Domain.Logic;
 using Core.Model.FlatSerie;
-using Data.EF.Models;
-using Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,9 +8,9 @@ using Microsoft.Extensions.Logging;
 namespace Pi.Api.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]")]
-    public class FlatController : ControllerBase
+    public class FlatController
     {
         private readonly ILogger<FlatController> _logger;
         private readonly IFlatSeriesService flatSeriesService;

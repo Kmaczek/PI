@@ -25,7 +25,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
             HtmlDocument.LoadHtml(Content);
         }
 
-        public PriceParserResult Parse()
+        public IEnumerable<PriceParserResult> Parse()
         {
             if (string.IsNullOrEmpty(Content)) throw new Exception("No content loaded, call Load first.");
             var result = new PriceParserResult();
@@ -52,7 +52,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 throw;
             }
 
-            return result;
+            return new List<PriceParserResult>() { result };
         }
 
         private string DownloadContent(Uri uri)

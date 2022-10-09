@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { IdentityService } from '../../services/external/identity.ext.service';
+import { IdentityService } from '../../Services/external/identity.ext.service';
 import { List } from 'linqts';
 
 @Component({

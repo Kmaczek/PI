@@ -8,6 +8,6 @@ namespace Core.Domain.Logic.PriceDetective
     public interface IPriceDetectiveService
     {
         void SavePrices(IEnumerable<PriceParserResult> priceData);
-        IEnumerable<PriceParserResult> CollectPriceData();
+        IEnumerable<PriceParserResult> CollectPriceData(IEnumerable<int> parsersToRun = null);
     }
 }

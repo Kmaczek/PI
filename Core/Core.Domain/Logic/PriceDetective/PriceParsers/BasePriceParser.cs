@@ -20,13 +20,13 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
             HtmlDocument.LoadHtml(Content);
         }
 
-        public abstract PriceParserResult Parse();
+        public abstract IEnumerable<PriceParserResult> Parse();
 
         protected virtual string DownloadContent(Uri uri)
         {
             using (WebClient client = new WebClient())
             {
-                client.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0");
+                client.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0");
                 client.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
                 client.Headers.Add(HttpRequestHeader.CacheControl, "no-cache");
                 client.Encoding = new UTF8Encoding();

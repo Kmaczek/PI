@@ -1,10 +1,12 @@
 ﻿using Core.Model.PriceDetectiveModels;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Core.Domain.Logic.PriceDetective.PriceParsers
@@ -13,8 +15,6 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
     {
         public string Content { get; set; } = String.Empty;
 
-        private  CultureInfo _polishCulture = new CultureInfo("pl-PL");
-
         public void Load(Uri uri)
         {
             Content = DownloadContent(uri);
@@ -22,7 +22,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
             Thread.CurrentThread.CurrentCulture = ci;
         }
 
-        public PriceParserResult Parse()
+        public IEnumerable<PriceParserResult> Parse()
         {
             if (string.IsNullOrEmpty(Content)) throw new Exception("No content loaded, call Load first.");
             var result = new PriceParserResult();
@@ -31,40 +31,20 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 using (var sr = new StringReader(Content))
                 {
                     var line = sr.ReadLine();
-                    var startParsing = false;
-                    var nameParsed = false;
 
                     while (!string.IsNullOrEmpty(line))
                     {
-                        if (line.Contains("\"aggregateRating\":", StringComparison.InvariantCulture) 
-                            || line.Contains("\"isRelatedTo\":", StringComparison.InvariantCulture))
+                        if (line.Contains("\"offers\":"))
                         {
+                            var jsonString = ExtractJson(line);
+                            var product = JsonConvert.DeserializeObject<Product>(jsonString);
+
+                            result.Price = product.Offers.Price;
+                            result.ProductNo = product.Gtin13;
+                            result.Title = product.Name;
+                            result.Proper = result.Price != 0;
+
                             break;
-                        }
-
-                        if (!startParsing && line.Contains("\"description\":", StringComparison.InvariantCulture))
-                        {
-                            startParsing = true;
-                            line = sr.ReadLine();
-                        }
-
-                        if (startParsing)
-                        {
-                            
-                            if (!nameParsed && line.Contains("\"name\":", StringComparison.InvariantCulture))
-                            {
-                                result.Title = GetValue(line);
-                                nameParsed = true;
-                            }
-                            else if (line.Contains("\"gtin13\":", StringComparison.InvariantCulture)) 
-                            {
-                                result.ProductNo = GetValue(line);
-                            }
-                            else if (line.Contains("\"price\":", StringComparison.InvariantCulture)) 
-                            {
-                                var priceStr = GetValue(line).Replace(".", ",");
-                                result.Price = Convert.ToDecimal(priceStr, _polishCulture);
-                            }
                         }
 
                         line = sr.ReadLine();
@@ -79,16 +59,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 throw;
             }
 
-            return result;
-        }
-
-        private string GetValue(string line)
-        {
-            var regex = new Regex(": \"(.+)\",");
-            var match = regex.Match(line);
-            var value = match.Groups[1].Value;
-
-            return value;
+            return new List<PriceParserResult>() { result };
         }
 
         private string DownloadContent(Uri uri)
@@ -101,6 +72,69 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 client.Encoding = new UTF8Encoding();
                 return client.DownloadString(uri);
             }
+        }
+
+        private string ExtractJson(string line)
+        {
+            var typeAppJson = "type=\"application/ld+json\">";
+            var endTypeAppJson = "</script>";
+            var workedString = line;
+
+            while (workedString.IndexOf(typeAppJson) >= 0)
+            {
+                var startJsonIndex = workedString.IndexOf(typeAppJson) + typeAppJson.Length;
+                var endJsonIndex = workedString.IndexOf(endTypeAppJson, startJsonIndex);
+                var workedSubstring = workedString.Substring(startJsonIndex, endJsonIndex - startJsonIndex);
+
+                if (workedSubstring.Contains("\"@type\":\"Product\""))
+                {
+                    return workedSubstring;
+                }
+                else
+                {
+                    workedString = workedString.Substring(endJsonIndex);
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public class Product
+        {
+            public string Description { get; set; }
+            public string Name { get; set; }
+            public string Image { get; set; }
+            [JsonProperty("@type")]
+            public string Type { get; set; }
+            public string Category { get; set; }
+            public string Sku { get; set; }
+            public Brand Brand { get; set; }
+            public string Gtin13 { get; set; }
+            public Offer Offers { get; set; }
+        }
+
+        public class Brand
+        {
+            [JsonProperty("@type")]
+            public string Type { get; set; }
+            public string Name { get; set; }
+        }
+
+        public class Offer
+        {
+            public string PriceCurrency { get; set; }
+            public string Url { get; set; }
+            public string ItemCondition { get; set; }
+            public string Availability { get; set; }
+            public decimal Price { get; set; }
+            public Seller Seller { get; set; }
+        }
+
+        public class Seller
+        {
+            [JsonProperty("@type")]
+            public string Type { get; set; }
+            public string Name { get; set; }
         }
     }
 }

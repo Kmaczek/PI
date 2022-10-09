@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IdentityService } from 'src/app/services/external/identity.ext.service';
-import { PiExtService } from 'src/app/services/external/pi.ext.service';
+import { IdentityService } from 'src/app/Services/external/identity.ext.service';
+import { PiExtService } from 'src/app/Services/external/pi.ext.service';
 import { FlatService } from '../services/flats.api.service';
 import { FlatSerie } from '../models/flatSerie';
 import { PiLineChartComponent } from '../../piControls/piLineChart/piLineChart.component';

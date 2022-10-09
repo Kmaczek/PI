@@ -17,7 +17,6 @@
         <div class="flex align-items-center justify-content-center pr-3">
           <p-listbox 
             [options]="products" 
-            [(ngModel)]="selectedProduct" 
             [group]="true"
             optionGroupLabel="siteName"
             optionGroupChildren="products"
@@ -31,12 +30,11 @@
     </div>
     <div class="col">
       <div class="card w-full">
-        <h5>{{selectedProduct?.name}}</h5>
+        <div class="product__name" (click)="navigateToProduct()">{{selectedProduct?.name}}</div>
         <p-chart type="line" [data]="basicData" [options]="basicOptions"></p-chart>
       </div>
     </div>
   </div>
-  
 </div>
 
 <br />
