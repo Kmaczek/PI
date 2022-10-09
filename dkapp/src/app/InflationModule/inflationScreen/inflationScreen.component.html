@@ -30,7 +30,7 @@
     </div>
     <div class="col">
       <div class="card w-full">
-        <div class="product__name" (click)="navigateToProduct()">{{selectedProduct?.name}}</div>
+        <a class="product__name" [href]="selectedProduct?.uri" target="_blank">{{selectedProduct?.name}}</a>
         <p-chart type="line" [data]="basicData" [options]="basicOptions"></p-chart>
       </div>
     </div>

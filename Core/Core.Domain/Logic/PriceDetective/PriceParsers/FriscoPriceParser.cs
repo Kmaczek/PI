@@ -17,7 +17,18 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 string priceStr = String.Empty;
                 try
                 {
-                    if (String.IsNullOrWhiteSpace(priceStr))
+                    var priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'new-product-page__prices_unit-price')]");
+
+                    if (PriceIsInvalid(priceNodes))
+                        priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'product-page_short-desc')]/div[contains(., 'Cena')]/span[@class='value']");
+
+                    if (PriceIsInvalid(priceNodes))
+                        priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'new-product-page__prices_price')]/div[contains(., 'Cena')]/strong");
+
+                    if (PriceIsInvalid(priceNodes))
+                        priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'main-price')]");
+
+                    if (PriceIsInvalid(priceNodes))
                     {
                         var part1 = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'new-product-page__prices_price')]/span/span[contains(@class, 'price_num')]");
                         var part2 = HtmlDocument.DocumentNode.SelectSingleNode(@"//*[contains(@class,'new-product-page__prices_price')]/span/span[contains(@class, 'price_decimals')]");
@@ -26,19 +37,8 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                             priceStr = $"{part1?.InnerText},{part2?.InnerText}";
                     }
 
-                    if (String.IsNullOrWhiteSpace(priceStr) || priceStr.Contains("0,00") || priceStr.Contains(","))
-                    {
-                        var priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'product-page_short-desc')]/div[contains(., 'Cena')]/span[@class='value']");
-
-                        if (PriceIsInvalid(priceNodes))
-                            priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'new-product-page__prices_price')]/div[contains(., 'Cena')]/strong");
-
-                        if (PriceIsInvalid(priceNodes))
-                            priceNodes = HtmlDocument.DocumentNode.SelectNodes(@"//*[contains(@class,'main-price')]");
-
-                        if (priceNodes != null && priceNodes.Count > 0)
-                            priceStr = priceNodes[0].InnerText;
-                    }
+                    if (priceNodes != null && priceNodes.Count > 0)
+                        priceStr = priceNodes[0].InnerText;
                 }
                 catch (Exception e)
                 {
@@ -62,8 +62,8 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                         ean = eanNode.InnerText;
                     else
                         result.Proper = false;
-                } 
-                catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     result.Proper = false;
                 }
@@ -85,7 +85,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 {
                     result.Proper = false;
                 }
-                
+
                 result.Price = price;
                 result.ProductNo = ean;
                 result.Title = title;
