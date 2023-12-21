@@ -7,7 +7,7 @@ import { List } from 'linqts';
 @Component({
   selector: 'pi-navbar',
   templateUrl: './piNavbar.component.html',
-  styleUrls: ['./piNavbar.component.css']
+  styleUrls: ['./piNavbar.component.scss']
 })
 export class PiNavbarComponent implements OnInit
 {
