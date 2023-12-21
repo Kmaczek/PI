@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Pi.Api.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]")]
     public class FlatController
     {

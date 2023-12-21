@@ -7,6 +7,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Core.Common.Logging;
 using Core.Domain.Logic;
+using Core.Domain.Logic.Chatbot;
 using Data.EF.Models;
 using Data.Repository;
 using Data.Repository.Interfaces;
@@ -102,6 +103,7 @@ namespace Pi.Api
             diBuilder.RegisterType<UserService>().As<IUserService>();
             diBuilder.RegisterType<FlatSeriesService>().As<IFlatSeriesService>();
             diBuilder.RegisterType<PriceService>().As<IPriceService>();
+            diBuilder.RegisterType<TransactionClassifier>().As<ITransactionClassifier>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
