@@ -159,7 +159,6 @@
       }
     }
   },
-  "defaultProject": "pi",
   "cli": {
     "analytics": false
   }
