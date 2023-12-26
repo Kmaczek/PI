@@ -237,6 +237,12 @@ namespace Data.EF.Models
                     .HasForeignKey(d => d.ParserTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParserType_Parser");
+
+                entity.HasOne(d => d.LatestPriceDetail)
+                    .WithMany()
+                    .HasForeignKey(d => d.LatestPriceDetailId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PriceDetail_Parser");
             });
 
             modelBuilder.Entity<ParserType>(entity =>

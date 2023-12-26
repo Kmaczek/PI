@@ -8,7 +8,7 @@ namespace Data.Repository.Interfaces
 {
     public interface IPriceRepository
     {
-        void SavePriceDetails(PriceDetails priceDetails);
+        void SavePriceDetails(PriceDetails priceDetails, int ParserId);
         void SavePrices(IEnumerable<PriceSeries> priceSeries);
 
         IEnumerable<Parser> GetParsers();

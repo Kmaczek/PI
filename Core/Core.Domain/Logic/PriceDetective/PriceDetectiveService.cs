@@ -102,7 +102,7 @@ namespace Core.Domain.Logic.PriceDetective
                     priceDetailsItem.RetailerNo = price.ProductNo;
                     priceDetailsItem.CreatedDate = dateNow;
 
-                    priceRepository.SavePriceDetails(priceDetailsItem);
+                    priceRepository.SavePriceDetails(priceDetailsItem, priceSerie.ParserId);
                     existingPriceDetail = priceDetailsItem;
                 }
 

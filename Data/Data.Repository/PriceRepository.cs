@@ -31,7 +31,7 @@ namespace Data.Repository
             {
                 var parsers = context.Parser
                     .Include(p => p.ParserType)
-                    .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo )
+                    .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo)
                     .ToList();
 
                 return parsers;
@@ -72,30 +72,29 @@ namespace Data.Repository
             var dateNow = DateTime.Now;
             using (var context = contextMaker.Invoke())
             {
-                var grouppedParsers = context.PriceDetails
-                    .Select(p => new
+                var parsers = context.Parser.Include(p => p.LatestPriceDetail).ToList();
+                var parserTypes = context.ParserType.ToList();
+                var grouppedParsers = new List<GrouppedProductsVm>();
+
+                foreach (var parserType in parserTypes)
+                {
+                    var grouppedParser = new GrouppedProductsVm
                     {
-                        p.Id,
-                        p.Title,
-                        p.RetailerNo,
-                        p.PriceSeries.FirstOrDefault().Parser.ParserType,
-                        p.PriceSeries.FirstOrDefault().Parser.Uri,
-                    })
-                    .ToList()
-                    .GroupBy(pd => pd.ParserType)
-                    .Select(p => new GrouppedProductsVm
-                    {
-                        SiteId = p.Key.Id,
-                        SiteName = p.Key.DisplayName,
-                        Products = p.Select(pr => new ProductVm()
-                        {
-                            Id = pr.Id,
-                            Code = pr.RetailerNo,
-                            Name = pr.Title,
-                            Uri = pr.Uri
-                        })
-                    })
-                    .ToList();
+                        SiteId = parserType.Id,
+                        SiteName = parserType.DisplayName,
+                        Products = parsers
+                            .Where(p => p.ParserTypeId == parserType.Id)
+                            .Select(ps => new ProductVm()
+                            {
+                                Id = ps.LatestPriceDetailId,
+                                Code = ps.LatestPriceDetail?.RetailerNo ?? "Error",
+                                Name = ps.LatestPriceDetail?.Title ?? "Error",
+                                Uri = ps.Uri
+                            })
+                    };
+
+                    grouppedParsers.Add(grouppedParser);
+                }
 
                 return grouppedParsers;
             }
@@ -164,13 +163,16 @@ namespace Data.Repository
             }
         }
 
-        public void SavePriceDetails(PriceDetails priceDetails)
+        public void SavePriceDetails(PriceDetails priceDetails, int ParserId)
         {
             var dateNow = DateTime.Now;
 
             using (var context = contextMaker.Invoke())
             {
                 context.PriceDetails.Add(priceDetails);
+                context.SaveChanges();
+
+                context.Parser.Find(ParserId).LatestPriceDetailId = priceDetails.Id;
                 context.SaveChanges();
             }
         }

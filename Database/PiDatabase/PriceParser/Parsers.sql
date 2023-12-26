@@ -10,5 +10,8 @@
     [CreatedDate] DATETIME NOT NULL, 
     [UpdatedDate] DATETIME NOT NULL,
     [ActiveFrom] DATETIME NOT NULL,
-    [ActiveTo] DATETIME NOT NULL
+    [ActiveTo] DATETIME NOT NULL, 
+    [LatestPriceDetailId] INT NULL
+        CONSTRAINT FK_PriceDetail_Parser 
+        FOREIGN KEY REFERENCES [price].[PriceDetails]
 )

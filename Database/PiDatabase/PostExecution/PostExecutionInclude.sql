@@ -10,4 +10,4 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-:r .\PopulateData\_include.sql
+--:r .\PopulateData\_include.sql

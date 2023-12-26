@@ -19,8 +19,10 @@ namespace Data.EF.Models
         public DateTime UpdatedDate { get; set; }
         public DateTime ActiveFrom { get; set; }
         public DateTime ActiveTo { get; set; }
+        public int LatestPriceDetailId { get; set; }
 
         public virtual ParserType ParserType { get; set; }
         public virtual ICollection<PriceSeries> PriceSeries { get; set; }
+        public virtual PriceDetails LatestPriceDetail { get; set; }
     }
 }
