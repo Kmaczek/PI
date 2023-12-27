@@ -125,6 +125,7 @@ namespace Pi.Api
             //    context.Response.ContentType = "application/json";
             //    await context.Response.WriteAsync(result);
             //}));
+            app.UsePathBase("/api");
 
             app.UseRouting();
 

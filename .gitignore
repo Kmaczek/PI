@@ -333,3 +333,7 @@ ASALocalRun/
 /Data/Data.EF/Models/TempCont.cs
 dkapp/src/environments/environment.prod.ts
 
+# ignore Build folder except build.ps1
+/Build/*
+!/Build/build.ps1
+!/Build/run.ps1
