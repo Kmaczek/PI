@@ -51,7 +51,7 @@ namespace Flats.Core.Scraping
                 var batch = ScrapPage(document);
                 OnScrapedPage(batch);
                 results.AddRange(batch);
-                Thread.Sleep(600);
+                Thread.Sleep(1000);
             }
 
             return results;

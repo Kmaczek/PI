@@ -52,7 +52,7 @@ namespace Flats.Core.Scraping
 
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
         {
-            return document.DocumentNode.SelectNodes(@"//*[@data-cy='search.listing']/ul/li/a");
+            return document.DocumentNode.SelectNodes(@"//*[@data-cy='search.listing.organic']/ul/li/a");
         }
 
         protected override FlatDataBm ParseOffer(HtmlNode node)
@@ -60,9 +60,9 @@ namespace Flats.Core.Scraping
             Url = GetUrl(node, Errors);
 
             //var locationNode = node.SelectSingleNode(@".//article/p[1]");
-            var priceNode = node.SelectSingleNode(@".//article/p[3]");
-            var detailsNode = node.SelectSingleNode(@".//article/p[2]");
-            var bottomDetails = node.SelectSingleNode(@".//article/div[1]");
+            var priceNode = node.SelectSingleNode(@".//article/div[2]/span[1]");
+            var detailsNode = node.SelectSingleNode(@".//article/div[2]");
+            var bottomDetails = node.SelectSingleNode(@".//article/div[3]");
                
             var otodomId = GetOtoDomId(Errors);
             var totalPrice = GetPrice(priceNode, Errors);
@@ -87,7 +87,7 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var areaNode = node.SelectSingleNode(@".//span[2]");
+                var areaNode = node.SelectSingleNode(@".//span[4]");
                 normalized = areaNode.InnerText.Trim();
                 var str = normalized.Remove(normalized.Length - 3).Replace(" ", "").Replace(".", ",");
 
@@ -145,7 +145,7 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var roomsNode = node.SelectSingleNode(@".//span[1]");
+                var roomsNode = node.SelectSingleNode(@".//span[3]");
                 normalized = roomsNode.InnerText.Trim().Split(' ')[0].Replace(">", "");
 
                 rooms = int.Parse(normalized);
