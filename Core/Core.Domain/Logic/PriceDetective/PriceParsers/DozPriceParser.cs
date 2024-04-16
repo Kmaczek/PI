@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Core.Domain.Logic.PriceDetective.PriceParsers
 {
@@ -34,15 +35,42 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 var title = GetPropertyValue(@"//*[contains(@property,'og:title')]")?.Trim();
                 var brand = GetPropertyValue(@"//*[contains(@property,'product:brand')]")?.Trim();
                 var retailerPartNo = GetPropertyValue(@"//*[contains(@property,'product:retailer_part_no')]")?.Trim();
-                var price = HtmlDocument.DocumentNode
-                    .SelectSingleNode(@"//*/meta[contains(@itemprop,'price')]")
+
+                var price = string.Empty;
+                var priceNode = HtmlDocument.DocumentNode
+                    .SelectSingleNode(@"//*/meta[contains(@itemprop,'price')]");
+                if (priceNode != null)
+                {
+                    price = priceNode
                     .Attributes
                     .FirstOrDefault(a => a.Name == "content")
                     .Value;
-                var priceNumber = Convert.ToDecimal(price, CultureInfo.InvariantCulture);
+                }
+
+                if (string.IsNullOrEmpty(price))
+                {
+                    priceNode = HtmlDocument.DocumentNode.SelectSingleNode(@"//div[@class='product-card-price-box']/div[@class='price']/text()");
+                    price = Regex.Match(priceNode.InnerHtml, @"(\d+(?:,\d+)?)").Groups[1].Value;
+                }
+
+                try
+                {
+                    var pricePerQuantNode = HtmlDocument.DocumentNode.SelectSingleNode(@"//div[@class='product-card-price-box']/div[@class='price']/div");
+                    var pricePerQuant = pricePerQuantNode
+                        .InnerHtml
+                        .Replace("zł", string.Empty)
+                        .Replace("Cena za szt.:", string.Empty);
+
+                    var resultString = Regex.Match(pricePerQuantNode.InnerHtml, @"(\d+(?:,\d+)?)").Groups[1].Value;
+
+                    Console.WriteLine($"Price Per Quantity: {pricePerQuant.Trim()} - {resultString} - {Convert.ToDecimal(resultString, CultureInfo.GetCultureInfo("pl"))}");
+                }
+                catch (Exception) { }
+
+                var priceNumber = Convert.ToDecimal(price, CultureInfo.GetCultureInfo("pl"));
 
                 result.Price = priceNumber;
-                result.ProductNo = $"{ brand ?? string.Empty}.{retailerPartNo}";
+                result.ProductNo = $"{brand ?? string.Empty}.{retailerPartNo}";
                 result.Title = title;
                 result.Proper = priceNumber != 0;
             }
@@ -74,7 +102,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
             string result = null;
             var element = HtmlDocument.DocumentNode.SelectSingleNode(selector);
 
-            if(element != null)
+            if (element != null)
                 result = element.Attributes.FirstOrDefault(x => x.Name == "content")?.Value;
 
             return result;

@@ -10,4 +10,16 @@ https://api.adviceslip.com/
 Weather
 
 Inflation
-
+koszyk CPI
+?ywno?? i napoje bezalkoholowe	25,24	27,77	26,59	27,01
+Napoje alkoholowe i wyroby tytoniowe	6,25	6,91	6,32	5,75
+Odzie? i obuwie	4,94	4,21	4,47	4,27
+U?ytkowanie mieszkania lub domu i no?niki energii	18,44	19,14	19,33	19,63
+Wyposa?enie mieszkania i prowadzenie gospodarstwa domowego	5,8	5,83	5,71	5,29
+Zdrowie	5,29	5,39	5,69	5,71
+Transport	9,89	8,88	9,54	9,92
+??czno??	4,54	5	4,9	4,48
+Rekreacja i kultura	6,62	5,78	6,07	6,14
+Edukacja	1,15	1,02	1,16	2,21
+Restauracje i hotele	6,12	4,56	4,77	5,11
+Inne towary i us?ugi	5,72	5,51	5,45	5,48

@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Data.Repository;
+using Data.Repository.Interfaces;
 using Jobs.OldScheduler.Jobs;
 using log4net;
 using System;
@@ -19,11 +21,13 @@ namespace Jobs.OldScheduler
         private readonly IJob otodomFeedJob;
         private readonly IJob priceDetectiveJob;
         private readonly ILifetimeScope scope;
+        private readonly IPriceRepository priceRepository;
         private Dictionary<string, IJob> JobsToRun = new Dictionary<string, IJob>();
 
-        public ConsoleCommander(ILifetimeScope scope)
+        public ConsoleCommander(ILifetimeScope scope, IPriceRepository priceRepository)
         {
             this.scope = scope;
+            this.priceRepository = priceRepository;
             emailSummaryJob = scope.ResolveNamed<IJob>(nameof(EmailSummaryJob));
             performanceAuditJob = scope.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
             otodomFeedJob = scope.ResolveNamed<IJob>(nameof(OtodomFeedJob));
@@ -55,6 +59,7 @@ namespace Jobs.OldScheduler
             Commands.Add("exit", Quit);
             Commands.Add("p", Print);
             Commands.Add("job", RunJob);
+            Commands.Add("list", List);
         }
 
         public void ListenToCommands(string command)
@@ -94,6 +99,15 @@ namespace Jobs.OldScheduler
             }
 
             Log.Info($"Printing [{message}]");
+        }
+
+        private void List(string[] command)
+        {
+            if (command.Contains("jobs"))
+            {
+                Log.Info($"Listing Jobs");
+                priceRepository.GetParsers().ToList().ForEach(x => Log.Info(x.ToString()));
+            }
         }
 
         private void RunJob(string[] command)

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Core.Domain.Logic.PriceDetective.PriceParsers
 {
@@ -44,11 +45,9 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                 {
                     priceStr = "0";
                 }
-                var price = Convert.ToDecimal(priceStr
-                    .Replace("zł", String.Empty)
-                    .Replace("gr", String.Empty)
-                    .Replace("/ kg", String.Empty)
-                    .Trim(), CultureInfo.GetCultureInfo("pl"));
+
+                var priceFound = Regex.Match(priceStr, @"(\d+(?:,\d+)?)").Groups[1].Value;
+                var price = Convert.ToDecimal(priceFound.Trim(), CultureInfo.GetCultureInfo("pl"));
 
                 string ean = String.Empty;
                 try

@@ -37,7 +37,7 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
                         if (line.Contains("\"offers\":"))
                         {
                             var jsonString = ExtractJson(line);
-                            var product = JsonConvert.DeserializeObject<Product>(jsonString);
+                            var product = JsonConvert.DeserializeObject<Wrapper>(jsonString).MainEntity;
 
                             result.Price = product.Offers.Price;
                             result.ProductNo = product.Gtin13;
@@ -98,6 +98,11 @@ namespace Core.Domain.Logic.PriceDetective.PriceParsers
 
             return string.Empty;
         }
+
+        public class Wrapper
+        {
+            public Product MainEntity { get; set; }
+    }
 
         public class Product
         {

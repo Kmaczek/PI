@@ -52,7 +52,7 @@ namespace Flats.Core.Scraping
 
         protected override HtmlNodeCollection GetOffers(HtmlDocument document)
         {
-            return document.DocumentNode.SelectNodes(@"//*[@data-cy='search.listing.organic']/ul/li/a");
+            return document.DocumentNode.SelectNodes(@"//*[@data-cy='search.listing.organic']/ul/li/article/section");
         }
 
         protected override FlatDataBm ParseOffer(HtmlNode node)
@@ -60,10 +60,10 @@ namespace Flats.Core.Scraping
             Url = GetUrl(node, Errors);
 
             //var locationNode = node.SelectSingleNode(@".//article/p[1]");
-            var priceNode = node.SelectSingleNode(@".//article/div[2]/span[1]");
-            var detailsNode = node.SelectSingleNode(@".//article/div[2]");
-            var bottomDetails = node.SelectSingleNode(@".//article/div[3]");
-               
+            var priceNode = node.SelectSingleNode(@".//*[@data-testid='listing-item-header']");
+            var detailsNode = node.SelectSingleNode(@".//*[@data-testid='advert-card-specs-list']");
+            var bottomDetails = node.ChildNodes[1].SelectSingleNode(@".//div[5]");
+
             var otodomId = GetOtoDomId(Errors);
             var totalPrice = GetPrice(priceNode, Errors);
             var rooms = GetRooms(detailsNode, Errors);
@@ -87,7 +87,7 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var areaNode = node.SelectSingleNode(@".//span[4]");
+                var areaNode = node.SelectSingleNode(@".//dl/dd[2]");
                 normalized = areaNode.InnerText.Trim();
                 var str = normalized.Remove(normalized.Length - 3).Replace(" ", "").Replace(".", ",");
 
@@ -125,10 +125,13 @@ namespace Flats.Core.Scraping
 
             try
             {
-                normalized = node.InnerText.Trim();
-                var str = normalized.Remove(normalized.Length - 3).Replace(" ", "").Replace(",", ".");
+                normalized = node.InnerText
+                    .Trim()
+                    .Replace("\u00A0", string.Empty) // non breaking space
+                    .Replace(" ", "");
+                var str = Regex.Match(normalized, @"\d+(?:,\d+)?");
 
-                price = decimal.Parse(str, CultureInfo.CreateSpecificCulture("pl-PL"));
+                price = decimal.Parse(str.Value, CultureInfo.CreateSpecificCulture("pl-PL"));
             }
             catch (Exception e)
             {
@@ -145,7 +148,7 @@ namespace Flats.Core.Scraping
 
             try
             {
-                var roomsNode = node.SelectSingleNode(@".//span[3]");
+                var roomsNode = node.SelectSingleNode(@".//dl/dd[1]");
                 normalized = roomsNode.InnerText.Trim().Split(' ')[0].Replace(">", "");
 
                 rooms = int.Parse(normalized);
@@ -162,10 +165,11 @@ namespace Flats.Core.Scraping
         {
             string url = string.Empty;
             var normalized = string.Empty;
+            var urlNode = node.SelectSingleNode(@".//div/a[@data-cy='listing-item-link']");
 
             try
             {
-                url = node.GetAttributeValue("href", "");
+                url = urlNode.GetAttributeValue("href", "");
             }
             catch (Exception e)
             {

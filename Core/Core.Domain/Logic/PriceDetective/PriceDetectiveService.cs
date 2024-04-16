@@ -69,7 +69,7 @@ namespace Core.Domain.Logic.PriceDetective
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Error while parsing {parserConfig.Uri}", e);
+                    log.Error($"Error while parsing {parserConfig.Id} - {parserConfig.Uri}", e);
                 }
 
             }
