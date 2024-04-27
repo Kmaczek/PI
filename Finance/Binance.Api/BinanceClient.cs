@@ -59,16 +59,16 @@ namespace Binance.Api
 
         public bool Ping()
         {
-            var request = new RestRequest("/api/v1/ping", Method.GET);
-            IRestResponse response = Client.Execute(request);
+            var request = new RestRequest("/api/v1/ping", Method.Get);
+            var response = Client.Execute(request);
 
             return response.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
         public ServerTimeDto ServerTime()
         {
-            var request = new RestRequest("/api/v1/time", Method.GET);
-            IRestResponse response = Client.Execute(request);
+            var request = new RestRequest("/api/v1/time", Method.Get);
+            var response = Client.Execute(request);
 
             var serverTime = JsonConvert.DeserializeObject<ServerTimeDto>(response.Content);
             return serverTime;
@@ -76,8 +76,8 @@ namespace Binance.Api
 
         public ExchangeInfoDto ExchangeInfo()
         {
-            var request = new RestRequest("/api/v1/exchangeInfo", Method.GET);
-            IRestResponse response = Client.Execute(request);
+            var request = new RestRequest("/api/v1/exchangeInfo", Method.Get);
+            var response = Client.Execute(request);
 
             var exchangeInfo = JsonConvert.DeserializeObject<ExchangeInfoDto>(response.Content, CamelCaseResolver);
             return exchangeInfo;
@@ -85,8 +85,8 @@ namespace Binance.Api
 
         public ExchangeInfoDto OrderBook()
         {
-            var request = new RestRequest("/api/v1/depth", Method.GET);
-            IRestResponse response = Client.Execute(request);
+            var request = new RestRequest("/api/v1/depth", Method.Get);
+            var response = Client.Execute(request);
 
             var exchangeInfo = JsonConvert.DeserializeObject<ExchangeInfoDto>(response.Content, CamelCaseResolver);
             return exchangeInfo;
@@ -94,8 +94,8 @@ namespace Binance.Api
 
         public TradeDto HistoricalTrades()
         {
-            var request = new RestRequest("/api/v1/historicalTrades", Method.GET);
-            IRestResponse response = Client.Execute(request);
+            var request = new RestRequest("/api/v1/historicalTrades", Method.Get);
+            var response = Client.Execute(request);
 
             var trade = JsonConvert.DeserializeObject<TradeDto>(response.Content, CamelCaseResolver);
             return trade;
@@ -108,12 +108,12 @@ namespace Binance.Api
                 Status = OutcomeStatus.OK
             };
 
-            var request = new RestRequest("/api/v3/account", Method.GET);
+            var request = new RestRequest("/api/v3/account", Method.Get);
             request.AddHeader("X-MBX-APIKEY", apiKey);
-            request.AddOrUpdateParameter(new Parameter("timestamp", ServerTime().ServerTimestamp, ParameterType.QueryString));
+            request.AddOrUpdateParameter("timestamp", ServerTime().ServerTimestamp, ParameterType.QueryString);
 
             AddSignature(request);
-            IRestResponse requestResponse = Client.Execute(request);
+            var requestResponse = Client.Execute(request);
 
             if (!requestResponse.IsSuccessful)
             {
@@ -133,9 +133,9 @@ namespace Binance.Api
 
         public AveragePriceDto GetAveragePrice(string symbol)
         {
-            var request = new RestRequest("/api/v3/avgPrice", Method.GET);
-            request.Parameters.Add(new Parameter("symbol", symbol, ParameterType.QueryString));
-            IRestResponse response = Client.Execute(request);
+            var request = new RestRequest("/api/v3/avgPrice", Method.Get);
+            request.AddOrUpdateParameter("symbol", symbol, ParameterType.QueryString);
+            var response = Client.Execute(request);
 
             var avgPrice = JsonConvert.DeserializeObject<AveragePriceDto>(response.Content, CamelCaseResolver);
             avgPrice.Symbol = symbol;

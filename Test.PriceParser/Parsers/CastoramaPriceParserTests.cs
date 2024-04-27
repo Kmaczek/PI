@@ -18,10 +18,10 @@ namespace Test.PriceParser.Parsers
 
             var result = castoramaParser.Parse();
 
-            Assert.IsTrue(result.First().Proper);
-            Assert.NotZero(result.First().Price);
-            Assert.IsNotEmpty(result.First().ProductNo);
-            Assert.IsNotEmpty(result.First().Title);
+            Assert.That(result.First().Proper, Is.True);
+            Assert.That(result.First().Price, Is.Not.Zero);
+            Assert.That(result.First().ProductNo, Is.Not.Empty);
+            Assert.That(result.First().Title, Is.Not.Empty);
         }
 
     }

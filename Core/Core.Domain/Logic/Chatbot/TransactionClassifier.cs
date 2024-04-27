@@ -4,12 +4,9 @@ using Core.Model.Exceptions;
 using Core.Model.Transaction;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Text;
 
 namespace Core.Domain.Logic.Chatbot
 {
@@ -20,8 +17,8 @@ namespace Core.Domain.Logic.Chatbot
         private readonly string chatModel;
         private OpenAIClient openAIClient;
         private readonly ILogger<TransactionClassifier> _logger;
-        private readonly List<ChatMessage> systemPrompts = new List<ChatMessage>();
-        private readonly List<ChatMessage> userPrompts = new List<ChatMessage>();
+        private readonly List<ChatRequestMessage> systemPrompts = [];
+        private readonly List<ChatRequestMessage> userPrompts = [];
 
         public TransactionClassifier(IConfigurationRoot configuration, ILogger<TransactionClassifier> logger)
         {
@@ -61,7 +58,8 @@ namespace Core.Domain.Logic.Chatbot
                 ResetUserPrompts();
                 AddUserPrompt(GetUserPrompt(batchedRecords));
 
-                Response<ChatCompletions> response = openAIClient.GetChatCompletions(OpenAiModels.Gpt35Turbo16k, CreateOptions());
+                Response<ChatCompletions> response = openAIClient.GetChatCompletions(CreateOptions());
+                //OpenAiModels.Gpt35Turbo16k
 
                 chatChoices.AddRange(response.Value.Choices);
             }
@@ -71,12 +69,12 @@ namespace Core.Domain.Logic.Chatbot
 
         private void AddSystemPrompt(string systemPrompt)
         {
-            systemPrompts.Add(new ChatMessage(ChatRole.System, systemPrompt));
+            systemPrompts.Add(new ChatRequestSystemMessage(systemPrompt));
         }
 
         private void AddUserPrompt(string userPrompt)
         {
-            userPrompts.Add(new ChatMessage(ChatRole.User, userPrompt));
+            userPrompts.Add(new ChatRequestUserMessage(userPrompt));
         }
 
         private void ResetUserPrompts()
@@ -110,7 +108,8 @@ namespace Core.Domain.Logic.Chatbot
         {
             var chatOptions = new ChatCompletionsOptions()
             {
-                ChoicesPerPrompt = 1,
+                DeploymentName = OpenAiModels.Gpt35Turbo16k,
+                ChoiceCount = 1,
                 Temperature = 0.01f
             };
             systemPrompts.ForEach(p => chatOptions.Messages.Add(p));

@@ -1,5 +1,4 @@
-﻿using MoreLinq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Model.FlatsModels
@@ -39,10 +38,10 @@ namespace Core.Model.FlatsModels
                 return null;
 
             return new FlatCalculationsVm(
-                FlatsDictionary[flatSize].MinBy(x => x.Surface).FirstOrDefault(),
-                FlatsDictionary[flatSize].MaxBy(x => x.Surface).FirstOrDefault(),
-                FlatsDictionary[flatSize].MinBy(x => x.TotalPrice).FirstOrDefault(),
-                FlatsDictionary[flatSize].MaxBy(x => x.TotalPrice).FirstOrDefault())
+                FlatsDictionary[flatSize].MinBy(x => x.Surface),
+                FlatsDictionary[flatSize].MaxBy(x => x.Surface),
+                FlatsDictionary[flatSize].MinBy(x => x.TotalPrice),
+                FlatsDictionary[flatSize].MaxBy(x => x.TotalPrice))
             {
                 FlatSize = flatSize,
                 Amount = FlatsDictionary[flatSize].Count,

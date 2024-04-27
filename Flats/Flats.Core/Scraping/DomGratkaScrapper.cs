@@ -1,5 +1,4 @@
 ﻿using System;
-using CenyMieszkan.Models.FlatData;
 using Core.Model.FlatsModels;
 using HtmlAgilityPack;
 

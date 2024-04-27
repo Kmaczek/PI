@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using Core.Common;
+using Core.Common.Logging;
 using Core.Domain.Logic;
 using Core.Domain.Logic.EmailGeneration;
 using Core.Model;
 using Core.Model.FlatsModels;
+using Core.Model.PriceDetectiveModels;
 using Data.EF.Models;
 using Data.Repository.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using MoreLinq;
 using System.Linq;
 using System.Threading;
 using Xtb.Core;
-using Core.Model.PriceDetectiveModels;
-using Core.Common.Logging;
 
 namespace Jobs.OldScheduler.Jobs
 {
@@ -224,13 +223,13 @@ namespace Jobs.OldScheduler.Jobs
             flatSeries.AvgPrice = flats.Average(x => x.TotalPrice);
             flatSeries.AvgPricePerMeter = flats.Average(x => x.Surface) == 0 ? 0 : flatSeries.AvgPrice / flats.Average(x => x.Surface);
 
-            flatSeries.BestValueId = flats.MinBy(x => x.Surface == 0 ? 0 : (x.TotalPrice / x.Surface)).FirstOrDefault()?.Id;
+            flatSeries.BestValueId = flats.MinBy(x => x.Surface == 0 ? 0 : (x.TotalPrice / x.Surface))?.Id;
 
-            flatSeries.BiggestId = flats.MaxBy(x => x.Surface).FirstOrDefault()?.Id;
-            flatSeries.MostExpensiveId = flats.MaxBy(x => x.TotalPrice).FirstOrDefault()?.Id;
+            flatSeries.BiggestId = flats.MaxBy(x => x.Surface)?.Id;
+            flatSeries.MostExpensiveId = flats.MaxBy(x => x.TotalPrice)?.Id;
 
-            flatSeries.SmallestId = flats.MinBy(x => x.Surface).FirstOrDefault()?.Id;
-            flatSeries.CheapestId = flats.MinBy(x => x.TotalPrice).FirstOrDefault()?.Id;
+            flatSeries.SmallestId = flats.MinBy(x => x.Surface)?.Id;
+            flatSeries.CheapestId = flats.MinBy(x => x.TotalPrice)?.Id;
 
             flatSeries.DateFetched = DateTime.Now.Date;
 

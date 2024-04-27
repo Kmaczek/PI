@@ -1,9 +1,6 @@
-﻿using CenyMieszkan.Models.FlatData;
-using Core.Model.FlatsModels;
+﻿using Core.Model.FlatsModels;
 using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Flats.Core.Scraping
 {

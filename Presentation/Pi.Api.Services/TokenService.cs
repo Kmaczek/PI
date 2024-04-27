@@ -58,7 +58,7 @@ namespace Pi.Api.Services
             claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
             claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.DisplayName));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(new { DisplayName = user.DisplayName})));
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(new { user.DisplayName })));
 
             foreach (var role in roles)
             { claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role)); }
