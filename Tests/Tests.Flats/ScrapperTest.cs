@@ -1,10 +1,4 @@
-﻿using Core.Domain.Logic;
-using Core.Model.FlatsModels;
-using Flats.Core.Scraping;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using NUnit.Framework;
 
 namespace Tests.Flats
 {

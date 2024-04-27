@@ -6,7 +6,6 @@ using Core.Model.FlatsModels;
 using Data.EF.Models;
 using Data.Repository.Interfaces;
 using Flats.Core.Scraping;
-using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
