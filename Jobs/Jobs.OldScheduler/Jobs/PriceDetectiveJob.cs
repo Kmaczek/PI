@@ -11,14 +11,14 @@ namespace Jobs.OldScheduler.Jobs
         private readonly IConfigurationRoot _configuration;
         private readonly ILogger _log;
         private readonly IPriceDetectiveService priceDetectiveService;
-        
+
 
         public PriceDetectiveJob(
             IConfigurationRoot configuration,
             ILogger log,
             IPriceDetectiveService priceDetectiveService)
         {
-            
+
             this._configuration = configuration;
             this._log = log;
             this.priceDetectiveService = priceDetectiveService;
@@ -51,7 +51,7 @@ namespace Jobs.OldScheduler.Jobs
                 var priceData = priceDetectiveService.CollectPriceData(parameters?.ParsersToRun);
                 priceDetectiveService.SavePrices(priceData);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _log.Error($"Job {JobName} failed.", e);
             }

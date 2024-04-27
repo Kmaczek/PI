@@ -33,7 +33,7 @@ namespace Flats.Core.Scraping
 
         protected override int GetPageCount(HtmlDocument document)
         {
-            var sth = document.DocumentNode.SelectSingleNode(@"//*[@data-cy='search.listing-panel.label.ads-number']/span[2]");
+            var sth = document.DocumentNode.SelectSingleNode(@"//*[@data-testid='frontend.search.base-pagination.nexus-pagination']/li[7]").InnerHtml;
 
             var count = 0;
             if (sth == null)
@@ -42,8 +42,7 @@ namespace Flats.Core.Scraping
             }
             else
             {
-                var totalElements = int.Parse(sth.InnerText.Trim().Replace(" ", ""));
-                count = Convert.ToInt32(Math.Ceiling(totalElements / 72d));
+                count = int.Parse(sth);
             }
 
             Log.Info($"Processing {count} pages.");
@@ -57,27 +56,48 @@ namespace Flats.Core.Scraping
 
         protected override FlatDataBm ParseOffer(HtmlNode node)
         {
-            Url = GetUrl(node, Errors);
-
-            //var locationNode = node.SelectSingleNode(@".//article/p[1]");
-            var priceNode = node.SelectSingleNode(@".//*[@data-testid='listing-item-header']");
-            var detailsNode = node.SelectSingleNode(@".//*[@data-testid='advert-card-specs-list']");
-            var bottomDetails = node.ChildNodes[1].SelectSingleNode(@".//div[5]");
-
-            var otodomId = GetOtoDomId(Errors);
-            var totalPrice = GetPrice(priceNode, Errors);
-            var rooms = GetRooms(detailsNode, Errors);
-            var squareMeters = GetArea(detailsNode, Errors);
-            var isPrivate = IsPrivateOffer(bottomDetails, Errors);
-            //var location = GetLocation(locationNode, Errors);
-
-            var data = new FlatDataBm(squareMeters, totalPrice, rooms, Url, isPrivate)
+            if (node.InnerHtml.Contains("częścią inwestycji"))
             {
-                OtoDomId = otodomId,
-                //Location = location
-            };
+                if(node.InnerHtml.Contains("Zapytaj o cenę")) return null;
+                Url = GetUrl(node, Errors, @".//p/a");
 
-            return data;
+                var priceNode = node.SelectSingleNode(@".//ul/li/div/div/div/span");
+                var detailsNode = node.SelectSingleNode(@".//dl").ParentNode;
+
+                var otodomId = GetOtoDomId(Errors);
+                var totalPrice = GetPrice(priceNode, Errors);
+                var rooms = GetRooms(detailsNode, Errors);
+                var squareMeters = GetArea(detailsNode, Errors);
+                var isPrivate = false;
+
+                var data = new FlatDataBm(squareMeters, totalPrice, rooms, Url, isPrivate)
+                {
+                    OtoDomId = otodomId,
+                };
+
+                return data;
+            }
+            else
+            {
+                Url = GetUrl(node, Errors, @".//div/a[@data-cy='listing-item-link']");
+
+                var priceNode = node.SelectSingleNode(@".//*[@data-testid='listing-item-header']");
+                var detailsNode = node.SelectSingleNode(@".//*[@data-testid='advert-card-specs-list']");
+                var bottomDetails = node.ChildNodes[1].SelectSingleNode(@".//div[5]");
+
+                var otodomId = GetOtoDomId(Errors);
+                var totalPrice = GetPrice(priceNode, Errors);
+                var rooms = GetRooms(detailsNode, Errors);
+                var squareMeters = GetArea(detailsNode, Errors);
+                var isPrivate = IsPrivateOffer(bottomDetails, Errors);
+
+                var data = new FlatDataBm(squareMeters, totalPrice, rooms, Url, isPrivate)
+                {
+                    OtoDomId = otodomId,
+                };
+
+                return data;
+            }
         }
 
         private decimal GetArea(HtmlNode node, List<string> errors)
@@ -161,11 +181,11 @@ namespace Flats.Core.Scraping
             return rooms;
         }
 
-        private string GetUrl(HtmlNode node, List<string> errors)
+        private string GetUrl(HtmlNode node, List<string> errors, string xpath)
         {
             string url = string.Empty;
             var normalized = string.Empty;
-            var urlNode = node.SelectSingleNode(@".//div/a[@data-cy='listing-item-link']");
+            var urlNode = node.SelectSingleNode(xpath);
 
             try
             {

@@ -61,15 +61,16 @@ Remove-Item -Path "$WEBAPP_DIRECTORY\*" -Recurse -Force
 Copy-Item -Path $UI_UNZIP_DIRECTORY -Destination $WEBAPP_DIRECTORY -Recurse -Force
 
 # Kill the nginx process
-Write-Host "Killing nginx process"
-Start-Process -FilePath "taskkill" -ArgumentList "/f /im nginx.exe"
+# Write-Host "Killing nginx process"
+# Start-Process -FilePath "taskkill" -ArgumentList "/f /im nginx.exe"
 
 # Change the current directory to the nginx directory
 Set-Location -Path "C:\web\nginx-1.21.1"
 
 # Run nginx
 Write-Host "Starting nginx"
-Start-Process -FilePath "nginx"
+# Start-Process -FilePath "nginx"
+nginx -s reload
 
 # Restore the current location
 Set-Location -Path $ORIGINAL_LOCATION
