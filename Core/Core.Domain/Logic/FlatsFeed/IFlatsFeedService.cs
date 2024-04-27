@@ -1,9 +1,8 @@
-﻿using Core.Domain.Logic.FlatsFeed;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Domain.Logic.OtodomService
+namespace Core.Domain.Logic.FlatsFeed
 {
     public interface IFlatsFeedService
     {

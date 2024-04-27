@@ -1,19 +1,19 @@
 ﻿using Core.Model.FlatsModels;
 
-namespace CenyMieszkan.Models.FlatData
+namespace Flats.Core.Models.FlatData
 {
-    public class DomGratkaFlatData: FlatDataBm
+    public class DomGratkaFlatData : FlatDataBm
     {
         public DomGratkaFlatData(
-            decimal squareMeters, 
-            decimal totalPrice, 
-            string city, 
-            string street, 
-            int rooms, 
-            string url, 
-            string location, 
-            int year, 
-            bool isPrivate) 
+            decimal squareMeters,
+            decimal totalPrice,
+            string city,
+            string street,
+            int rooms,
+            string url,
+            string location,
+            int year,
+            bool isPrivate)
             : base(squareMeters, totalPrice, rooms, url, isPrivate)
         {
             Surface = squareMeters;

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using Xtb.Core;
 using Core.Model.PriceDetectiveModels;
+using Core.Common.Logging;
 
 namespace Jobs.OldScheduler.Jobs
 {

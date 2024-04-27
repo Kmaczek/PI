@@ -23,6 +23,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Pi.Api.EF;
+using Pi.Api.EF.Repository;
 using Pi.Api.EF.Repository.Interfaces;
 using Pi.Api.Middleware;
 using Pi.Api.Services;

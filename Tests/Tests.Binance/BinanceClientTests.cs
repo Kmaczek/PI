@@ -1,5 +1,4 @@
 using Binance.Api;
-using Core.Common;
 using Core.Common.Logging;
 using Core.Domain.Logic;
 using Data.Repository.Interfaces;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using System.IO;
 
-namespace Tests
+namespace Tests.Binance
 {
     public class BinanceClientTests
     {

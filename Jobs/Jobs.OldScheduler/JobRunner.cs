@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Core.Common;
 using Core.Common.Logging;
 using Jobs.OldScheduler.Jobs;
 using Microsoft.Extensions.Configuration;

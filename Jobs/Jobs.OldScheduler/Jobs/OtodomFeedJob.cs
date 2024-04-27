@@ -1,5 +1,5 @@
-﻿using Core.Common;
-using Core.Domain.Logic.OtodomService;
+﻿using Core.Common.Logging;
+using Core.Domain.Logic.FlatsFeed;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

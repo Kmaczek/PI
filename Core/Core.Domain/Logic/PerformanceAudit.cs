@@ -1,4 +1,4 @@
-﻿using Core.Common;
+﻿using Core.Common.Logging;
 using Core.Model.PerformanceAuditModels;
 using Core.Model.PerformanceAuditModels.Exceptions;
 using Microsoft.Extensions.Configuration;

@@ -1,4 +1,4 @@
-﻿using Core.Common;
+﻿using Core.Common.Logging;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

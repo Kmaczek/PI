@@ -1,4 +1,4 @@
-﻿using Core.Common;
+﻿using Core.Common.Logging;
 using Core.Domain.Logic;
 using Core.Model.PerformanceAuditModels;
 using Microsoft.Extensions.Configuration;

@@ -1,4 +1,4 @@
-﻿using Core.Common;
+﻿using Core.Common.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Pi.Api.EF.Models.Auth;

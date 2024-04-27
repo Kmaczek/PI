@@ -1,4 +1,4 @@
-﻿using Core.Common;
+﻿using Core.Common.Logging;
 using Core.Model;
 using System;
 using System.Globalization;

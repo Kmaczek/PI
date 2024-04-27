@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Core.Common;
 using Core.Common.Config;
-using Core.Domain.Logic.OtodomService;
+using Core.Common.Logging;
 using Core.Model.Exceptions;
 using Core.Model.FlatsModels;
 using Data.EF.Models;

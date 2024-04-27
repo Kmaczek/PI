@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.IO;
 using Xtb.Core;
 
-namespace Tests
+namespace Test.Xtb
 {
     public class Tests
     {

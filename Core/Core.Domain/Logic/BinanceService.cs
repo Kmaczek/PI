@@ -1,6 +1,6 @@
 ﻿using Binance.Api;
 using Binance.Api.BinanceDto;
-using Core.Common;
+using Core.Common.Logging;
 using Core.Model.BinanceModels;
 using Data.EF.Models;
 using Data.Repository.Interfaces;

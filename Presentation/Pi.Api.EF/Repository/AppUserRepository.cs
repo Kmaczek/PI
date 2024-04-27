@@ -5,7 +5,7 @@ using Pi.Api.EF.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Data.Repository
+namespace Pi.Api.EF.Repository
 {
     public class AppUserRepository : IAppUserRepository
     {

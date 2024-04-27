@@ -1,10 +1,10 @@
 ﻿using Core.Model.FlatsModels;
 
-namespace CenyMieszkan.Models.FlatData
+namespace Flats.Core.Models.FlatData
 {
     public class OtoDomFlatData : FlatDataBm
     {
-        public OtoDomFlatData(decimal squareMeters, decimal totalPrice, int rooms, string url, bool isPrivate) 
+        public OtoDomFlatData(decimal squareMeters, decimal totalPrice, int rooms, string url, bool isPrivate)
             : base(squareMeters, totalPrice, rooms, url, isPrivate)
         {
         }

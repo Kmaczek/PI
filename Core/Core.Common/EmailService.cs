@@ -1,12 +1,11 @@
-﻿using Core.Common;
-using Core.Model.Exceptions;
+﻿using Core.Model.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Mail;
 
-namespace Common
+namespace Core.Common
 {
     public class EmailService : IEmailService
     {
@@ -26,7 +25,7 @@ namespace Common
 
         public EmailService(IConfigurationRoot configuration)
         {
-            this._configuration = configuration;
+            _configuration = configuration;
             personalEmail = configuration.GetSection(PersonalEmailKey).Value;
             if (string.IsNullOrEmpty(personalEmail))
                 throw new EmailServiceException($"Missing configuration for Email Service [{PersonalEmailKey}]");
@@ -52,7 +51,7 @@ namespace Common
         {
             string subject;
             if (title == null)
-                subject = String.Format(CultureInfo.InvariantCulture, defaultTitle, DateTime.Now.ToString("dd-MM-yyy", CultureInfo.InvariantCulture));
+                subject = string.Format(CultureInfo.InvariantCulture, defaultTitle, DateTime.Now.ToString("dd-MM-yyy", CultureInfo.InvariantCulture));
             else
                 subject = title;
 

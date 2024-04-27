@@ -1,4 +1,4 @@
-﻿using Core.Common;
+﻿using Core.Common.Logging;
 using Core.Domain.Logic.PriceDetective;
 using Microsoft.Extensions.Configuration;
 using System;
