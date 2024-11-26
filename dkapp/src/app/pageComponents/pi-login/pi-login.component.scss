@@ -1,0 +1,14 @@
+@use 'constants' as *;
+
+.login__container {
+  display: flex;
+  gap: 8px;
+  height: 100%;
+  align-items: center;
+}
+
+@media screen and (max-width: $mobile-bp) {
+  .login__container {
+    flex-direction: column;
+  }
+}

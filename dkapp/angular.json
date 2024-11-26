@@ -19,8 +19,7 @@
         "@schematics/angular:guard": {
           "skipTests": true
         },
-        "@schematics/angular:module": {
-        },
+        "@schematics/angular:module": {},
         "@schematics/angular:pipe": {
           "skipTests": true
         },
@@ -30,7 +29,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "pi",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -49,10 +48,8 @@
             "styles": [
               "src/styles.scss",
               "src/styles/colors.scss",
-              "./node_modules/bootstrap/dist/css/bootstrap.css",
-              "node_modules/primeng/resources/themes/saga-blue/theme.css",
+              "node_modules/primeng/resources/themes/lara-dark-amber/theme.css",
               "node_modules/primeng/resources/primeng.min.css"
-
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -61,7 +58,6 @@
             },
             "scripts": [
               "./node_modules/jquery/dist/jquery.js",
-              "./node_modules/bootstrap/dist/js/bootstrap.js",
               "./node_modules/moment/min/moment.min.js",
               "./node_modules/chart.js/dist/Chart.js",
               "./node_modules/oidc-client/dist/oidc-client.js"
@@ -114,11 +110,23 @@
               "buildTarget": "pi:build:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

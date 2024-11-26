@@ -1,0 +1,19 @@
+<nav class="navbar">
+  <div class="navbar-wrapper">
+    <p-menubar [model]="items" size="small" >
+      <ng-template pTemplate="start">
+        <img class="navbar-menu__image" src="assets/favicon/android-chrome-192x192.png" alt />
+      </ng-template>
+    </p-menubar>
+
+    <div class="desktop__sign-in">
+      <pi-login *ngIf="!identityService.isLoggedIn else logOut"></pi-login>
+      <ng-template #logOut>
+        <p-button *ngIf="identityService.isLoggedIn" label="Log out" (onClick)="identityService.logout()"></p-button>
+      </ng-template>
+    </div>
+    <div class="mobile__sign-in" *ngIf="showSignIn">
+      <pi-login *ngIf="!identityService.isLoggedIn" (loggedIn)="hideSignIn()"></pi-login>
+    </div>
+  </div>
+</nav>

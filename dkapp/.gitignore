@@ -48,3 +48,5 @@ Thumbs.db
 
 # deployment
 *.7z
+.nx/cache
+.nx/workspace-data

@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { PiControlsModule } from '../piControls/piControls.module';
-import { FlatsScreenComponent } from './flatsScreen/flatsScreen.component';
+import { ChartModule } from 'primeng/chart';
+import { FlatsPageComponent } from './flatsScreen/flats-page.component';
 import { TableModule } from 'primeng/table';
 
 @NgModule({
     imports: [
         CommonModule,
         TableModule,
-        PiControlsModule
+        ChartModule
     ],
     declarations: [
-        FlatsScreenComponent,
+        FlatsPageComponent,
     ],
     exports: [
-        FlatsScreenComponent,
+        FlatsPageComponent,
     ]
 })
 export class FlatsModule { }

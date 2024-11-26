@@ -1,30 +1,25 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Product } from '../models/product';
-import { PriceSerie, IPriceSerie } from '../models/priceSerie';
-import { GrouppedProducts } from '../models/grouppedProducts';
+import { environment } from '../../../environments/environment';
+import { GroupedProducts } from '../models/grouppedProducts';
+import { IPriceEntry } from '../models/priceEntry';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class ProductsService
-{
-    private allProductsUrl = `${environment.apiUrl}/product`;
+export class ProductsService {
+  private allProductsUrl = `${environment.apiUrl}/product`;
 
-    constructor(private httpClient: HttpClient ) 
-    { }
+  constructor(private httpClient: HttpClient) {}
 
-    public GetProducts() : Observable<GrouppedProducts[]>
-    {
-        return this.httpClient.get<GrouppedProducts[]>(this.allProductsUrl);
-    }
+  public GetProducts(): Observable<GroupedProducts[]> {
+    return this.httpClient.get<GroupedProducts[]>(this.allProductsUrl);
+  }
 
-    public GetProductSeries(productId: number) : Observable<IPriceSerie[]>
-    {
-        var params = new HttpParams().set("productId", productId.toString());
+  public GetProductSeries(productId: number): Observable<IPriceEntry[]> {
+    const params = new HttpParams().set('productId', productId.toString());
 
-        return this.httpClient.get<IPriceSerie[]>(this.allProductsUrl + '/series', { params });
-    }
+    return this.httpClient.get<IPriceEntry[]>(this.allProductsUrl + '/series', { params });
+  }
 }

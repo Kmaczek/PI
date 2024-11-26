@@ -1,20 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { FlatSerie } from '../models/flatSerie';
+import { FlatSeries } from '../models/flatSerie';
 import { Observable } from 'rxjs';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class FlatService
-{
-    private flatSeriesUrl = `${environment.apiUrl}/flat/series`;
-    constructor(private httpClient: HttpClient ) 
-    { }
+export class FlatService {
+  private flatSeriesUrl = `${environment.apiUrl}/flat/series`;
 
-    public GetFlatsSeries() : Observable<FlatSerie[]>
-    {
-        return this.httpClient.get<FlatSerie[]>(this.flatSeriesUrl);
-    }
+  constructor(private httpClient: HttpClient) {}
+
+  public GetFlatsSeries(): Observable<FlatSeries[]> {
+    return this.httpClient.get<FlatSeries[]>(this.flatSeriesUrl);
+  }
 }

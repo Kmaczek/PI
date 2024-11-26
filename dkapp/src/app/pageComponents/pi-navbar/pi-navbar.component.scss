@@ -1,0 +1,48 @@
+@use 'colors' as *;
+@use 'constants' as *;
+
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: 1rem;
+}
+
+.navbar-wrapper {
+  background-color: var(--surface-section);
+
+  max-width: $max-content-width;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 1rem 2rem;
+}
+
+.navbar-menu__image {
+  width: 32px;
+  height: 32px;
+  margin-right: 0.5rem;
+}
+
+.mobile__sign-in {
+  display: none;
+}
+
+@media screen and (max-width: $mobile-bp) {
+  .desktop__sign-in {
+    display: none;
+  }
+
+  .navbar-wrapper {
+    display: grid;
+    justify-content: stretch;
+    padding: 1rem 1.5rem;
+  }
+}

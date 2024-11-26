@@ -1,0 +1,47 @@
+<br />
+<div class="container">
+  <div class="title">
+    <h3>INFLATION</h3>
+  </div>
+
+  <div class="value">
+    Value: 5%
+  </div>
+
+  <div class="content">
+    <div class="content__product-picker">
+      <p-listbox
+        [options]="products"
+        [group]="true"
+        optionGroupLabel="siteName"
+        optionGroupChildren="products"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        (onClick)="loadSeries($event)"
+        [listStyle]="{'max-height': isMobile ? '20rem' : '30rem'}"
+      ></p-listbox>
+    </div>
+    <div class="product-chart-wrapper">
+      <div class="product__name-wrapper">
+        <div class="link__placeholder" *ngIf="!selectedProduct?.name else productLink">&nbsp;</div>
+        <ng-template #productLink>
+          <a
+            class="product__name"
+            [href]="selectedProduct?.uri ?? null"
+            target="_blank"
+          >{{selectedProduct?.name ?? '-'}}</a>
+        </ng-template>
+
+      </div>
+      <div class="product__chart">
+        <p-chart
+          type="line"
+          [data]="basicData"
+          [options]="basicOptions"
+          [height]="isMobile ? '300px' : '600px'"
+        ></p-chart>
+      </div>
+    </div>
+  </div>
+</div>

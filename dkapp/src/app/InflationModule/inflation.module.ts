@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InflationScreenComponent } from './inflationScreen/inflationScreen.component';
-import { PiControlsModule } from '../piControls/piControls.module';
+import { InflationPageComponent } from './inflation-page/inflation-page.component';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
@@ -13,8 +12,6 @@ import { CommonModule } from '@angular/common';
     imports: [
         CommonModule,
         FormsModule,
-        PiControlsModule,
-        PiControlsModule,
         ButtonModule,
         DropdownModule,
         ChartModule,
@@ -22,10 +19,10 @@ import { CommonModule } from '@angular/common';
         ListboxModule
     ],
     declarations: [
-        InflationScreenComponent,
+        InflationPageComponent,
     ],
     exports: [
-        InflationScreenComponent,
+        InflationPageComponent,
     ]
 })
 export class InflationModule { }

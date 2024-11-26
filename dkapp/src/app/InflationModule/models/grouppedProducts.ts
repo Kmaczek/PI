@@ -1,6 +1,6 @@
 import { Product } from './product';
 
-export class GrouppedProducts {
+export class GroupedProducts {
 
     public siteId: number;
     public siteName: string;
