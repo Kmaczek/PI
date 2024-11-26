@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IdentityService } from 'src/app/services/external/identity.ext-service';
 import { PiExtService } from 'src/app/services/external/pi.ext-service';
 
 @Component({
@@ -11,14 +10,12 @@ export class HomePageComponent implements OnInit
 {
 
   constructor(
-    private piService: PiExtService,
-    private identity: IdentityService)
+    private piService: PiExtService)
   { }
 
   ngOnInit()
   {
     console.log('home');
     this.piService.GetWeatherForecast();
-    //this.identity.login(); 
   }
 }
