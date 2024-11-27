@@ -1,5 +1,5 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -35,14 +35,13 @@ import { DateInterceptor } from './services/interceptors/date-interceptor';
     PiLoginComponent,
     HomePageComponent,
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
-    HttpClientModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-
     TableModule,
     ButtonModule,
     DropdownModule,
@@ -51,7 +50,6 @@ import { DateInterceptor } from './services/interceptors/date-interceptor';
     TabMenuModule,
     InputTextModule,
     MenubarModule,
-
     FlatsModule,
     InflationModule,
   ],
@@ -66,7 +64,7 @@ import { DateInterceptor } from './services/interceptors/date-interceptor';
       useClass: DateInterceptor,
       multi: true,
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

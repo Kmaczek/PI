@@ -1,12 +1,32 @@
 <br />
 <div class="container">
   <h3>FLATS</h3>
-  <div class="row">
-    <div class="col-xl">
+  <div>
+    <p-buttonGroup>
+      <p-button
+        label="Price"
+        icon="pi pi-dollar"
+        (onClick)="loadPriceDataChart()"
+      />
+      <p-button
+        label="Offers"
+        icon="pi pi-hashtag"
+        (onClick)="loadOffersDataChart()"
+      />
+    </p-buttonGroup>
+    <div>
       <div class="flats-chart">
-        <p-chart type="line" [data]="basicData" [options]="basicOptions" height="100%"></p-chart>
+        <p-chart
+          type="line"
+          [data]="basicData"
+          [options]="basicOptions"
+        ></p-chart>
       </div>
-      <p-table [value]="flatSeries">
+      <p-table
+        [value]="flatSeries"
+        [paginator]="true"
+        [rows]="10"
+      >
         <ng-template pTemplate="header">
           <tr>
             <th>Day</th>
@@ -15,7 +35,10 @@
             <th>Amount</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-serie>
+        <ng-template
+          pTemplate="body"
+          let-serie
+        >
           <tr>
             <td>{{serie.day | date:'yyyy-MM-dd'}}</td>
             <td>{{serie.avgPricePerMeter}}</td>

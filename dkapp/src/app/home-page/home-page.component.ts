@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PiExtService } from 'src/app/services/external/pi.ext-service';
+import { PiExtService } from 'src/app/services/api/pi.ext-service';
 
 @Component({
   selector: 'pi-home-page',

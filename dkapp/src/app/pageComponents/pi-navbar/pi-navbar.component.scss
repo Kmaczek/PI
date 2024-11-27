@@ -13,7 +13,7 @@
 }
 
 .navbar-wrapper {
-  background-color: var(--surface-section);
+  background-color: var(--pi-surface-900);
 
   max-width: $max-content-width;
   width: 100%;
@@ -38,6 +38,10 @@
 @media screen and (max-width: $mobile-bp) {
   .desktop__sign-in {
     display: none;
+  }
+
+  .mobile__sign-in {
+    display: unset;
   }
 
   .navbar-wrapper {

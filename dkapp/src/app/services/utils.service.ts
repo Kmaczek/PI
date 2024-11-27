@@ -1,13 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilsService {
+  isMobile = signal(false);
+
   constructor(private breakpointObserver: BreakpointObserver) {}
 
-  isMobile(): boolean {
-    return this.breakpointObserver.isMatched('(max-width: 768px)');
+  checkForMobile(): void {
+    this.breakpointObserver.observe('(max-width: 768px)').subscribe(isMobileMatched => {
+      this.isMobile.set(isMobileMatched.matches);
+    });
   }
 }

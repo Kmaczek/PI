@@ -47,9 +47,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/styles/colors.scss",
-              "node_modules/primeng/resources/themes/lara-dark-amber/theme.css",
-              "node_modules/primeng/resources/primeng.min.css"
+              "src/styles/colors.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

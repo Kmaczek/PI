@@ -16,7 +16,7 @@
 .content {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 3fr;
-  padding-bottom: 4rem;
+  padding-bottom: 3rem;
 }
 
 .content__product-picker {
@@ -47,11 +47,11 @@
 .product__name {
   text-align: center;
   padding: 3px;
-  color: var(--primary-500);
+  color: var(--pi-menubar-item-color);
   cursor: pointer;
 
   &:hover {
-    background-color: var(--highlight-bg);
+    color: var(--pi-menubar-item-focus-color);
     transition: 250ms ease-in-out;
   }
 }

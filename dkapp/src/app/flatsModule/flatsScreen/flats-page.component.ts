@@ -19,31 +19,51 @@ export class FlatsPageComponent implements OnInit {
   constructor(private flatService: FlatService, private chartService: ChartService) {}
 
   ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    // https://primeng.org/colors
-
     this.flatService.GetFlatsSeries().subscribe((x) => {
-      moment();
-      const series = new List<FlatSeries>(x);
-      const data = series.Where((x) => x.avgPrice > 0).Select((x) => x.avgPricePerMeter);
       this.flatSeries = x;
 
+      const series = new List<FlatSeries>(x);
       this.labelData = series.Select((x) => moment(x?.day).format('DD-MM-YYYY')).ToArray();
 
-      this.basicData = {
-        labels: this.labelData,
-        datasets: [
-          {
-            label: 'Flat prices',
-            data: data.ToArray(),
-            fill: false,
-            borderColor: documentStyle.getPropertyValue('--primary-500'),
-            tension: 0.4,
-          },
-        ],
-      };
+      this.loadPriceDataChart();
     });
 
     this.basicOptions = this.chartService.getDefaultBasicOptions();
+  }
+
+  loadPriceDataChart(): void {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const series = new List<FlatSeries>(this.flatSeries);
+    const data = series.Where((x) => x.avgPrice > 0).Select((x) => x.avgPricePerMeter);
+    this.basicData = {
+      labels: this.labelData,
+      datasets: [
+        {
+          label: 'Prices',
+          data: data.ToArray(),
+          fill: false,
+          borderColor: documentStyle.getPropertyValue('--pi-primary-500'),
+          tension: 0.4,
+        },
+      ],
+    };
+  }
+
+  loadOffersDataChart(): void {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const series = new List<FlatSeries>(this.flatSeries);
+    const data = series.Where((x) => x.amount > 0).Select((x) => x.amount);
+    this.basicData = {
+      labels: this.labelData,
+      datasets: [
+        {
+          label: 'Offers',
+          data: data.ToArray(),
+          fill: false,
+          borderColor: documentStyle.getPropertyValue('--pi-primary-500'),
+          tension: 0.4,
+        },
+      ],
+    };
   }
 }
