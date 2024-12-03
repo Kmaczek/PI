@@ -1,3 +1,5 @@
+import { UserRoles } from "../../models/user/user-roles";
+
 export interface LoginResponse {
   token: string
 }
@@ -10,4 +12,12 @@ export interface TokenModel {
   given_name: string;
   role: string[];
   token: string;
+}
+
+export interface UserProfile {
+  id: number;
+  displayName: string;
+  email :string;
+  lastLoginUtc: Date;
+  userRoles: Array<UserRoles>;
 }

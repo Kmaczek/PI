@@ -10,7 +10,7 @@ export class UtilsService {
   constructor(private breakpointObserver: BreakpointObserver) {}
 
   checkForMobile(): void {
-    this.breakpointObserver.observe('(max-width: 768px)').subscribe(isMobileMatched => {
+    this.breakpointObserver.observe('(max-width: 767px)').subscribe(isMobileMatched => {
       this.isMobile.set(isMobileMatched.matches);
     });
   }

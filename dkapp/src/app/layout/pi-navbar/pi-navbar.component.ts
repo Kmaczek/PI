@@ -1,7 +1,8 @@
 import { Component, computed } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { IdentityService } from 'src/app/services/identity.service';
-import { ThemeService } from 'src/app/services/theme.service';
+import { IdentityService } from '../../services/identity.service';
+import { ThemeService } from '../../services/theme.service';
+
 
 @Component({
   selector: 'pi-navbar',
@@ -9,10 +10,9 @@ import { ThemeService } from 'src/app/services/theme.service';
   styleUrls: ['./pi-navbar.component.scss'],
 })
 export class PiNavbarComponent {
-  activeItem: MenuItem;
+  activeItem!: MenuItem;
   showSignIn = false;
   items = computed(() => {
-    console.log(this.identityService.isLoggedIn());
     return [
       {
         label: 'Home',
@@ -29,8 +29,20 @@ export class PiNavbarComponent {
       {
         label: 'Inflation',
         icon: 'pi pi-chart-line',
-        routerLink: '/inflation',
-        routerLinkActiveOptions: { exact: false },
+        items: [
+          {
+            label: 'Check inflation',
+            icon: 'pi pi-bolt',
+            routerLink: '/inflation',
+            routerLinkActiveOptions: { exact: false },
+          },
+          {
+            label: 'Manage Products',
+            icon: 'pi pi-server',
+            routerLink: '/inflation/products/edit',
+            routerLinkActiveOptions: { exact: false },
+          },
+        ],
       },
       {
         label: 'Mode',

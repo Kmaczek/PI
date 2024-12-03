@@ -1,10 +1,10 @@
 import { Injectable, signal } from '@angular/core'
 import jwt_decode from 'jwt-decode'
-import * as moment from 'moment'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { IdentityApiService } from './api/identity.api.service'
 import { LoginResponse, TokenModel } from './api/models'
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root',

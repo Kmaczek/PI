@@ -16,7 +16,7 @@ export class IdentityApiService {
     this.httpClient.get(environment.apiUrl + '/weatherforecast').subscribe((x) => console.log(x));
   }
 
-  public login(username: string, password: string): Observable<LoginResponse> {
-    return this.httpClient.post<LoginResponse>(this.endpoint + '/login', { username, password });
+  public login(email: string, password: string): Observable<LoginResponse> {
+    return this.httpClient.post<LoginResponse>(this.endpoint + '/login', { email: email, password });
   }
 }

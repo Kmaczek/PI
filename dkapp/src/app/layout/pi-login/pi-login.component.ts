@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { IdentityService } from 'src/app/services/identity.service';
+import { IdentityService } from '../../services/identity.service';
 
 @Component({
   selector: 'pi-login',

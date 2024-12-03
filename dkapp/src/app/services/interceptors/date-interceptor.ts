@@ -13,6 +13,7 @@ export class DateInterceptor implements HttpInterceptor {
           this.postProcessDates(event.body);
           return event;
         }
+        return null;
       })
     );
   }
@@ -41,5 +42,7 @@ export class DateInterceptor implements HttpInterceptor {
         this.postProcessDates(value);
       }
     }
+
+    return obj;
   }
 }

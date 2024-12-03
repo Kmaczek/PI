@@ -1,4 +1,3 @@
-<br />
 <div class="container">
   <h3>FLATS</h3>
   <div>
@@ -6,12 +5,14 @@
       <p-button
         label="Price"
         icon="pi pi-dollar"
-        (onClick)="loadPriceDataChart()"
+        routerLink="/flats/price"
+        replaceUrl="true"
       />
       <p-button
         label="Offers"
         icon="pi pi-hashtag"
-        (onClick)="loadOffersDataChart()"
+        [routerLink]="'/flats/offers'"
+        replaceUrl="true"
       />
     </p-buttonGroup>
     <div>

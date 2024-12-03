@@ -1,5 +1,7 @@
-import * as moment from 'moment';
+
 import { Moment } from 'moment';
+import moment from 'moment';
+
 
 export interface IPriceEntry {
   price: number;

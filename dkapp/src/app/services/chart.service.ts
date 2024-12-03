@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { $dt } from '@primeng/themes';
 
 @Injectable({
   providedIn: 'root',
@@ -56,9 +55,6 @@ export class ChartService {
     const textColor = documentStyle.getPropertyValue('--pi-text-color');
     const textColorSecondary = documentStyle.getPropertyValue('--pi-text-muted-color');
     const surfaceBorder = documentStyle.getPropertyValue('--pi-content-border-color');
-    console.log($dt('primary.color'));
-    console.log($dt('highlight.color'));
-    console.log($dt('blue.500'));
 
     const options = this.getBasicOptions(textColor, surfaceBorder, textColorSecondary);
     return options;

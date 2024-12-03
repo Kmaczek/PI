@@ -1,30 +1,41 @@
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { APP_INITIALIZER, NgModule, isDevMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { InflationModule } from './inflationModule/inflation.module';
-import { PiContentComponent } from './pageComponents/pi-content/pi-content.component';
-import { PiFooterComponent } from './pageComponents/pi-footer/pi-footer.component';
-import { PiNavbarComponent } from './pageComponents/pi-navbar/pi-navbar.component';
-import { FlatsModule } from './flatsModule/flats.module';
 import { HomePageComponent } from './home-page/home-page.component';
+import { PiContentComponent } from './layout/pi-content/pi-content.component';
+import { PiFooterComponent } from './layout/pi-footer/pi-footer.component';
+import { PiNavbarComponent } from './layout/pi-navbar/pi-navbar.component';
 
-import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { DividerModule } from 'primeng/divider';
-import { ListboxModule } from 'primeng/listbox';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
+import { ListboxModule } from 'primeng/listbox';
 import { MenubarModule } from 'primeng/menubar';
+import { TableModule } from 'primeng/table';
+import { TabMenuModule } from 'primeng/tabmenu';
 
-import { PiLoginComponent } from './pageComponents/pi-login/pi-login.component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { firstValueFrom } from 'rxjs';
+import { FlatsModule } from './flats/flats.module';
+import { InflationModule } from './inflation/inflation.module';
+import { PiLoginComponent } from './layout/pi-login/pi-login.component';
+import { InitializeService } from './services/initialize.service';
 import { AuthInterceptor } from './services/interceptors/auth-interceptor';
 import { DateInterceptor } from './services/interceptors/date-interceptor';
+import { UserEffects } from './state/user-effects';
+import { userReducer } from './state/user-reducer';
 
 @NgModule({
   declarations: [
@@ -37,6 +48,11 @@ import { DateInterceptor } from './services/interceptors/date-interceptor';
   ],
   bootstrap: [AppComponent],
   imports: [
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
+
+    StoreModule.forFeature('user', userReducer),
+    EffectsModule.forFeature(UserEffects),
     BrowserModule,
     AppRoutingModule,
     FormsModule,
@@ -52,6 +68,7 @@ import { DateInterceptor } from './services/interceptors/date-interceptor';
     MenubarModule,
     FlatsModule,
     InflationModule,
+    StoreDevtoolsModule.instrument({ maxAge: 40, logOnly: !isDevMode(), trace: true, traceLimit: 75 }),
   ],
   providers: [
     {
@@ -65,6 +82,14 @@ import { DateInterceptor } from './services/interceptors/date-interceptor';
       multi: true,
     },
     provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (initializeService: InitializeService) => () => {
+        return firstValueFrom(initializeService.initialize());
+      },
+      deps: [InitializeService],
+      multi: true
+    }
   ],
 })
 export class AppModule {}

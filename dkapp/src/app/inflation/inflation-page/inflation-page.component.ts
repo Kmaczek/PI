@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'linqts';
 import { map } from 'rxjs/operators';
-import { ChartBasicData, ChartBasicOptions, ChartService } from 'src/app/services/chart.service';
 import { GroupedProducts } from '../models/grouppedProducts';
 import { IPriceEntry, PriceEntry } from '../models/priceEntry';
 import { Product } from '../models/product';
 import { ProductsService } from '../services/product.api.service';
-import { UtilsService } from 'src/app/services/utils.service';
-import { ThemeService } from 'src/app/services/theme.service';
+
+import { Meta, Title } from '@angular/platform-browser';
+import { ChartBasicData, ChartBasicOptions, ChartService } from '../../services/chart.service';
+import { UtilsService } from '../../services/utils.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'pi-inflation-page',
@@ -29,10 +31,15 @@ export class InflationPageComponent implements OnInit {
     private productService: ProductsService,
     private chartService: ChartService,
     private utilsService: UtilsService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private meta: Meta,
+    private title: Title
   ) {}
 
   ngOnInit() {
+    this.title.setTitle('PI - product prices');
+    this.meta.updateTag({ name: 'description', content: 'Track product prices' });
+
     this.productService.GetProducts().subscribe((x) => {
       this.products = x;
     });
@@ -40,7 +47,6 @@ export class InflationPageComponent implements OnInit {
     this.basicOptions = this.chartService.getDefaultBasicOptions();
     this.basicData = this.chartService.getDefaultBasicData();
     this.isMobile = this.utilsService.isMobile();
-    this.themeService.check();
   }
 
   loadSeries(event: any) {

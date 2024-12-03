@@ -44,9 +44,29 @@ body {
   font-size: 14px;
 }
 
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   background-image: url(./assets/dalee_theme.webp);
   background-size: cover;
 }
+
+/* Custom view transition */
+
+::view-transition-old(navbar-wrapper),
+::view-transition-new(navbar-wrapper) {
+  animation-duration: 250ms;
+  animation-name: -ua-view-transition-fade-in;
+}
+
+::view-transition-old(navbar-wrapper) {
+  animation-name: -ua-view-transition-fade-out;
+}
+
+/* Custom view transition */

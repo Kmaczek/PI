@@ -1,22 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { RedirectComponent } from './routeComponents/RedirectComponent/redirect.component';
-import { InflationPageComponent } from './inflationModule/inflation-page/inflation-page.component';
-import { FlatsPageComponent } from './flatsModule/flatsScreen/flats-page.component';
-import { HomePageComponent } from './home-page/home-page.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes, provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { RedirectComponent } from './routeComponents/RedirectComponent/redirect.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'callback', component: RedirectComponent },
   { path: 'admin', component: AdminComponent },
-  { path: 'flats', component: FlatsPageComponent },
-  { path: 'inflation', component: InflationPageComponent },
+  { path: 'flats', loadChildren: () => import('./flats/flats.module').then(m => m.FlatsModule) },
+  { path: 'inflation', loadChildren: () => import('./inflation/inflation.module').then(m => m.InflationModule) },
 ];
 
 @NgModule({
-  imports: [BrowserModule, [RouterModule.forRoot(routes)]],
+  imports: [BrowserModule, [RouterModule.forRoot(routes, { enableViewTransitions: true })]],
   exports: [RouterModule],
+  providers: [
+    provideRouter(routes, withComponentInputBinding(), withRouterConfig({ paramsInheritanceStrategy: 'always' }))
+  ]
 })
 export class AppRoutingModule {}
