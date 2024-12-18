@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using Core.Domain.Logic;
+﻿using Core.Domain.Logic;
 using Core.Model.FlatSerie;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Pi.Api.Controllers
 {
     [ApiController]
-    //[Authorize]
-    [Route("[controller]")]
-    public class FlatController
+    [Route("flat")]
+    public class FlatController: SecureController
     {
         private readonly ILogger<FlatController> _logger;
         private readonly IFlatSeriesService flatSeriesService;

@@ -11,7 +11,7 @@ namespace Data.EF.Models
         public decimal Price { get; set; }
         public DateTime CreatedDate { get; set; }
 
-        public virtual Parser Parser { get; set; }
+        public virtual Product Parser { get; set; }
         public virtual PriceDetails PriceDetails { get; set; }
     }
 }

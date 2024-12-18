@@ -65,7 +65,6 @@
     <Folder Include="PostExecution\PopulateData" />
     <Folder Include="Auth" />
     <Folder Include="PriceParser" />
-    <Folder Include="Pi" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Binance\Series.sql" />
@@ -88,15 +87,12 @@
     <Build Include="Auth\Role.sql" />
     <Build Include="Auth\UserRoles.sql" />
     <Build Include="PriceParser\PriceParser.sql" />
-    <Build Include="PriceParser\Parsers.sql" />
+    <Build Include="PriceParser\Product.sql" />
     <Build Include="PriceParser\ParserType.sql" />
     <Build Include="PriceParser\PriceSeries.sql" />
     <None Include="PostExecution\PopulateData\FillParserTypes.sql" />
     <Build Include="PriceParser\PriceDetails.sql" />
     <None Include="PostExecution\PopulateData\FillParsers.sql" />
-    <Build Include="Pi\Pi.sql" />
-    <Build Include="Pi\Settings.sql" />
-    <None Include="PostExecution\PopulateData\FillSettings.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PostExecution\PopulateData\_include.sql" />

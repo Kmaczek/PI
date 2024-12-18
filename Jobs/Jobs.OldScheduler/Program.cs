@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using AutoMapper;
-using AutoMapper.Configuration;
 using Binance.Api;
 using Core.Common;
 using Core.Common.Config;
@@ -8,6 +7,7 @@ using Core.Common.Logging;
 using Core.Domain.Logic;
 using Core.Domain.Logic.EmailGeneration;
 using Core.Domain.Logic.FlatsFeed;
+using Core.Domain.Logic.Inflation;
 using Core.Domain.Logic.PriceDetective;
 using Core.Model;
 using Core.Model.FlatsModels;
@@ -15,14 +15,18 @@ using Data.EF.Models;
 using Data.Repository;
 using Data.Repository.Interfaces;
 using Flats.Core.Scraping;
+using Jobs.OldScheduler.HealthChecks;
 using Jobs.OldScheduler.Jobs;
 using log4net;
 using log4net.Config;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using xAPI.Records;
 using Xtb.Core;
@@ -44,6 +48,22 @@ namespace Jobs.OldScheduler
 
         private static void Main()
         {
+            var builder = WebApplication.CreateBuilder();
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(5010); // Change 5001 to your desired port number
+            });
+            builder.Services.AddHealthChecks()
+            .AddCheck("scheduler-status", () =>
+            {
+                return HealthCheckResult.Healthy("Scheduler is running normally");
+            })
+            .AddCheck<SchedulerHealthCheck>("jobs-status");
+
+            var app = builder.Build();
+            app.AddHealthCheckEndpoints();
+            app.RunAsync();
+
             SetupLogger();
             Log.Info("Scheduler started...");
 
@@ -56,12 +76,13 @@ namespace Jobs.OldScheduler
             AttachConsoleCommander();
             //RunTestMethod();
 
-            //TODO: Make it configurable
             jobRunner = new JobRunner(injectionContainer);
             jobRunner.AddJob(nameof(EmailSummaryJob));
             jobRunner.AddJob(nameof(PerformanceAuditJob));
             jobRunner.AddJob(nameof(OtodomFeedJob));
             jobRunner.AddJob(nameof(PriceDetectiveJob));
+            jobRunner.AddJob(nameof(InflationJob));
+            jobRunner.AddJob(nameof(DatabaseBackupJob));
 
             jobRunner.RunJobs();
 
@@ -115,7 +136,6 @@ namespace Jobs.OldScheduler
                 return () => context.Resolve<PiContext>();
             });
             
-            diBuilder.RegisterType<SettingRepository>().As<ISettingRepository>();
             diBuilder.RegisterType<BinanceRepository>().As<IBinanceRepository>();
             diBuilder.RegisterType<OtoDomRepository>().As<IOtoDomRepository>();
             diBuilder.RegisterType<PriceRepository>().As<IPriceRepository>();
@@ -128,6 +148,7 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<EmailService>().As<IEmailService>();
             diBuilder.RegisterType<OtodomFeedService>().As<IFlatsFeedService>();
             diBuilder.RegisterType<PriceDetectiveService>().As<IPriceDetectiveService>();
+            diBuilder.RegisterType<InflationService>().As<ICalculateInflation>();
 
             //Generators
             diBuilder.RegisterType<XtbHtmlGenerator>();
@@ -161,6 +182,8 @@ namespace Jobs.OldScheduler
             diBuilder.RegisterType<PerformanceAuditJob>().Named<IJob>(nameof(PerformanceAuditJob));
             diBuilder.RegisterType<OtodomFeedJob>().Named<IJob>(nameof(OtodomFeedJob));
             diBuilder.RegisterType<PriceDetectiveJob>().Named<IJob>(nameof(PriceDetectiveJob));
+            diBuilder.RegisterType<InflationJob>().Named<IJob>(nameof(InflationJob));
+            diBuilder.RegisterType<DatabaseBackupJob>().Named<IJob>(nameof(DatabaseBackupJob));
 
             diBuilder.RegisterType<ConsoleCommander>().SingleInstance();
 

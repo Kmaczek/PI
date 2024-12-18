@@ -39,5 +39,12 @@ export const userReducer = createReducer(
       ...state,
       profile: setError(state.profile, error)
     })
+  ),
+  on(
+    UserActions.clearUser,
+    (state): UserState => ({
+      ...state,
+      profile: createInitialState()
+    })
   )
 );

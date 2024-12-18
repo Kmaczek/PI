@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pi.Api.EF;
 using Pi.Api.EF.Models.Auth;
 using Pi.Api.EF.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pi.Api.EF.Repository
 {
@@ -16,28 +16,29 @@ namespace Pi.Api.EF.Repository
             PiContext = dbContext;
         }
 
-        public AppUserDm GetUser(string username)
+        public Task<AppUserDm> GetUser(string email)
         {
-            var user = PiContext.ApplicationUsers.FirstOrDefault(x => x.Username == username);
-
-            return user;
+            return PiContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public IEnumerable<RoleDm> GetUserRoles(string username)
+        public Task<AppUserDm> GetUser(int userId)
         {
-            var userRoles = PiContext.ApplicationUsers
-                .Where(x => x.Username == username)
+            return PiContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public Task<List<RoleDm>> GetUserRoles(int userId)
+        {
+            return PiContext.ApplicationUsers
+                .Where(x => x.Id == userId)
                 .Include(x => x.UserRoles)
                 .ThenInclude(userRoles => userRoles.Role)
-                .SelectMany(x => x.UserRoles.Select(y => y.Role)).ToList();
-
-            return userRoles;
+                .SelectMany(x => x.UserRoles.Select(y => y.Role)).ToListAsync();
         }
 
-        public AppUserDm InsertUser(AppUserDm user)
+        public async Task<AppUserDm> InsertUser(AppUserDm user)
         {
             PiContext.ApplicationUsers.Add(user);
-            PiContext.SaveChanges();
+            await PiContext.SaveChangesAsync();
 
             return user;
         }

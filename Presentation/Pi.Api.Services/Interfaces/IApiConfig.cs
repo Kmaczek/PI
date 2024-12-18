@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Pi.Api.Services.Interfaces
+﻿namespace Pi.Api.Services.Interfaces
 {
     public interface IApiConfig
     {

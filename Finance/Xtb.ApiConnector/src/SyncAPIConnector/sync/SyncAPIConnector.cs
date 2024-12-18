@@ -1,21 +1,14 @@
-using System;
-using System.Text;
-using System.Threading;
-using System.Runtime.Serialization.Json;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Net.Security;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using JSONObject = Newtonsoft.Json.Linq.JObject;
-using xAPI.Streaming;
-using System.Net;
-using System.Runtime.CompilerServices;
-using xAPI.Errors;
-using xAPI.Commands;
-using xAPI.Streaming;
-using xAPI.Utils;
 using SyncAPIConnect.Utils;
+using System;
+using System.IO;
+using System.Net.Security;
+using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using xAPI.Commands;
+using xAPI.Errors;
+using xAPI.Utils;
+using JSONObject = Newtonsoft.Json.Linq.JObject;
 
 namespace xAPI.Sync
 {

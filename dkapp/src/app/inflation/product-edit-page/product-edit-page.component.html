@@ -1,1 +1,95 @@
-<p>product-edit works!</p>
+<pi-title
+    displayTitle="Manage products"
+    pageTitle="PI - Manage your products"
+    metaDescription="Product tracker manager"
+>
+</pi-title>
+
+<div class="wrapper">
+    <div>
+        <p-listbox
+            [options]="products$ | async"
+            [group]="true"
+            optionGroupLabel="siteName"
+            optionGroupChildren="products"
+            optionLabel="name"
+            optionValue="id"
+            [filter]="true"
+            (onClick)="selectProduct($event)"
+            [listStyle]="{'max-height': isMobile ? '20rem' : '30rem'}"
+        >
+        </p-listbox>
+    </div>
+    <div>
+        <p-toolbar>
+            <ng-template #start>
+                <p-button
+                    icon="pi pi-plus"
+                    class="mr-2"
+                    text
+                    severity="secondary"
+                    (onClick)="addNew()"
+                />
+                <p-button
+                    icon="pi pi-refresh"
+                    class="mr-2"
+                    text
+                    severity="secondary"
+                    [disabled]="!selectedProduct && !newProduct"
+                    (onClick)="resetData()"
+                />
+                <p-button
+                    icon="pi pi-save"
+                    text
+                    severity="secondary"
+                    [disabled]="!selectedProduct || formGroup.untouched"
+                    (onClick)="save()"
+                />
+            </ng-template>
+        </p-toolbar>
+        <div
+            *ngIf="selectedProduct || newProduct"
+            [formGroup]="formGroup"
+        >
+            <div class="field-group">
+                <label for="id">Id</label>
+                <input
+                    id="id"
+                    type="number"
+                    pInputText
+                    formControlName="id"
+                />
+            </div>
+
+            <div class="field-group">
+                <label for="name">Name</label>
+                <input
+                    id="name"
+                    type="text"
+                    pInputText
+                    formControlName="name"
+                />
+            </div>
+
+            <div class="field-group">
+                <label for="code">Code</label>
+                <input
+                    id="code"
+                    type="text"
+                    pInputText
+                    formControlName="code"
+                />
+            </div>
+
+            <div class="field-group">
+                <label for="uri">Uri</label>
+                <input
+                    id="uri"
+                    type="text"
+                    pInputText
+                    formControlName="uri"
+                />
+            </div>
+        </div>
+    </div>
+</div>

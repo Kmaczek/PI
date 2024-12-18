@@ -7,13 +7,13 @@ namespace Data.EF.Models
     {
         public ParserType()
         {
-            Parser = new HashSet<Parser>();
+            Parser = new HashSet<Product>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
 
-        public virtual ICollection<Parser> Parser { get; set; }
+        public virtual ICollection<Product> Parser { get; set; }
     }
 }

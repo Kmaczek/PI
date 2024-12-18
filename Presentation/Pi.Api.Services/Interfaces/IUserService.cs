@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Pi.Api.EF.Models.Auth;
+using Pi.APi.Models;
+using Pi.APi.Models.User;
+using System.Threading.Tasks;
 
 namespace Pi.Api.Services.Interfaces
 {
     public interface IUserService
     {
-        void CreateUser(string username, string password);
-        string LoginUser(string username, string password);
+        Task<UserVm> GetUser(int userId);
+        Task<AppUserDm> CreateUser(string username, string email, string password);
+        Task<LoginResult> LoginUser(string email, string password);
     }
 }

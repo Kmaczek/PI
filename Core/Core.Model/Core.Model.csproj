@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Data.EF\Data.EF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\Finance\Xtb.ApiConnector\src\SyncAPIConnector\JSON\Newtonsoft.Json.dll</HintPath>
     </Reference>

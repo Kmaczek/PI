@@ -26,14 +26,13 @@ namespace Data.EF.Models
         public virtual DbSet<Heating> Heating { get; set; }
         public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<Market> Market { get; set; }
-        public virtual DbSet<Parser> Parser { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ParserType> ParserType { get; set; }
         public virtual DbSet<PriceDetails> PriceDetails { get; set; }
         public virtual DbSet<PriceSeries> PriceSeries { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesParent> SeriesParent { get; set; }
-        public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<TypeOfBuilding> TypeOfBuilding { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
@@ -215,9 +214,9 @@ namespace Data.EF.Models
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Parser>(entity =>
+            modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Parser", "price");
+                entity.ToTable("Product", "price");
 
                 entity.Property(e => e.ActiveFrom).HasColumnType("datetime");
 
@@ -236,13 +235,13 @@ namespace Data.EF.Models
                     .WithMany(p => p.Parser)
                     .HasForeignKey(d => d.ParserTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ParserType_Parser");
+                    .HasConstraintName("FK_ParserType_Product");
 
                 entity.HasOne(d => d.LatestPriceDetail)
                     .WithMany()
                     .HasForeignKey(d => d.LatestPriceDetailId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PriceDetail_Parser");
+                    .HasConstraintName("FK_PriceDetail_Product");
             });
 
             modelBuilder.Entity<ParserType>(entity =>
@@ -329,19 +328,6 @@ namespace Data.EF.Models
                 entity.Property(e => e.Total).HasColumnType("money");
             });
 
-            modelBuilder.Entity<Setting>(entity =>
-            {
-                entity.ToTable("Settings", "pi");
-
-                entity.Property(e => e.Description).HasMaxLength(300);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Value).IsRequired();
-            });
-
             modelBuilder.Entity<TypeOfBuilding>(entity =>
             {
                 entity.ToTable("TypeOfBuilding", "otodom");
@@ -355,15 +341,16 @@ namespace Data.EF.Models
             {
                 entity.ToTable("User", "auth");
 
-                entity.HasIndex(e => e.Username)
-                    .HasName("UQ__tmp_ms_x__536C85E43FCA7DCF")
+                entity.HasIndex(e => e.Email)
                     .IsUnique();
 
-                entity.Property(e => e.ActiveFrom).HasColumnType("datetime");
+                entity.Property(e => e.ActiveFromUtc).HasColumnType("datetime");
 
-                entity.Property(e => e.ActiveTo).HasColumnType("datetime");
+                entity.Property(e => e.ActiveToUtc).HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDateUtc).HasColumnType("datetime");
+                
+                entity.Property(e => e.LastLoginUtc).HasColumnType("datetime");
 
                 entity.Property(e => e.DisplayName)
                     .IsRequired()
@@ -378,10 +365,6 @@ namespace Data.EF.Models
                 entity.Property(e => e.Salt)
                     .IsRequired()
                     .HasMaxLength(50);
-
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(100);
             });
 
             modelBuilder.Entity<UserRoles>(entity =>

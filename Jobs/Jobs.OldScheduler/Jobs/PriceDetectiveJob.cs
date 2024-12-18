@@ -28,7 +28,6 @@ namespace Jobs.OldScheduler.Jobs
 
         public void ImmediateRun()
         {
-            _log.Info($"Immediate execution of {JobName}.");
             RunPriceDetective();
             _log.Info($"Job {JobName} done.");
         }
@@ -48,7 +47,7 @@ namespace Jobs.OldScheduler.Jobs
         {
             try
             {
-                var priceData = priceDetectiveService.CollectPriceData(parameters?.ParsersToRun);
+                var priceData = priceDetectiveService.CollectPriceData(parameters?.ParsersToRun).Result;
                 priceDetectiveService.SavePrices(priceData);
             }
             catch (Exception e)

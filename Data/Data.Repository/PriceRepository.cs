@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
@@ -24,168 +25,170 @@ namespace Data.Repository
             PiContext.Dispose();
         }
 
-        public IEnumerable<Parser> GetParsers()
+        public async Task<bool> HealthCheck()
         {
-            var dateNow = DateTime.Now;
-            using (var context = contextMaker.Invoke())
-            {
-                var parsers = context.Parser
-                    .Include(p => p.ParserType)
-                    .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo)
-                    .ToList();
+            using var context = contextMaker.Invoke();
+            var parsers = await context.Products.ToListAsync();
 
-                return parsers;
-            }
+            return true;
         }
 
-        public IEnumerable<Parser> GetParsers(IEnumerable<int> parsersToRun)
+        public IEnumerable<Product> GetProductsActive()
         {
             var dateNow = DateTime.Now;
-            using (var context = contextMaker.Invoke())
+            using var context = contextMaker.Invoke();
+            var parsers = context.Products
+                .Include(p => p.ParserType)
+                .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo)
+                .ToList();
+
+            return parsers;
+        }
+
+        public async Task<Product> GetProduct(int productId)
+        {
+            using var context = contextMaker.Invoke();
+            var product = await context.Products
+                .Include(p => p.LatestPriceDetail)
+                .SingleOrDefaultAsync(x => x.Id == productId);
+
+            return product;
+        }
+
+        public async Task<IEnumerable<Product>> GetProducts(IEnumerable<int> productsToRun)
+        {
+            var dateNow = DateTime.Now;
+            using var context = contextMaker.Invoke();
+            var products = context.Products
+                .Include(p => p.ParserType)
+                .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo);
+
+            if (productsToRun != null)
             {
-                var parsers = context.Parser
-                    .Include(p => p.ParserType)
-                    .Where(x => x.ActiveFrom < dateNow && dateNow < x.ActiveTo);
-
-                if (parsersToRun != null)
-                {
-                    parsers = parsers.Where(p => parsersToRun.Contains(p.Id));
-                }
-
-                return parsers.ToList();
+                products = products.Where(p => productsToRun.Contains(p.Id));
             }
+
+            return await products.ToListAsync();
         }
 
         public IEnumerable<PriceDetails> GetPriceDetails()
         {
-            var dateNow = DateTime.Now;
-            using (var context = contextMaker.Invoke())
-            {
-                var parsers = context.PriceDetails.ToList();
+            using var context = contextMaker.Invoke();
+            var parsers = context.PriceDetails.ToList();
 
-                return parsers;
-            }
+            return parsers;
         }
 
-        public IEnumerable<GrouppedProductsVm> GetProductsGrouppedBySite()
+        public async Task<IEnumerable<GrouppedProductsVm>> GetProductsGrouppedBySite()
         {
-            var dateNow = DateTime.Now;
-            using (var context = contextMaker.Invoke())
+            using var context = contextMaker.Invoke();
+            var parsers = await context.Products.Include(p => p.LatestPriceDetail).ToListAsync();
+            var parserTypes = await context.ParserType.ToListAsync();
+            var grouppedParsers = new List<GrouppedProductsVm>();
+
+            foreach (var parserType in parserTypes)
             {
-                var parsers = context.Parser.Include(p => p.LatestPriceDetail).ToList();
-                var parserTypes = context.ParserType.ToList();
-                var grouppedParsers = new List<GrouppedProductsVm>();
-
-                foreach (var parserType in parserTypes)
+                var grouppedParser = new GrouppedProductsVm
                 {
-                    var grouppedParser = new GrouppedProductsVm
-                    {
-                        SiteId = parserType.Id,
-                        SiteName = parserType.DisplayName,
-                        Products = parsers
-                            .Where(p => p.ParserTypeId == parserType.Id)
-                            .Select(ps => new ProductVm()
-                            {
-                                Id = ps.LatestPriceDetailId,
-                                Code = ps.LatestPriceDetail?.RetailerNo ?? "Error",
-                                Name = ps.LatestPriceDetail?.Title ?? "Error",
-                                Uri = ps.Uri
-                            })
-                    };
+                    SiteId = parserType.Id,
+                    SiteName = parserType.DisplayName,
+                    Products = parsers
+                        .Where(product => product.ParserTypeId == parserType.Id)
+                        .Select(product => new ProductVm()
+                        {
+                            Id = product.Id,
+                            LatestPriceDetailId = product.LatestPriceDetailId,
+                            Code = product.LatestPriceDetail?.RetailerNo,
+                            Name = product.LatestPriceDetail?.Title,
+                            Uri = product.Uri,
+                        })
+                };
 
-                    grouppedParsers.Add(grouppedParser);
-                }
-
-                return grouppedParsers;
+                grouppedParsers.Add(grouppedParser);
             }
+
+            return grouppedParsers;
         }
 
         public IEnumerable<PriceSeries> GetPriceSeries(DateTime date)
         {
-            var dateNow = DateTime.Now;
-            using (var context = contextMaker.Invoke())
-            {
-                var priceSeries = context.PriceSeries
-                    .Include(ps => ps.PriceDetails)
-                    .Include(ps => ps.Parser)
-                    .Where(p =>
-                        p.Parser.Track &&
-                        date.AddDays(-1) < p.CreatedDate && p.CreatedDate < date)
-                    .ToList();
+            using var context = contextMaker.Invoke();
+            var priceSeries = context.PriceSeries
+                .Include(ps => ps.PriceDetails)
+                .Include(ps => ps.Parser)
+                .Where(p =>
+                    p.Parser.Track &&
+                    date.AddDays(-1) < p.CreatedDate && p.CreatedDate < date)
+                .ToList();
 
-                var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Id == g.Max(y => y.Id))).ToList();
+            var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Id == g.Max(y => y.Id))).ToList();
 
-                return latestPrices;
-            }
+            return latestPrices;
         }
 
-        public IEnumerable<PriceSeries> GetPriceSeries(int productId)
+        public async Task<IEnumerable<PriceSeries>> GetPriceSeries(int priceDetailsId)
         {
-            using (var context = contextMaker.Invoke())
-            {
-                var priceSeries = context.PriceSeries
-                    .Where(ps => ps.PriceDetailsId == productId)
-                    .ToList();
+            using var context = contextMaker.Invoke();
+            var priceSeries = await context.PriceSeries
+                .Where(ps => ps.PriceDetailsId == priceDetailsId)
+                .ToListAsync();
 
-                return priceSeries;
-            }
+            return priceSeries;
+        }
+
+        public async Task<IEnumerable<PriceSeries>> GetPriceSeries(DateTime from, DateTime to)
+        {
+            using var context = contextMaker.Invoke();
+            var priceSeries = await context.PriceSeries
+                .Where(ps => ps.CreatedDate >= from && ps.CreatedDate < to)
+                .ToListAsync();
+
+            return priceSeries;
         }
 
         public IEnumerable<PriceSeries> GetMaxPricesDetails()
         {
-            using (var context = contextMaker.Invoke())
-            {
-                var priceSeries = context.PriceSeries
-                    .Include(ps => ps.PriceDetails)
-                    .Include(ps => ps.Parser)
-                    .Where(p => p.Parser.Track)
-                    .ToList();
+            using var context = contextMaker.Invoke();
+            var priceSeries = context.PriceSeries
+                .Include(ps => ps.PriceDetails)
+                .Include(ps => ps.Parser)
+                .Where(p => p.Parser.Track)
+                .ToList();
 
-                var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Price == g.Max(y => y.Price))).ToList();
+            var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Price == g.Max(y => y.Price))).ToList();
 
-                return latestPrices;
-            }
+            return latestPrices;
         }
 
         public IEnumerable<PriceSeries> GetMinPricesDetails()
         {
-            using (var context = contextMaker.Invoke())
-            {
-                var priceSeries = context.PriceSeries
-                    .Include(ps => ps.PriceDetails)
-                    .Include(ps => ps.Parser)
-                    .Where(p => p.Parser.Track)
-                    .ToList();
+            using var context = contextMaker.Invoke();
+            var priceSeries = context.PriceSeries
+                .Include(ps => ps.PriceDetails)
+                .Include(ps => ps.Parser)
+                .Where(p => p.Parser.Track)
+                .ToList();
 
-                var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Price == g.Min(y => y.Price))).ToList();
+            var latestPrices = priceSeries.GroupBy(g => g.ParserId).Select(g => g.FirstOrDefault(ps => ps.Price == g.Min(y => y.Price))).ToList();
 
-                return latestPrices;
-            }
+            return latestPrices;
         }
 
         public void SavePriceDetails(PriceDetails priceDetails, int ParserId)
         {
-            var dateNow = DateTime.Now;
+            using var context = contextMaker.Invoke();
+            context.PriceDetails.Add(priceDetails);
+            context.SaveChanges();
 
-            using (var context = contextMaker.Invoke())
-            {
-                context.PriceDetails.Add(priceDetails);
-                context.SaveChanges();
-
-                context.Parser.Find(ParserId).LatestPriceDetailId = priceDetails.Id;
-                context.SaveChanges();
-            }
+            context.Products.Find(ParserId).LatestPriceDetailId = priceDetails.Id;
+            context.SaveChanges();
         }
 
         public void SavePrices(IEnumerable<PriceSeries> priceSeries)
         {
-            var dateNow = DateTime.Now;
-
-            using (var context = contextMaker.Invoke())
-            {
-                context.PriceSeries.AddRange(priceSeries);
-                context.SaveChanges();
-            }
+            using var context = contextMaker.Invoke();
+            context.PriceSeries.AddRange(priceSeries);
+            context.SaveChanges();
         }
     }
 }

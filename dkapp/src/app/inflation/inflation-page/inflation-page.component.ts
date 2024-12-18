@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'linqts';
 import { map } from 'rxjs/operators';
-import { GroupedProducts } from '../models/grouppedProducts';
+import { GroupedProducts } from '../models/groupedProducts';
 import { IPriceEntry, PriceEntry } from '../models/priceEntry';
 import { Product } from '../models/product';
-import { ProductsService } from '../services/product.api.service';
+import { ProductApiService } from '../services/product.api.service';
 
-import { Meta, Title } from '@angular/platform-browser';
 import { ChartBasicData, ChartBasicOptions, ChartService } from '../../services/chart.service';
 import { UtilsService } from '../../services/utils.service';
-import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'pi-inflation-page',
@@ -28,19 +26,13 @@ export class InflationPageComponent implements OnInit {
   isMobile = false;
 
   constructor(
-    private productService: ProductsService,
+    private productService: ProductApiService,
     private chartService: ChartService,
     private utilsService: UtilsService,
-    private themeService: ThemeService,
-    private meta: Meta,
-    private title: Title
   ) {}
 
   ngOnInit() {
-    this.title.setTitle('PI - product prices');
-    this.meta.updateTag({ name: 'description', content: 'Track product prices' });
-
-    this.productService.GetProducts().subscribe((x) => {
+    this.productService.getProducts().subscribe((x) => {
       this.products = x;
     });
 
@@ -52,7 +44,7 @@ export class InflationPageComponent implements OnInit {
   loadSeries(event: any) {
     this.selectedProduct = event.option as Product;
     this.productService
-      .GetProductSeries(this.selectedProduct.id)
+      .getProductSeries(this.selectedProduct.latestPriceDetailId)
       .pipe(
         map((ps) => {
           const psList = new List<IPriceEntry>(ps);

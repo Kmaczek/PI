@@ -1,35 +1,20 @@
 ﻿using Core.Model.PriceView;
 using Data.Repository.Interfaces;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.Domain.Logic
 {
-    public class PriceService: IPriceService
+    public class PriceService(IPriceRepository priceRepository) : IPriceService
     {
-        private readonly ILogger<FlatSeriesService> _logger;
-        private readonly IPriceRepository _priceRepository;
-
-        public PriceService(
-            ILogger<FlatSeriesService> logger,
-            IPriceRepository priceRepository)
+        public Task<IEnumerable<GrouppedProductsVm>> GetProducts()
         {
-            _logger = logger;
-            _priceRepository = priceRepository;
+            return priceRepository.GetProductsGrouppedBySite();
         }
 
-        public IEnumerable<GrouppedProductsVm> GetProducts()
+        public async Task<IEnumerable<PriceSeriesVm>> GetPriceSeries(int priceDetailsId)
         {
-            var priceDetails = _priceRepository.GetProductsGrouppedBySite();
-
-            return priceDetails;
-        }
-
-        public IEnumerable<PriceSeriesVm> GetPriceSeries(int productId)
-        {
-            var priceSeries = _priceRepository.GetPriceSeries(productId);
+            var priceSeries = await priceRepository.GetPriceSeries(priceDetailsId);
             var series = new List<PriceSeriesVm>();
             foreach (var ps in priceSeries)
             {
@@ -41,6 +26,11 @@ namespace Core.Domain.Logic
             }
 
             return series;
+        }
+
+        public async Task<ProductVm> GetProductDetails(int productId)
+        {
+            return ProductVm.FromDm(await priceRepository.GetProduct(productId));
         }
     }
 }

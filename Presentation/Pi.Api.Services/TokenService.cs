@@ -1,4 +1,5 @@
 ﻿using Core.Common.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Pi.Api.EF.Models.Auth;
@@ -53,15 +54,17 @@ namespace Pi.Api.Services
 
         private Task<ClaimsIdentity> CreateClaimsIdentities(AppUserDm user, IEnumerable<string> roles)
         {
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.DisplayName));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(new { user.DisplayName })));
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()));
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, user.DisplayName));
 
             foreach (var role in roles)
-            { claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role)); }
+            {
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+            }
 
             return Task.FromResult(claimsIdentity);
         }

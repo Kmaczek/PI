@@ -1,13 +1,13 @@
 ﻿using Core.Model.PriceView;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.Domain.Logic
 {
     public interface IPriceService
     {
-        IEnumerable<GrouppedProductsVm> GetProducts();
-        IEnumerable<PriceSeriesVm> GetPriceSeries(int productId);
+        Task<IEnumerable<GrouppedProductsVm>> GetProducts();
+        Task<ProductVm> GetProductDetails(int productId);
+        Task<IEnumerable<PriceSeriesVm>> GetPriceSeries(int productId);
     }
 }

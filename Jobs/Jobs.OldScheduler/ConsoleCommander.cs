@@ -20,6 +20,8 @@ namespace Jobs.OldScheduler
         private readonly IJob performanceAuditJob;
         private readonly IJob otodomFeedJob;
         private readonly IJob priceDetectiveJob;
+        private readonly IJob inflationJob;
+        private readonly IJob databaseBackupJob;
         private readonly ILifetimeScope scope;
         private readonly IPriceRepository priceRepository;
         private Dictionary<string, IJob> JobsToRun = new Dictionary<string, IJob>();
@@ -32,6 +34,8 @@ namespace Jobs.OldScheduler
             performanceAuditJob = scope.ResolveNamed<IJob>(nameof(PerformanceAuditJob));
             otodomFeedJob = scope.ResolveNamed<IJob>(nameof(OtodomFeedJob));
             priceDetectiveJob = scope.ResolveNamed<IJob>(nameof(PriceDetectiveJob));
+            inflationJob = scope.ResolveNamed<IJob>(nameof(InflationJob));
+            databaseBackupJob = scope.ResolveNamed<IJob>(nameof(DatabaseBackupJob));
 
             SetJobsToRun();
             AddCommands();
@@ -50,6 +54,12 @@ namespace Jobs.OldScheduler
 
             JobsToRun.Add("pd", priceDetectiveJob);
             JobsToRun.Add(nameof(PriceDetectiveJob), priceDetectiveJob);
+
+            JobsToRun.Add("i", inflationJob);
+            JobsToRun.Add(nameof(InflationJob), inflationJob);
+
+            JobsToRun.Add("bak", databaseBackupJob);
+            JobsToRun.Add(nameof(DatabaseBackupJob), databaseBackupJob);
         }
 
         private void AddCommands()
@@ -106,7 +116,15 @@ namespace Jobs.OldScheduler
             if (command.Contains("jobs"))
             {
                 Log.Info($"Listing Jobs");
-                priceRepository.GetParsers().ToList().ForEach(x => Log.Info(x.ToString()));
+                foreach (var key in JobsToRun.Keys)
+                {
+                    Log.Info($"\t{key}");
+                }
+            } 
+            else if (command.Contains("parsers"))
+            {
+                Log.Info($"Listing parsers");
+                priceRepository.GetProductsActive().ToList().ForEach(x => Log.Info(x.ToString()));
             }
         }
 
@@ -131,7 +149,8 @@ namespace Jobs.OldScheduler
 
                 if (JobsToRun.ContainsKey(command[1]))
                 {
-                    if(command.Length > 2)
+                    Log.Info($"Immediate execution of {command[1]}.");
+                    if (command.Length > 2)
                     {
                         JobsToRun[command[1]].ImmediateRun(command.Skip(2));
                     }
@@ -142,7 +161,7 @@ namespace Jobs.OldScheduler
                 }
                 else
                 {
-                    Log.Info($"Job [{command[1]}] is not registered");
+                    Log.Info($"Job [{command[1]}] is not registered.");
                 }
             }
         }

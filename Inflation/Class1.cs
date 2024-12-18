@@ -3,20 +3,20 @@
 public class Basket
 {
     public string Name { get; set; }
-    public List<ProductGroup> Groups { get; set; }
+    public List<ProductGroup> Groups { get; set; } = [FoodAndDrinks];
 
-    const ProductGroup FoodAndDrinks = new ProductGroup (Category.FoodAndDrinks, 27.01);
-    const ProductGroup AlcoholAndTobaco = new ProductGroup (Category.AlcoholAndTobaco, 5.75);
-    const ProductGroup Clothing = new ProductGroup (Category.Clothing, 4.27);
-    const ProductGroup HousingAndEnergy = new ProductGroup (Category.HousingAndEnergy, 19.63);
-    const ProductGroup EquipmentAndRunningHouse = new ProductGroup (Category.EquipmentAndRunningHouse, 5.29);
-    const ProductGroup Healthcare = new ProductGroup (Category.Healthcare, 5.71);
-    const ProductGroup Transport = new ProductGroup (Category.Transport, 9.92);
-    const ProductGroup Connectivity = new ProductGroup (Category.Connectivity, 4.48);
-    const ProductGroup Recreation = new ProductGroup (Category.Recreation, 6.14);
-    const ProductGroup Education = new ProductGroup (Category.Education, 2.21);
-    const ProductGroup RestaurantsAndHotels = new ProductGroup (Category.RestaurantsAndHotels, 5.11);
-    const ProductGroup Others = new ProductGroup (Category.Others, 5.48);
+    readonly ProductGroup FoodAndDrinks = new(Category.FoodAndDrinks, 27.01m);
+    readonly ProductGroup AlcoholAndTobaco = new(Category.AlcoholAndTobaco, 5.75m);
+    readonly ProductGroup Clothing = new  (Category.Clothing, 4.27m);
+    readonly ProductGroup HousingAndEnergy = new(Category.HousingAndEnergy, 19.63m);
+    readonly ProductGroup EquipmentAndRunningHouse = new(Category.EquipmentAndRunningHouse, 5.29m);
+    readonly ProductGroup Healthcare = new(Category.Healthcare, 5.71m);
+    readonly ProductGroup Transport = new(Category.Transport, 9.92m);
+    readonly ProductGroup Connectivity = new(Category.Connectivity, 4.48m);
+    readonly ProductGroup Recreation = new(Category.Recreation, 6.14m);
+    readonly ProductGroup Education = new(Category.Education, 2.21m);
+    readonly ProductGroup RestaurantsAndHotels = new(Category.RestaurantsAndHotels, 5.11m);
+    readonly ProductGroup Others = new(Category.Others, 5.48m);
 }
 
 public class Product
@@ -39,7 +39,7 @@ public class Product
 
 public class ProductGroup
 {
-    public ProductGroup(int category, decimal weight)
+    public ProductGroup(Category category, decimal weight)
     {
         Category = category;
         Weight = weight;
@@ -60,16 +60,16 @@ public class Category
     public int Id { get; set; }
     public string Name { get; set; }
 
-    public const Category FoodAndDrinks = new Category (1, "Żywność i napoje");
-    public const Category AlcoholAndTobaco = new Category (2, "Napoje alkoholowe i wyroby tytoniowe");
-    public const Category Clothing = new Category (3, "Odzież i obuwie");
-    public const Category HousingAndEnergy = new Category (4, "Dom i media");
-    public const Category EquipmentAndRunningHouse = new Category (5, "Wyposażenie i prowadzenie domu");
-    public const Category Healthcare = new Category (6, "Zdrowie");
-    public const Category Transport = new Category (7, "Transport");
-    public const Category Connectivity = new Category (8, "Łączność");
-    public const Category Recreation = new Category (9, "Rekreacja i kultura");
-    public const Category Education = new Category (10, "Edukacja");
-    public const Category RestaurantsAndHotels = new Category (11, "Restauracje i hotele");
-    public const Category Others = new Category (12, "Inne towary i usługi");
+    public static readonly Category FoodAndDrinks = new Category (1, "Żywność i napoje");
+    public static readonly Category AlcoholAndTobaco = new Category (2, "Napoje alkoholowe i wyroby tytoniowe");
+    public static readonly Category Clothing = new Category (3, "Odzież i obuwie");
+    public static readonly Category HousingAndEnergy = new Category (4, "Dom i media");
+    public static readonly Category EquipmentAndRunningHouse = new Category (5, "Wyposażenie i prowadzenie domu");
+    public static readonly Category Healthcare = new Category (6, "Zdrowie");
+    public static readonly Category Transport = new Category (7, "Transport");
+    public static readonly Category Connectivity = new Category (8, "Łączność");
+    public static readonly Category Recreation = new Category (9, "Rekreacja i kultura");
+    public static readonly Category Education = new Category (10, "Edukacja");
+    public static readonly Category RestaurantsAndHotels = new Category (11, "Restauracje i hotele");
+    public static readonly Category Others = new Category (12, "Inne towary i usługi");
 }

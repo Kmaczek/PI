@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pi.Api.Services.Interfaces;
+using Pi.APi.Models.User;
+using System.Threading.Tasks;
 
 namespace Pi.Api.Controllers
 {
     [ApiController]
     [Route("auth")]
-    public class AuthController : ControllerBase //ApiController
+    public class AuthController : ControllerBase
     {
         private readonly IUserService userService;
 
@@ -17,32 +20,50 @@ namespace Pi.Api.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public IActionResult Login([FromBody]LoginUser credentials)
+        public async Task<IActionResult> Login([FromBody] LoginUser credentials)
         {
-            var token = userService.LoginUser(credentials.Username, credentials.Password);
+            var result = await userService.LoginUser(credentials.Email, credentials.Password);
 
-            if (!string.IsNullOrEmpty(token))
+            if (result.Success)
             {
-                return Ok(new { token = token });
+                return Ok(new { token = result.Token });
             }
 
-            return Unauthorized("Incorrect user or password.");
+            return result.ErrorType switch
+            {
+                LoginErrorType.UserNotFound => NotFound(new { message = "User not found" }),
+                LoginErrorType.InvalidPassword => Unauthorized(new { message = "Invalid credentials" }),
+                LoginErrorType.AccountLocked => StatusCode(
+                    StatusCodes.Status403Forbidden,
+                    new { message = "Account is locked" }),
+                LoginErrorType.InvalidInput => BadRequest(new { message = result.Error }),
+                _ => StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "An unexpected error occurred" })
+            };
         }
 
         [HttpPost("create")]
-        //[Authorize(Roles = "admin")]
-        public IActionResult CreateUser([FromBody]LoginUser credentials)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUser credentials)
         {
-            userService.CreateUser(credentials.Username, credentials.Password);
+            var user = await userService.CreateUser(credentials.Username, credentials.Email, credentials.Password);
 
-            return Ok();
+            return user != null ? Created("", user) : BadRequest();
         }
-        
+
     }
 
     public class LoginUser
     {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class CreateUser
+    {
         public string Username { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Jobs.OldScheduler.Jobs.Parameters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,30 +29,5 @@ namespace Jobs.OldScheduler.Jobs
         {
             ParsersToRun = GetList<int>(parameterValue);
         }
-    }
-
-    public class ParametersParser
-    {
-        protected InputParameter GetParameter(string paramString)
-        {
-            var splitParamString = paramString.Split('=');
-
-            return new InputParameter()
-            {
-                Name = splitParamString[0],
-                Value = splitParamString[1]
-            };
-        }
-
-        protected IEnumerable<T> GetList<T>(string parameter)
-        {
-            return parameter.Split(',').Select(id => (T)Convert.ChangeType(id, typeof(T)));
-        }
-    }
-
-    public class InputParameter
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core.Domain.Logic.PriceDetective
 {
@@ -46,10 +47,10 @@ namespace Core.Domain.Logic.PriceDetective
             }
         }
 
-        public IEnumerable<PriceParserResult> CollectPriceData(IEnumerable<int> parsersToRun = null)
+        public async Task<IEnumerable<PriceParserResult>> CollectPriceData(IEnumerable<int> parsersToRun = null)
         {
             var priceData = new List<PriceParserResult>();
-            var parserConfigs = parsersToRun != null ? priceRepository.GetParsers(parsersToRun) : priceRepository.GetParsers();
+            var parserConfigs = parsersToRun != null ? await priceRepository.GetProducts(parsersToRun) : priceRepository.GetProductsActive();
 
             foreach (var parserConfig in parserConfigs)
             {

@@ -38,12 +38,11 @@ namespace Pi.Api.EF
             {
                 entity.ToTable("User", "auth");
 
-                entity.Property(e => e.Username)
+                entity.Property(e => e.Id)
                     .IsRequired()
                     .HasMaxLength(100);
-                    //.Metadata.IsIndex();
 
-                entity.HasIndex(x => x.Username).IsUnique();
+                entity.HasIndex(x => x.Id).IsUnique();
 
                 entity.Property(e => e.DisplayName)
                     .IsRequired()
@@ -63,14 +62,21 @@ namespace Pi.Api.EF
                     .IsRequired()
                     .HasMaxLength(256);
 
-                entity.Property(e => e.ActiveFrom)
+                entity.HasIndex(e => e.Email)
+                    .HasDatabaseName("UQ__User__Email")
+                    .IsUnique();
+
+                entity.Property(e => e.ActiveFromUtc)
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.ActiveTo)
+                entity.Property(e => e.ActiveToUtc)
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedDate)
+                entity.Property(e => e.CreatedDateUtc)
                     .IsRequired()
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.LastLoginUtc)
                     .HasColumnType("datetime");
             });
 

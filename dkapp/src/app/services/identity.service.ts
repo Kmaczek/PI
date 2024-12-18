@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators'
 import { IdentityApiService } from './api/identity.api.service'
 import { LoginResponse, TokenModel } from './api/models'
 import moment from 'moment';
+import { Store } from '@ngrx/store'
+import * as UserActions from '../state/user-actions';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +15,7 @@ export class IdentityService {
   private expiresAt: moment.Moment;
   public isLoggedIn = signal(false);
 
-  constructor(private identityApi: IdentityApiService) {
+  constructor(private identityApi: IdentityApiService, private store: Store) {
     this.expiresAt = moment(localStorage.getItem('expires_at'));
     this.verifyToken();
   }
@@ -23,6 +25,7 @@ export class IdentityService {
       .pipe(map(response => {
         this.setSession(response);
         this.verifyToken();
+        this.store.dispatch(UserActions.loadUser());
         return this.isLoggedIn();
       }));
   }
@@ -32,6 +35,8 @@ export class IdentityService {
     localStorage.removeItem('expires_at');
 
     this.isLoggedIn.set(false);
+
+    this.store.dispatch(UserActions.clearUser());
   }
 
   private setSession(loginResponse: LoginResponse): void {

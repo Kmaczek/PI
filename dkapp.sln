@@ -62,6 +62,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pi.APi.Models", "Pi.APi.Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.PriceParser", "Test.PriceParser\Test.PriceParser.csproj", "{3B6191A6-6546-4513-93AD-D79DEAAB09B0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monitoring", "Monitoring", "{97BDBFA1-A3CD-43FB-8900-2710DB7F0DA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring", "Monitoring\Monitoring.csproj", "{528AE7E4-69C0-47D5-81BF-37D7701696B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -150,6 +154,10 @@ Global
 		{3B6191A6-6546-4513-93AD-D79DEAAB09B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B6191A6-6546-4513-93AD-D79DEAAB09B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B6191A6-6546-4513-93AD-D79DEAAB09B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{528AE7E4-69C0-47D5-81BF-37D7701696B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{528AE7E4-69C0-47D5-81BF-37D7701696B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{528AE7E4-69C0-47D5-81BF-37D7701696B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{528AE7E4-69C0-47D5-81BF-37D7701696B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -175,6 +183,7 @@ Global
 		{C99E917F-EA08-497C-BF81-69DA5DB9558B} = {F5F4BA31-5446-4C77-83F2-947B45A4A920}
 		{BCEDA30D-C2BF-4402-8A80-7CFCB4D48EF3} = {F5F4BA31-5446-4C77-83F2-947B45A4A920}
 		{3B6191A6-6546-4513-93AD-D79DEAAB09B0} = {9973C7D6-1E73-4910-9DD7-5559AD7F4130}
+		{528AE7E4-69C0-47D5-81BF-37D7701696B7} = {97BDBFA1-A3CD-43FB-8900-2710DB7F0DA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A963EC1D-DAFC-4D82-A5AF-AB9D0F4BE688}

@@ -1,27 +1,19 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Pi.Api.EF.Repository.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using Pi.Api.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace Pi.Api.Controllers
 {
     [ApiController]
     [Route("user")]
-    //[Authorize]
-    public class UserController : ControllerBase
+    public class UserController(IUserService userService) : SecureController
     {
-        private readonly IAppUserRepository userRepository;
-
-        public UserController(IAppUserRepository userRepository)
-        {
-            this.userRepository = userRepository;
-        }
+        private readonly IUserService _userService = userService;
 
         [HttpGet]
-        [Authorize(Roles = "View")]
-        public IActionResult GetUser(string username)
+        public async Task<IActionResult> GetUser()
         {
-            var user = userRepository.GetUser(username);
+            var user = await _userService.GetUser(UserId);
 
             return Ok(user);
         }

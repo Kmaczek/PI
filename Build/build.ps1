@@ -5,43 +5,49 @@ $BASE_PATH = "C:\Proj\PI"
 $ORIGINAL_LOCATION = Get-Location
 
 # Define the project locations
-$PROJECT_PATH1 = "$BASE_PATH\Presentation\Pi.Api\Pi.Api.csproj"
-$PROJECT_PATH2 = "$BASE_PATH\Jobs\Jobs.OldScheduler\Jobs.OldScheduler.csproj"
-$ANGULAR_PROJECT_PATH = "$BASE_PATH\dkapp"
+$PROJECT_API = "$BASE_PATH\Presentation\Pi.Api\Pi.Api.csproj"
+$PROJECT_SCHEDULER = "$BASE_PATH\Jobs\Jobs.OldScheduler\Jobs.OldScheduler.csproj"
+$PROJECT_MONITORING = "$BASE_PATH\Monitoring\Monitoring.csproj"
+$PROJECT_ANGULAR = "$BASE_PATH\dkapp"
 
 # Get the current timestamp
 $TIMESTAMP = Get-Date -Format "yyyyMMddHHmmss"
 
 # Define the publish locations
-$PUBLISH_PATH1 = "$BASE_PATH\Build\$TIMESTAMP\Api"
-$PUBLISH_PATH2 = "$BASE_PATH\Build\$TIMESTAMP\Scheduler"
-$ANGULAR_PUBLISH_PATH = "$BASE_PATH\Build\$TIMESTAMP\Ui"
+$PUBLISH_PATH_API = "$BASE_PATH\Build\$TIMESTAMP\Api"
+$PUBLISH_PATH_SCHEDULER = "$BASE_PATH\Build\$TIMESTAMP\Scheduler"
+$PUBLISH_PATH_MONITORING = "$BASE_PATH\Build\$TIMESTAMP\Monitoring"
+$PUBLISH_PATH_ANGULAR = "$BASE_PATH\Build\$TIMESTAMP\Ui"
 
 # Restore the projects
-dotnet restore $PROJECT_PATH1
-dotnet restore $PROJECT_PATH2
+dotnet restore $PROJECT_API
+dotnet restore $PROJECT_SCHEDULER
+dotnet restore $PROJECT_MONITORING
 
 # Build the projects
-dotnet build $PROJECT_PATH1 --configuration Release
-dotnet build $PROJECT_PATH2 --configuration Release
+dotnet build $PROJECT_API --configuration Release
+dotnet build $PROJECT_SCHEDULER --configuration Release
+dotnet build $PROJECT_MONITORING --configuration Release
 
 # Publish the projects
-dotnet publish $PROJECT_PATH1 --configuration Release --output $PUBLISH_PATH1
-dotnet publish $PROJECT_PATH2 --configuration Release --output $PUBLISH_PATH2
+dotnet publish $PROJECT_API --configuration Release --output $PUBLISH_PATH_API
+dotnet publish $PROJECT_SCHEDULER --configuration Release --output $PUBLISH_PATH_SCHEDULER
+dotnet publish $PROJECT_MONITORING --configuration Release --output $PUBLISH_PATH_MONITORING
 
-Write-Host "API has been published to $PUBLISH_PATH1"
-Write-Host "Scheduler has been published to $PUBLISH_PATH2"
+Write-Host "API has been published to $PUBLISH_PATH_API"
+Write-Host "Scheduler has been published to $PUBLISH_PATH_SCHEDULER"
+Write-Host "Monitoring has been published to $PUBLISH_PATH_MONITORING"
 
 # Change to the Angular project directory
-Set-Location -Path $ANGULAR_PROJECT_PATH
+Set-Location -Path $PROJECT_ANGULAR
 
 # Install the Angular project dependencies
 npm install
 
 # Build the Angular project
-ng build --configuration production --output-path $ANGULAR_PUBLISH_PATH
+ng build --configuration production --output-path $PUBLISH_PATH_ANGULAR
 
-Write-Host "Angular project has been built and published to $ANGULAR_PUBLISH_PATH"
+Write-Host "Angular project has been built and published to $PUBLISH_PATH_ANGULAR"
 
 # Change back to the original location
 Set-Location -Path $ORIGINAL_LOCATION

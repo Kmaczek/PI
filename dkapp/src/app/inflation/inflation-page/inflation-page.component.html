@@ -1,7 +1,10 @@
 <div class="container">
-  <div class="title">
-    <h3>INFLATION</h3>
-  </div>
+  <pi-title
+    displayTitle="Inflation"
+    pageTitle="PI - Product Prices"
+    metaDescription="Track product prices"
+  >
+  </pi-title>
 
   <div class="value">
     Value: 5%
@@ -20,7 +23,6 @@
         (onClick)="loadSeries($event)"
         [listStyle]="{'max-height': isMobile ? '20rem' : '30rem'}"
       >
-        <div>sth</div>
       </p-listbox>
     </div>
     <div class="product-chart-wrapper">

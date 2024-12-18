@@ -1,14 +1,16 @@
 ﻿using Core.Domain.Logic;
 using Core.Model.PriceView;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Pi.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ProductController : ControllerBase
+    [Route("product")]
+    public class ProductController : SecureController
     {
         private readonly ILogger<FlatController> _logger;
         private readonly IPriceService _priceService;
@@ -21,18 +23,25 @@ namespace Pi.Api.Controllers
             _priceService = priceService;
         }
 
-        [HttpGet]
-        public IEnumerable<GrouppedProductsVm> Get()
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ProductVm> GetSingle(int id)
         {
-            var products = _priceService.GetProducts();
+            return await _priceService.GetProductDetails(id);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<GrouppedProductsVm>> Get()
+        {
+            var products = await _priceService.GetProducts();
 
             return products;
         }
 
         [HttpGet("series")]
-        public IEnumerable<PriceSeriesVm> GetPriceSeries(int productId)
+        public async Task<IEnumerable<PriceSeriesVm>> GetPriceSeries(int priceDetailsId)
         {
-            var products = _priceService.GetPriceSeries(productId);
+            var products = await _priceService.GetPriceSeries(priceDetailsId);
 
             return products;
         }

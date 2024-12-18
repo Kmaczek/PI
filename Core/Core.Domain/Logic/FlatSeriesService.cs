@@ -32,7 +32,7 @@ namespace Core.Domain.Logic
                     Amount = flatSerie.Amount,
                     AvgPrice = flatSerie.AvgPrice,
                     AvgPricePerMeter = flatSerie.AvgPricePerMeter,
-                    Day = flatSerie.DateFetched
+                    Day = flatSerie.DateFetched.ToUniversalTime(),
                 };
 
                 flatSerieVmList.Add(flatSeriesVm);

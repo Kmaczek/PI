@@ -1,8 +1,11 @@
 ﻿using Pi.Api.EF.Models.Auth;
 using Pi.Api.EF.Repository.Interfaces;
 using Pi.Api.Services.Interfaces;
+using Pi.APi.Models;
+using Pi.APi.Models.User;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pi.Api.Services
 {
@@ -25,40 +28,58 @@ namespace Pi.Api.Services
             this.apiConfig = apiConfig;
         }
 
-        public void CreateUser(string username, string password)
+        public Task<AppUserDm> CreateUser(string username, string email, string password)
         {
             var user = new AppUserDm()
             {
-                ActiveFrom = DateTime.Now,
-                ActiveTo = DateTime.Now.AddYears(100),
-                CreatedDate = DateTime.Now,
+                ActiveFromUtc = DateTime.UtcNow,
+                ActiveToUtc = DateTime.UtcNow.AddYears(100),
+                CreatedDateUtc = DateTime.UtcNow,
+                Email = email,
                 DisplayName = username,
-                Username = username
             };
             var hashedPassword = passwordHashing.HashPassword(password);
 
             user.Password = hashedPassword.Password;
             user.Salt = hashedPassword.Salt;
 
-            userRepository.InsertUser(user);
+            return userRepository.InsertUser(user);
         }
 
-        public string LoginUser(string username, string password)
+        public async Task<LoginResult> LoginUser(string email, string password)
         {
-            var user = userRepository.GetUser(username);
-            var roles = userRepository.GetUserRoles(username).Select(x => x.Name);
-
-            if (passwordHashing.ComparePasswords(password, user.Salt, user.Password))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                var daysValid = TimeSpan.FromHours(apiConfig.TokenExpirationTime).Days;
-                var token = tokenService.CreateJwtAsync(user, roles, daysValid);
+                return LoginResult.Failed(LoginErrorType.InvalidInput, "Email and password are required");
+            }
 
-                return token.Result;
-            }
-            else
+            var user = await userRepository.GetUser(email);
+            if (user == null)
             {
-                return string.Empty;
+                return LoginResult.Failed(LoginErrorType.UserNotFound, "User not found");
             }
+
+            if (!passwordHashing.ComparePasswords(password, user.Salt, user.Password))
+            {
+                return LoginResult.Failed(LoginErrorType.InvalidPassword, "Invalid password");
+            }
+
+            var roles = (await userRepository.GetUserRoles(user.Id)).Select(x => x.Name);
+            var daysValid = TimeSpan.FromHours(apiConfig.TokenExpirationTime).Days;
+            var token = await tokenService.CreateJwtAsync(user, roles, daysValid);
+
+            return LoginResult.Successful(token);
+        }
+
+        public async Task<UserVm> GetUser(int userId)
+        {
+            var user = (await userRepository.GetUser(userId)) ?? throw new InvalidOperationException("User not found");
+
+            var roles = await userRepository.GetUserRoles(user.Id);
+
+            var userVm = UserVm.FromDm(user, roles);
+
+            return userVm;
         }
     }
 }
